@@ -1,0 +1,34 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Session {
+  id      String   @id @default(cuid())
+  date    DateTime
+  flights Flight[]
+}
+
+model Flight {
+  id         String      @id @default(cuid())
+  session    Session     @relation(fields: [sessionId], references: [id])
+  sessionId  String
+  flyers     Flyer[]
+  formations Formation[]
+  videoUrl   String
+}
+
+model Flyer {
+  name    String   @id
+  flights Flight[]
+}
+
+model Formation {
+  letter  String   @id
+  name    String
+  flights Flight[]
+}
