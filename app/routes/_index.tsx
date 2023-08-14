@@ -1,4 +1,4 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getLatestSession } from "~/models/sessions.server";
 import { useLoaderData } from "@remix-run/react";
@@ -9,7 +9,7 @@ export const meta: V2_MetaFunction = () => [
   { title: "Chocolate Chip Rookies Video Library" },
 ];
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async () => {
   const latestSession = await getLatestSession();
   return json({ latestSession });
 };
