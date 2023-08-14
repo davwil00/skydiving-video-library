@@ -14,7 +14,7 @@ type FlightCardProps = {
 export default function FlightCard(props: FlightCardProps) {
   const { flight, session, showDate } = props;
   return (
-    <div className="card card-compact m-4 w-[480px] min-w-[480px] bg-base-100 shadow-xl">
+    <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
       <figure>
         <video controls width="480" muted={true} preload="metadata">
           <source src={`${flight.videoUrl}`} />

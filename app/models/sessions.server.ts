@@ -6,13 +6,28 @@ export function getAllSessionDates() {
   });
 }
 
+const flightsInclude = { select: { flyers: true, formations: true, videoUrl: true } };
+
 export function getSession(sessionId: string) {
   return prisma.session.findUnique({
     include: {
-      flights: { select: { flyers: true, formations: true, videoUrl: true } },
+      flights: flightsInclude,
     },
     where: { id: sessionId },
   });
+}
+
+export function getLatestSession() {
+  return prisma.session.findFirst(
+    {
+      orderBy: [{
+        date: "desc"
+      }],
+      include: {
+        flights: flightsInclude
+      }
+    }
+  )
 }
 
 export async function getOrCreateSession(date: Date) {

@@ -10,6 +10,7 @@ export default function Sidebar(props: SidebarProps) {
 
   return (
     <div className="drawer-side">
+      <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
       <ul className="menu h-full w-80 bg-base-200 p-4 text-base-content">
         <li>
           <h2 className="menu-title">Sessions</h2>
