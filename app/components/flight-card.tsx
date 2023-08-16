@@ -16,7 +16,7 @@ export default function FlightCard(props: FlightCardProps) {
   return (
     <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
       <figure>
-        <video controls width="480" muted={true} preload="metadata">
+        <video controls width="480" muted={true} preload="none">
           <source src={`${flight.videoUrl}`} />
         </video>
       </figure>
