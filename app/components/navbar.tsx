@@ -1,4 +1,4 @@
-import SkydiverIcon from './skydiver-icon'
+import { SkydiverIcon } from "./icons";
 
 export default function Navbar() {
   return (

@@ -32,6 +32,12 @@ export default function Sidebar(props: SidebarProps) {
           <div className="divider"></div>
         </li>
         <li>
+          <Link to={{pathname: '/quiz'}}>Quiz</Link>
+        </li>
+        <li>
+          <div className="divider"></div>
+        </li>
+        <li>
           <h2 className="menu-title">Randoms</h2>
           <ul>
             <li>
