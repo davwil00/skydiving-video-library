@@ -155,8 +155,9 @@ export default function QuizPage() {
     );
   } else {
     return (
-      <div>
-        <button className="btn" onClick={startQuiz}>Start</button>
+      <div className="text-center">
+        <span className="text-5xl text-black">Formations Quiz</span>
+        <button className="btn text-white mt-4" onClick={startQuiz}>Start</button>
       </div>
     );
   }
