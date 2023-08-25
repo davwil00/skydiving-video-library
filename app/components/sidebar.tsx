@@ -74,9 +74,6 @@ export default function Sidebar(props: SidebarProps) {
             </li>
             <li>
               <div className="flex justify-between">
-                <Link to={{ pathname: "/formation/I" }}>
-                  <kbd className="kbd">I</kbd>
-                </Link>
                 <Link to={{ pathname: "/formation/J" }}>
                   <kbd className="kbd">J</kbd>
                 </Link>
@@ -86,13 +83,13 @@ export default function Sidebar(props: SidebarProps) {
                 <Link to={{ pathname: "/formation/L" }}>
                   <kbd className="kbd">L</kbd>
                 </Link>
+                <Link to={{ pathname: "/formation/M" }}>
+                  <kbd className="kbd">M</kbd>
+                </Link>
               </div>
             </li>
             <li>
               <div className="flex justify-between">
-                <Link to={{ pathname: "/formation/M" }}>
-                  <kbd className="kbd">M</kbd>
-                </Link>
                 <Link to={{ pathname: "/formation/N" }}>
                   <kbd className="kbd">N</kbd>
                 </Link>
@@ -101,6 +98,9 @@ export default function Sidebar(props: SidebarProps) {
                 </Link>
                 <Link to={{ pathname: "/formation/P" }}>
                   <kbd className="kbd">P</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/Q" }}>
+                  <kbd className="kbd">Q</kbd>
                 </Link>
               </div>
             </li>
