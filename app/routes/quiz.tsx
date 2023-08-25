@@ -135,6 +135,7 @@ export default function QuizPage() {
                      type="radio"
                      name={`answer-${idx}`}
                      className="btn grow"
+                     disabled={!!quizState.selectedAnswer}
                      checked={choice === quizState.selectedAnswer}
                      aria-label={`${choice.letter}-${choice.name}`}
                      onClick={() => checkAnswer(choice, currentQuestion.answer)} />
@@ -156,7 +157,7 @@ export default function QuizPage() {
   } else {
     return (
       <div className="text-center">
-        <span className="text-5xl text-black">Formations Quiz</span>
+        <span className="text-5xl text-black block">Formations Quiz</span>
         <button className="btn text-white mt-4" onClick={startQuiz}>Start</button>
       </div>
     );
