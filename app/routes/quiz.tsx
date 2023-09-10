@@ -13,12 +13,18 @@ type Question = {
   choices: Formation[]
 }
 
+enum QuizType {
+  NAME_TO_PICTURE,
+  PICTURE_TO_NAME
+}
+
 type QuizState = {
   started: boolean
   questionNo: number
   score: number
   questions: Question[]
   selectedAnswer?: Formation
+  quizType?: QuizType
 }
 
 const FORMATIONS: Formation[] = [
@@ -54,7 +60,7 @@ function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
   const actualAnswerIdx = possibleAnswers.indexOf(actualAnswer);
   possibleAnswers.splice(actualAnswerIdx, 1);
   shuffle(possibleAnswers);
-  const answers = possibleAnswers.slice(0, 2).concat(actualAnswer);
+  const answers = possibleAnswers.slice(0, 3).concat(actualAnswer);
   shuffle(answers);
   return answers;
 }
@@ -69,13 +75,13 @@ function shuffle(a: any[], b?: number, c?: number, d?: string) {
   }
 }
 
-const initialState = {
+const initialState: QuizState = {
   started: false,
   questionNo: 0,
   score: 0,
   questions: [],
-  showAnswer: false,
-  selectedAnswer: undefined
+  selectedAnswer: undefined,
+  quizType: undefined
 };
 
 // From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542
@@ -83,12 +89,17 @@ export default function QuizPage() {
   const [quizState, setQuizState] = useState<QuizState>(initialState);
 
   const startQuiz = () => {
-    setQuizState({
+    setQuizState(prevState => ({
       ...initialState,
+      quizType: prevState.quizType,
       started: true,
       questions: generateQuestions()
-    });
+    }));
   };
+
+  const reset = () => {
+    setQuizState({ ...initialState })
+  }
 
   const next = () => {
     setQuizState(prevState => ({
@@ -106,17 +117,69 @@ export default function QuizPage() {
     }));
   };
 
-  if (quizState.questionNo === QUESTIONS_PER_ROUND) {
+  function gameEnd() {
     return (
       <div className="">
         <p className="text-center text-5xl text-black">You scored {quizState.score}/10</p>
         <div className="text-center mt-8">
-          <button className="btn text-white" onClick={startQuiz}>Play again</button>
+          <button className="btn text-white" onClick={reset}>Play again</button>
         </div>
       </div>
     );
-  } else if (quizState.started) {
-    const currentQuestion = quizState.questions[quizState.questionNo];
+  }
+
+  function getFormationUrl(formation: Formation): string {
+    return `/images/${formation.letter}-${formation.name.replace(" ", "-")}.png`.toLowerCase()
+  }
+
+  function imageRow(choices: Formation[], answer: Formation) {
+    const disabled = !!quizState.selectedAnswer
+    return (
+      <div className="flex justify-center gap-2 mb-2">
+        {choices.map((choice, idx) =>
+          <figure key={idx} className={quizState.selectedAnswer ?
+              quizState.selectedAnswer === choice ? 'ring-primary ring-offset-1 ring-4' :
+              answer === choice ? 'ring-success ring-offset-1 ring-4' : ''
+              : ''}>
+            <img
+              key={idx}
+              className={`w-max`}
+              alt="skydiving formation"
+              src={getFormationUrl(choice)}
+              onClick={() => !disabled && checkAnswer(choice, answer)}
+            />
+          </figure>
+        )}
+      </div>
+    )
+  }
+
+  function identifyPictureFromFormation(currentQuestion: Question) {
+    return (
+      <div className="card text-black">
+        <div className="justify-between flex mb-4">
+          <div>Question {quizState.questionNo + 1}</div>
+          <div>Score: {quizState.score}</div>
+        </div>
+        <div className="card-body items-center">
+          <h2 className="card-title text-center">{`${currentQuestion.answer.letter} -${currentQuestion.answer.name}`}</h2>
+          <div className="w-full">
+            {imageRow(currentQuestion.choices.slice(0,2), currentQuestion.answer)}
+            {imageRow(currentQuestion.choices.slice(2), currentQuestion.answer)}
+          </div>
+        </div>
+        {quizState.selectedAnswer &&
+          <div className="card-actions justify-center">
+            <span
+              className="leading-[3rem] text-2xl mr-4">{quizState.selectedAnswer === currentQuestion.answer ? "Correct" : "Incorrect"}</span>
+            <button className="btn text-white" onClick={next}>Next</button>
+          </div>
+        }
+      </div>
+    )
+  }
+
+  function identifyFormationFromPicture(currentQuestion: Question) {
     return (
       <div className="card text-black">
         <div className="justify-between flex mb-4">
@@ -126,40 +189,80 @@ export default function QuizPage() {
         <figure>
           <img
             alt="skydiving formation"
-            src={`/images/${currentQuestion.answer.letter}-${currentQuestion.answer.name.replace(" ", "-")}.png`.toLowerCase()} />
+            src={getFormationUrl(currentQuestion.answer)} />
         </figure>
         <div className="card-body">
           {currentQuestion.choices.map((choice, idx) =>
             <div className="flex flex-row gap-2" key={idx}>
+              {quizState.selectedAnswer ?
+                <button className={`btn grow no-animation ${quizState.selectedAnswer === choice ?
+                  'btn-primary':  
+                  currentQuestion.answer === choice ? 'btn-success' : 'btn-disabled'}`}>{choice.letter} - {choice.name}</button>
+                :
               <input key={`input-${idx}`}
                      type="radio"
                      name={`answer-${idx}`}
-                     className="btn grow"
+                     className={`btn grow text-white ${choice === currentQuestion.answer ? 'radio-success' : ''}`}
                      disabled={!!quizState.selectedAnswer}
                      checked={choice === quizState.selectedAnswer}
                      aria-label={`${choice.letter}-${choice.name}`}
                      onClick={() => checkAnswer(choice, currentQuestion.answer)} />
-
+              }
               {quizState.selectedAnswer &&
-                <span key={`ans-${idx}`} className="btn btn-square btn-outline text-black">{choice === currentQuestion.answer ? <CheckIcon /> : <XIcon />}</span>
+                <span key={`ans-${idx}`}
+                      className="btn btn-square btn-outline text-black">{choice === currentQuestion.answer ?
+                  <CheckIcon /> : <XIcon />}</span>
               }
             </div>
           )}
           {quizState.selectedAnswer &&
             <div className="card-actions justify-end">
-              <span className="leading-[3rem] text-2xl mr-4">{quizState.selectedAnswer === currentQuestion.answer ? 'Correct' : 'Incorrect'}</span>
+              <span
+                className="leading-[3rem] text-2xl mr-4">{quizState.selectedAnswer === currentQuestion.answer ? "Correct" : "Incorrect"}</span>
               <button className="btn text-white" onClick={next}>Next</button>
             </div>
           }
         </div>
       </div>
     );
-  } else {
+  }
+
+  function gameStart() {
     return (
-      <div className="text-center">
+      <div className="text-center max-w-[450px] mx-auto">
         <span className="text-5xl text-black block">Formations Quiz</span>
+        <div className="form-control mt-4">
+          <input type="radio"
+                 name="quiz-type"
+                 className="btn text-white"
+                 checked={quizState.quizType === QuizType.PICTURE_TO_NAME}
+                 aria-label="Match the picture to the name"
+                 onClick={() => setQuizState(prevState => ({...prevState, quizType: QuizType.PICTURE_TO_NAME}))}/>
+        </div>
+        <div className="form-control mt-2">
+          <input type="radio"
+                 name="quiz-type"
+                 checked={quizState.quizType === QuizType.NAME_TO_PICTURE}
+                 className="btn text-white"
+                 aria-label="Match the name to the picture"
+                 onClick={() => setQuizState(prevState => ({...prevState, quizType: QuizType.NAME_TO_PICTURE}))}/>
+        </div>
         <button className="btn text-white mt-4" onClick={startQuiz}>Start</button>
       </div>
     );
+  }
+
+  if (quizState.questionNo === QUESTIONS_PER_ROUND) {
+    return gameEnd();
+  } else if (quizState.started) {
+    const currentQuestion = quizState.questions[quizState.questionNo];
+    switch (quizState.quizType) {
+      case QuizType.NAME_TO_PICTURE:
+        return identifyPictureFromFormation(currentQuestion);
+      case QuizType.PICTURE_TO_NAME:
+        return identifyFormationFromPicture(currentQuestion);
+    }
+  } else {
+    return gameStart();
   }
 }
