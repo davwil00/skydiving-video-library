@@ -4,6 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import FlightCard from "~/components/flight-card";
 import { getFormation } from "~/models/formations.server";
 import { getByFormationLetter } from "~/models/flights.server";
+import { getFormationUrl } from "~/utils";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.formationLetter, "formation not found");
@@ -26,6 +27,14 @@ export default function SessionDetailsPage() {
         {formation.letter} - {formation.name}
       </h1>
       <div className="flex flex-wrap justify-center">
+        <div className="card card-compact m-4">
+          <figure>
+            <img src={getFormationUrl(formation)}
+                 alt={`{formation.name}`}
+                 className="h-fit"
+            />
+          </figure>
+        </div>
         {flights.map((flight, idx) => (
           <FlightCard
             key={idx}

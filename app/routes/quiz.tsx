@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CheckIcon, XIcon } from "~/components/icons";
+import { getFormationUrl } from "~/utils";
 
 const QUESTIONS_PER_ROUND = 10;
 
@@ -126,10 +127,6 @@ export default function QuizPage() {
         </div>
       </div>
     );
-  }
-
-  function getFormationUrl(formation: Formation): string {
-    return `/images/${formation.letter}-${formation.name.replace(" ", "-")}.png`.toLowerCase()
   }
 
   function imageRow(choices: Formation[], answer: Formation) {
