@@ -1,30 +1,57 @@
 import { Link } from "@remix-run/react";
 import { format } from "date-fns";
 
+type Session = { id: string; date: string }
 type SidebarProps = {
-  sessions: { id: string; date: string }[];
+  sessions: Session[];
 };
 
 export default function Sidebar(props: SidebarProps) {
   const { sessions } = props;
+  const sessionsByYear = sessions.reduce((groups: { [year: string]: Session[] }, session) => {
+    const year = new Date(session.date).getFullYear().toString()
+    if (groups[year]) {
+      return {
+        ...groups,
+        [year]: [
+          ...groups[year],
+          session
+        ]
+      }
+    } else {
+      return {
+        [year]: [session]
+      }
+    }
+  }, {})
 
   return (
-    <div className="drawer-side">
+    <div className="drawer-side overflow-x-hidden">
       <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
-      <ul className="menu h-full w-80 bg-base-200 p-4 text-base-content">
+      <ul className="menu min-h-full w-80 bg-base-200 p-4 text-base-content flex-nowrap">
         <li>
           <h2 className="menu-title">Sessions</h2>
           <ul>
-            {sessions.map((session, idx) => (
-              <li key={idx}>
-                <Link
-                  to={{
-                    pathname: `/session/${session.id}`,
-                  }}
-                >
-                  {format(new Date(session.date), "dd/MM")}
-                </Link>
-              </li>
+            {Object.entries(sessionsByYear).map(([year, sessions], idx) => (
+              <div className="collapse" key={`year-${idx}`}>
+                <input type="checkbox" />
+                <div className="collapse-title">
+                  {year}
+                </div>
+                <div className="collapse-content">
+                  {sessions.map((session, idx) => (
+                    <li key={`session-${idx}`}>
+                      <Link
+                        to={{
+                          pathname: `/session/${session.id}`
+                        }}
+                      >
+                        {format(new Date(session.date), "dd/MM")}
+                      </Link>
+                    </li>
+                  ))}
+                </div>
+              </div>
             ))}
           </ul>
         </li>
@@ -32,16 +59,16 @@ export default function Sidebar(props: SidebarProps) {
           <div className="divider"></div>
         </li>
         <li>
-          <Link to={{pathname: '/quiz'}}>Quiz</Link>
+          <Link to={{ pathname: '/quiz' }}>Quiz</Link>
         </li>
         <li>
           <div className="divider"></div>
         </li>
-        <li>
+        <li className="items-start">
           <h2 className="menu-title">Randoms</h2>
           <ul>
             <li>
-              <div className="flex justify-between">
+              <div className="flex justify-around">
                 <Link to={{ pathname: "/formation/A" }}>
                   <kbd className="kbd">A</kbd>
                 </Link>
@@ -57,7 +84,7 @@ export default function Sidebar(props: SidebarProps) {
               </div>
             </li>
             <li>
-              <div className="flex justify-between">
+              <div className="flex justify-around">
                 <Link to={{ pathname: "/formation/E" }}>
                   <kbd className="kbd">E</kbd>
                 </Link>
@@ -73,7 +100,7 @@ export default function Sidebar(props: SidebarProps) {
               </div>
             </li>
             <li>
-              <div className="flex justify-between">
+              <div className="flex justify-around">
                 <Link to={{ pathname: "/formation/J" }}>
                   <kbd className="kbd">J</kbd>
                 </Link>
@@ -89,7 +116,7 @@ export default function Sidebar(props: SidebarProps) {
               </div>
             </li>
             <li>
-              <div className="flex justify-between">
+              <div className="flex justify-around">
                 <Link to={{ pathname: "/formation/N" }}>
                   <kbd className="kbd">N</kbd>
                 </Link>
@@ -109,11 +136,11 @@ export default function Sidebar(props: SidebarProps) {
         <li>
           <div className="divider"></div>
         </li>
-        <li>
+        <li className="items-start">
           <h2 className="menu-title">Blocks</h2>
           <ul>
             <li>
-              <div className="flex justify-between">
+              <div className="flex justify-around">
                 <Link to={{ pathname: "/formation/A" }}>
                   <kbd className="kbd">2</kbd>
                 </Link>
@@ -129,7 +156,7 @@ export default function Sidebar(props: SidebarProps) {
               </div>
             </li>
             <li>
-              <div className="flex justify-between">
+              <div className="flex justify-around">
                 <Link to={{ pathname: "/formation/E" }}>
                   <kbd className="kbd">8</kbd>
                 </Link>

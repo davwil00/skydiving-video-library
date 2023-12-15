@@ -104,6 +104,7 @@ export default function SyncDb() {
           <th>Flyers</th>
           <th>Formations</th>
           <th>Blocks</th>
+          <th>View</th>
         </tr>
         </thead>
         <tbody>
@@ -114,6 +115,7 @@ export default function SyncDb() {
             <td>{data.flyers.join(",")}</td>
             <td>{data.formations}</td>
             <td>{data.blocks}</td>
+            <td>{data.view}</td>
           </tr> : null
         )}
         </tbody>

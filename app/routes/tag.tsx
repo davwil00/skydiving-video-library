@@ -5,6 +5,7 @@ import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { format } from "date-fns";
 import { writeTag } from "~/utils/tagUtils";
+import { CloneIcon } from "~/components/icons";
 
 
 export const loader = async () => {
@@ -66,7 +67,12 @@ export default function Tag() {
         {files.map((file, idx) =>
           <tr key={idx}>
             <td>{file}<input type="hidden" value={file} name={`fileName${idx}`} /></td>
-            <td><input type="date" className="input input-bordered" name={`date${idx}`} /></td>
+            <td>
+              <div className="join">
+                <input type="date" className="input input-bordered join-item" name={`date${idx}`} />
+                <button className="btn join-item" type="button"><CloneIcon className="fill-white rounded-none"/></button>
+              </div>
+            </td>
             <td>
               <input type="text" className="input input-bordered" defaultValue="David F/David W/Karen/Nick"
                      name={`flyers${idx}`} />
