@@ -1,5 +1,9 @@
-import { Formation } from "@prisma/client";
+import type { Formation } from "@prisma/client";
 
-export function getFormationUrl(formation: Formation): string {
-  return `/images/${formation.letter}-${formation.name.replace(" ", "-")}.png`.toLowerCase()
+export function getFormationImageUrl(formation: Formation): string {
+  return `/images/randoms/${formation.letter}-${formation.name.replace(" ", "-")}.png`.toLowerCase()
+}
+
+export function getBlockImageUrl(blockId: number): string {
+  return `/images/blocks/${blockId}}.png`.toLowerCase()
 }

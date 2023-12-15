@@ -2,34 +2,35 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { useLoaderData } from "@remix-run/react";
 import FlightCard from "~/components/flight-card";
-import { getFormation } from "~/models/formations.server";
-import { getByFormationLetter } from "~/models/flights.server";
-import { getFormationImageUrl } from "~/utils";
+import { getByBlockId } from "~/models/flights.server";
+import { getBlockImageUrl } from "~/utils";
+import { getBlock } from "~/models/blocks.server";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  invariant(params.formationLetter, "formation not found");
+  invariant(params.blockId, "block not found");
 
-  const flights = await getByFormationLetter(params.formationLetter);
-  const formation = await getFormation(params.formationLetter);
-  if (!flights || !formation) {
+  const blockId = parseInt(params.blockId);
+  const flights = await getByBlockId(blockId);
+  const block = await getBlock(blockId);
+  if (!flights || !block) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ flights, formation });
+  return json({ flights, block });
 };
 
 export default function SessionDetailsPage() {
-  const { flights, formation } = useLoaderData<typeof loader>();
+  const { flights, block } = useLoaderData<typeof loader>();
 
   return (
     <div>
       <h1 className="text-2xl">
-        {formation.letter} - {formation.name}
+        {block.id} - {block.startFormation} &rarr; {block.endFormation}
       </h1>
       <div className="flex flex-wrap justify-center">
         <div className="card card-compact m-4">
           <figure>
-            <img src={getFormationImageUrl(formation)}
+            <img src={getBlockImageUrl(block.id)}
                  alt={`{formation.name}`}
                  className="h-fit"
             />

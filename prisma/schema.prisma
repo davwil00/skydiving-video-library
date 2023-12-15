@@ -19,6 +19,7 @@ model Flight {
   sessionId  String
   flyers     Flyer[]
   formations Formation[]
+  blocks     Blocks[]
   videoUrl   String
 }
 
@@ -31,4 +32,12 @@ model Formation {
   letter  String   @id
   name    String
   flights Flight[]
+}
+
+model Blocks {
+  id             Int     @id
+  startFormation String
+  endFormation   String
+  Flight         Flight? @relation(fields: [flightId], references: [id])
+  flightId       String?
 }

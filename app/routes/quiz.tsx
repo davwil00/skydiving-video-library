@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CheckIcon, XIcon } from "~/components/icons";
-import { getFormationUrl } from "~/utils";
+import { getFormationImageUrl } from "~/utils";
 
 const QUESTIONS_PER_ROUND = 10;
 
@@ -142,7 +142,7 @@ export default function QuizPage() {
               key={idx}
               className={`w-max`}
               alt="skydiving formation"
-              src={getFormationUrl(choice)}
+              src={getFormationImageUrl(choice)}
               onClick={() => !disabled && checkAnswer(choice, answer)}
             />
           </figure>
@@ -186,7 +186,7 @@ export default function QuizPage() {
         <figure>
           <img
             alt="skydiving formation"
-            src={getFormationUrl(currentQuestion.answer)} />
+            src={getFormationImageUrl(currentQuestion.answer)} />
         </figure>
         <div className="card-body">
           {currentQuestion.choices.map((choice, idx) =>

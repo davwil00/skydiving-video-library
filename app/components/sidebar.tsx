@@ -106,6 +106,46 @@ export default function Sidebar(props: SidebarProps) {
             </li>
           </ul>
         </li>
+        <li>
+          <div className="divider"></div>
+        </li>
+        <li>
+          <h2 className="menu-title">Blocks</h2>
+          <ul>
+            <li>
+              <div className="flex justify-between">
+                <Link to={{ pathname: "/formation/A" }}>
+                  <kbd className="kbd">2</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/B" }}>
+                  <kbd className="kbd">4</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/C" }}>
+                  <kbd className="kbd">6</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/D" }}>
+                  <kbd className="kbd">7</kbd>
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex justify-between">
+                <Link to={{ pathname: "/formation/E" }}>
+                  <kbd className="kbd">8</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/F" }}>
+                  <kbd className="kbd">9</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/G" }}>
+                  <kbd className="kbd">19</kbd>
+                </Link>
+                <Link to={{ pathname: "/formation/H" }}>
+                  <kbd className="kbd">21</kbd>
+                </Link>
+              </div>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
   );
