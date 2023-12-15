@@ -29,5 +29,5 @@ export type TagData = {
   title: string
   artist: string
   date: string
-  mediaType: string
+  comment: string
 }

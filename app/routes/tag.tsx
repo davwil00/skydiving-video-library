@@ -39,7 +39,7 @@ export const action = async ({ request }: ActionArgs) => {
       date: format(date, "yyyy-MM-dd"),
       title: formations as string,
       artist: flyers as string,
-      mediaType: view as string
+      comment: view as string
     }
 
     await writeTag(`${VIDEO_DATA_PATH}/pending/${fileName}`, tags)

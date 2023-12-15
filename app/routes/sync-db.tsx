@@ -56,7 +56,7 @@ async function processFile(file: Dirent): Promise<VideoData | undefined> {
       blocks: title.filter(group => /[0-9]/.test(group)).map(group => parseInt(group)),
       flyers: tags.artist!.split("/"),
       date: new Date(tags.date!),
-      view: tags.mediaType!
+      view: tags.comment!
     };
   }
 }
