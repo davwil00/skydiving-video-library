@@ -31,7 +31,7 @@ export default function SessionDetailsPage() {
         <div className="card card-compact m-4">
           <figure>
             <img src={getBlockImageUrl(block.id)}
-                 alt={`{formation.name}`}
+                 alt={`${block.id}`}
                  className="h-fit"
             />
           </figure>

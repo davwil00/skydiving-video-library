@@ -5,5 +5,5 @@ export function getFormationImageUrl(formation: Formation): string {
 }
 
 export function getBlockImageUrl(blockId: number): string {
-  return `/images/blocks/${blockId}}.png`.toLowerCase()
+  return `/images/blocks/${blockId}.png`
 }
