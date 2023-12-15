@@ -38,7 +38,7 @@ export default function SessionDetailsPage() {
             </figure>
           </div>
         </div>
-        <div className="sm:w-1/2 md:w-full inline-block align-top">
+        <div className="sm:w-full md:w-1/2 inline-block align-top">
           {flights.map((flight, idx) => (
             <FlightCard
               key={idx}
