@@ -27,23 +27,27 @@ export default function SessionDetailsPage() {
       <h1 className="text-2xl">
         {block.id} - {block.startFormation} &rarr; {block.endFormation}
       </h1>
-      <div className="flex flex-wrap justify-center">
-        <div className="card card-compact m-4">
-          <figure>
-            <img src={getBlockImageUrl(block.id)}
-                 alt={`${block.id}`}
-                 className="h-fit"
-            />
-          </figure>
+      <div>
+        <div className="sm:w-full md:w-1/3 inline-block max-w-screen-xl">
+          <div className="card card-compact m-4">
+            <figure>
+              <img src={getBlockImageUrl(block.id)}
+                   alt={`${block.id}`}
+                   className="h-fit"
+              />
+            </figure>
+          </div>
         </div>
-        {flights.map((flight, idx) => (
-          <FlightCard
-            key={idx}
-            flight={flight}
-            session={flight.session}
-            showDate={true}
-          />
-        ))}
+        <div className="sm:w-1/2 md:w-full inline-block align-top">
+          {flights.map((flight, idx) => (
+            <FlightCard
+              key={idx}
+              flight={flight}
+              session={flight.session}
+              showDate={true}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

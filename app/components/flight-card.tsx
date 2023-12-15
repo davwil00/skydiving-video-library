@@ -1,10 +1,11 @@
-import type { Flyer, Formation } from "@prisma/client";
+import type { Flyer, Formation, Blocks } from "@prisma/client";
 import { format } from "date-fns";
 
 type FlightCardProps = {
   flight: {
     flyers: Flyer[];
     formations: Formation[];
+    blocks: Blocks[];
     videoUrl: string;
   };
   session: { date: string };
@@ -13,8 +14,11 @@ type FlightCardProps = {
 
 export default function FlightCard(props: FlightCardProps) {
   const { flight, session, showDate } = props;
+  const flightsAndFormations = flight.formations
+    .map(formation => formation.letter)
+    .concat(flight.blocks.map(block => block.id.toString()))
   return (
-    <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
+    <div className="card card-compact m-4 max-w-[480px] max-h-[350px] bg-base-100 shadow-xl">
       <figure>
         <video controls width="480" muted={true} preload="none">
           <source src={`${flight.videoUrl}`} />
@@ -28,9 +32,9 @@ export default function FlightCard(props: FlightCardProps) {
         )}
         <div className="card-action flex items-center justify-between">
           <div>
-            {flight.formations.map((formation, formationIdx) => (
+            {flightsAndFormations.map((formation, formationIdx) => (
               <kbd key={formationIdx} className="kbd m-1">
-                {formation.letter}
+                {formation}
               </kbd>
             ))}
           </div>
