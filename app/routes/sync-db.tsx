@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionArgs) => {
   for (const file of pendingDir) {
     console.log(`Found pending video file: ${file.name}`);
     const videoData = await processFile(file);
-    if (videoData && videoData.view === "Top") {
+    if (videoData) {
       const sessionId = await getOrCreateSession(videoData.date);
       const newPath = `${VIDEO_DATA_PATH}/library/${format(
         videoData.date,
