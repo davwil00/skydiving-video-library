@@ -48,7 +48,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 async function processFile(file: Dirent): Promise<VideoData | undefined> {
-  if (file.isFile() && file.name.endsWith(".mp4")) {
+  if (file.isFile() && (file.name.endsWith(".mp4") || file.name.endsWith(".av1"))) {
     const tags = await readTag(`${VIDEO_DATA_PATH}/pending/${file.name}`)
     const title: string[] = tags.title?.split("") || [];
     return {
@@ -75,7 +75,7 @@ export const loader = async () => {
   });
 
   const videoData = await Promise.all(pendingDir
-    .filter(file => file.name.endsWith(".mp4"))
+    .filter(file => file.name.endsWith(".mp4") || file.name.endsWith(".av1"))
     .map(async file => {
       const videoData = await processFile(file)
       if (videoData === undefined) {

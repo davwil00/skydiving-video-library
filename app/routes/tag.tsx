@@ -14,7 +14,7 @@ export const loader = async () => {
   });
 
   const files: string[] = pendingDir
-    .filter(file => file.name.endsWith(".mp4"))
+    .filter(file => file.name.endsWith(".mp4") || file.name.endsWith(".av1"))
     .map(file => file.name);
 
   return json({ files });
