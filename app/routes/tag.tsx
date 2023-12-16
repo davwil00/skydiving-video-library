@@ -69,8 +69,10 @@ export default function Tag() {
             <td>{file}<input type="hidden" value={file} name={`fileName${idx}`} /></td>
             <td>
               <div className="join">
-                <input type="date" className="input input-bordered join-item" name={`date${idx}`} />
-                <button className="btn join-item" type="button"><CloneIcon className="fill-white rounded-none"/></button>
+                <input type="date" className="input input-bordered join-item tag-date" name={`date${idx}`} />
+                <button className="btn join-item" type="button">
+                  <CloneIcon className="fill-white rounded-none"/>
+                </button>
               </div>
             </td>
             <td>
@@ -79,9 +81,9 @@ export default function Tag() {
             </td>
             <td><input type="text" pattern="[A-HJ-Q0-9]+" className="input input-bordered" name={`formations${idx}`} /></td>
             <td>
-              <select className="select input-bordered" name={`view${idx}`} defaultValue="Top">
+              <select className="select input-bordered" name={`view${idx}`} defaultValue={`${file.startsWith("source01") ? "Side" : "Top"}`}>
                 <option value="Top">Top</option>
-                <option value="Top">Side</option>
+                <option value="Side">Side</option>
               </select>
             </td>
           </tr>
