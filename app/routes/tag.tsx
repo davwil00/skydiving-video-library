@@ -5,7 +5,8 @@ import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { format } from "date-fns";
 import { writeTag } from "~/utils/tagUtils";
-import { CloneIcon } from "~/components/icons";
+import { PlayIcon } from "~/components/icons";
+import { useRef, useState } from "react";
 
 
 export const loader = async () => {
@@ -40,18 +41,31 @@ export const action = async ({ request }: ActionArgs) => {
       title: formations as string,
       artist: flyers as string,
       comment: view as string
-    }
+    };
 
-    await writeTag(`${VIDEO_DATA_PATH}/pending/${fileName}`, tags)
+    await writeTag(`${VIDEO_DATA_PATH}/pending/${fileName}`, tags);
   }
 
-  return null
+  return null;
 };
 
 export default function Tag() {
   const { files } = useLoaderData<typeof loader>();
+  const [videoPreviewData, setVideoPreviewData] = useState<string>();
+  const [date, setDate] = useState<string>();
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const defaultDateRef = useRef<HTMLInputElement>(null);
+
+  function openVideoPreview(fileName: string) {
+    setVideoPreviewData(fileName);
+    modalRef?.current?.showModal();
+  }
+
   return (
     <Form method={"POST"}>
+      <div><label>Set Date:<input type="date" className="input input-bordered" ref={defaultDateRef} /></label>
+        <button type="button" className="btn" onClick={() => setDate(defaultDateRef?.current?.value)}>Set date</button>
+      </div>
       <input type="hidden" value={files.length} name="numberOfFiles" />
       <table className="table">
         <thead>
@@ -69,27 +83,42 @@ export default function Tag() {
             <td>{file}<input type="hidden" value={file} name={`fileName${idx}`} /></td>
             <td>
               <div className="join">
-                <input type="date" className="input input-bordered join-item tag-date" name={`date${idx}`} />
-                <button className="btn join-item" type="button">
-                  <CloneIcon className="fill-white rounded-none"/>
-                </button>
+                <input type="date" className="input input-bordered join-item tag-date" name={`date${idx}`}
+                       defaultValue={date} />
               </div>
             </td>
             <td>
               <input type="text" className="input input-bordered" defaultValue="David F/David W/Karen/Nick"
                      name={`flyers${idx}`} />
             </td>
-            <td><input type="text" pattern="[A-HJ-Q0-9]+" className="input input-bordered" name={`formations${idx}`} /></td>
+            <td><input type="text" pattern="[A-HJ-Q0-9]+" className="input input-bordered" name={`formations${idx}`} />
+            </td>
             <td>
-              <select className="select input-bordered" name={`view${idx}`} defaultValue={`${file.startsWith("source01") ? "Side" : "Top"}`}>
+              <select className="select input-bordered" name={`view${idx}`}
+                      defaultValue={`${file.startsWith("source01") ? "Side" : "Top"}`}>
                 <option value="Top">Top</option>
                 <option value="Side">Side</option>
               </select>
+            </td>
+            <td>
+              <button type="button" onClick={() => openVideoPreview(file)}><PlayIcon /></button>
             </td>
           </tr>
         )}
         </tbody>
       </table>
+
+      <dialog id="video-preview" className="modal" ref={modalRef}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">{videoPreviewData}</h3>
+          <video src={`/video-data/pending/${videoPreviewData}`} controls />
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
 
       <button className="btn" type="submit">Save</button>
     </Form>
