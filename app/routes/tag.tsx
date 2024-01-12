@@ -95,7 +95,7 @@ export default function Tag() {
             </td>
             <td>
               <select className="select input-bordered" name={`view${idx}`}
-                      defaultValue={`${file.startsWith("source01") ? "Side" : "Top"}`}>
+                      defaultValue={`${file.startsWith("source01") ? "SIDE" : "TOP"}`}>
                 <option value="TOP">Top</option>
                 <option value="SIDE">Side</option>
               </select>
