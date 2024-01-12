@@ -11,7 +11,7 @@
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "setup": "prisma generate && prisma migrate deploy && prisma db seed",
     "migrate-dev": "prisma generate && prisma migrate dev",
-    "migrate-deploy": "prisma generate && prisma migrate dev",
+    "migrate-deploy": "prisma generate && prisma migrate deploy",
     "start": "cross-env NODE_ENV=production node ./server.js",
     "typecheck": "tsc"
   },
