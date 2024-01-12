@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
       await createFlight({
         sessionId,
         ...videoData,
-        videoUrl: `${newPath.substring(8)}/${file.name}`
+        videoUrl: `${newPath.substring(8)}/${file.name}`,
       });
       await mkdir(newPath, { recursive: true });
       await rename(

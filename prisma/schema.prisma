@@ -21,6 +21,7 @@ model Flight {
   formations Formation[]
   blocks     Blocks[]
   videoUrl   String
+  view       String
 }
 
 model Flyer {
