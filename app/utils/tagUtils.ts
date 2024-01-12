@@ -26,8 +26,8 @@ export function writeTag(path: string, tags: TagData): Promise<void> {
 }
 
 export type TagData = {
-  title: string
-  artist: string
-  date: string
-  comment: string
+  title?: string
+  artist?: string
+  date?: string
+  comment?: string
 }
