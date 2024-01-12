@@ -12,17 +12,21 @@ export const loader = async () => {
     withFileTypes: true
   });
 
+  function determineViewFromFilename(fileName: string) {
+    return fileName.startsWith("source01") ? "SIDE" : "TOP";
+  }
+
   const files: FileToTag[] = await Promise.all(pendingDir
     .filter(file => file.name.endsWith(".mp4") || file.name.endsWith(".av1"))
     .map(async file => {
       const tagData = await readTag(`${VIDEO_DATA_PATH}/pending/${file.name}`);
       return {
         fileName: file.name,
-        path: `${VIDEO_DATA_PATH}/pending/${file.name}`,
+        path: `video-data/pending/${file.name}`,
         date: tagData.date,
-        flyers: tagData.artist,
-        formations: tagData.title?.startsWith('Power Punch') ? '' : tagData.title,
-        view: tagData.comment
+        flyers: tagData.artist || "David F/David W/Karen/Nick",
+        formations: tagData.title?.startsWith('Power Punch') ? '' : tagData.title || '',
+        view: tagData.comment || determineViewFromFilename(file.name)
       };
     })
   );
@@ -123,10 +127,6 @@ export default function Tag() {
   };
   const [{ showModal, videoPreviewPath, filesToTag, submissionState }, dispatch] = useReducer(reducer, initialState);
 
-  function determineViewFromFilename(fileName: string) {
-    return fileName.startsWith("source01") ? "SIDE" : "TOP";
-  }
-
   function submitForm() {
     dispatch({type: 'setSubmissionState', value: undefined})
     fetch('', {
@@ -195,7 +195,6 @@ export default function Tag() {
             </td>
             <td>
               <input type="text" className="input input-bordered"
-                     defaultValue={"David F/David W/Karen/Nick"}
                      value={fileToTag.flyers}
                      onChange={(e) => dispatch({
                        type: 'formElementChange',
@@ -216,7 +215,6 @@ export default function Tag() {
             </td>
             <td>
               <select className="select input-bordered"
-                      defaultValue={determineViewFromFilename(fileToTag.fileName)}
                       onChange={(e) => dispatch({
                         type: 'formElementChange',
                         fileName: fileToTag.fileName,
@@ -238,14 +236,12 @@ export default function Tag() {
       </table>
 
       {showModal &&
-        <dialog className="modal">
+        <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">{videoPreviewPath}</h3>
             <video src={videoPreviewPath} controls />
             <div className="modal-action">
-              <form method="dialog">
-                <button className="btn">Close</button>
-              </form>
+              <button className="btn" type='button' onClick={() => dispatch({type: 'closeVideoPreview'})}>Close</button>
             </div>
           </div>
         </dialog>
