@@ -54,7 +54,7 @@ async function processFile(file: Dirent): Promise<VideoData | undefined> {
     return {
       formations: title.filter(group => /[A-Z]/.test(group)),
       blocks: title.filter(group => /[0-9]/.test(group)).map(group => parseInt(group)),
-      flyers: tags.artist!.split("/"),
+      flyers: tags.artist?.split("/") || [],
       date: new Date(tags.date!),
       view: tags.comment!
     };

@@ -50,6 +50,7 @@ export async function createFlight(flight: FlightCreateInput) {
         connect: flight.flyers.map((flyer) => ({ name: flyer })),
       },
       videoUrl: flight.videoUrl,
+      view: flight.view
     },
   });
 }
@@ -60,4 +61,5 @@ export type FlightCreateInput = {
   blocks: number[];
   flyers: string[];
   videoUrl: string;
+  view: string;
 };
