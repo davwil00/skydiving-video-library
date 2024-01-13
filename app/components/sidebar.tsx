@@ -20,6 +20,7 @@ export default function Sidebar(props: SidebarProps) {
       }
     } else {
       return {
+        ...groups,
         [year]: [session]
       }
     }
