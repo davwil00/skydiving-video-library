@@ -36,9 +36,8 @@ model Formation {
 }
 
 model Blocks {
-  id             Int     @id
+  id             Int      @id
   startFormation String
   endFormation   String
-  Flight         Flight? @relation(fields: [flightId], references: [id])
-  flightId       String?
+  flights        Flight[]
 }
