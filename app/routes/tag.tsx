@@ -6,9 +6,13 @@ import { json } from "@remix-run/node";
 import { readTag, writeTag } from "~/utils/tagUtils";
 import { ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
 import { useReducer } from "react";
+import { type FileToTag, tagReducer, type TagState } from "~/state/tag-reducer";
+import type { LoaderFunctionArgs } from "@remix-run/router";
 
-export const loader = async () => {
-  const pendingDir = await readdir(`${VIDEO_DATA_PATH}/pending`, {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const url = new URL(request.url)
+  const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
+  const pendingDir = await readdir(`${videoDataPath}`, {
     withFileTypes: true
   });
 
@@ -17,9 +21,9 @@ export const loader = async () => {
   }
 
   const files: FileToTag[] = await Promise.all(pendingDir
-    .filter(file => file.name.endsWith(".mp4") || file.name.endsWith(".av1"))
+    .filter(file => file.name.endsWith(".mp4"))
     .map(async file => {
-      const tagData = await readTag(`${VIDEO_DATA_PATH}/pending/${file.name}`);
+      const tagData = await readTag(`${file.path}/${file.name}`);
       return {
         fileName: file.name,
         path: `video-data/pending/${file.name}`,
@@ -44,9 +48,12 @@ export const action = async ({ request }: ActionArgs) => {
     return json({ message: "Method not allowed" }, 405);
   }
 
+  const url = new URL(request.url)
+  const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
+
   const formData = await request.json();
   for (const fileToTag of formData.filesToTag) {
-    await writeTag(`${VIDEO_DATA_PATH}/pending/${fileToTag.fileName}`, {
+    await writeTag(`${videoDataPath}/${fileToTag.fileName}`, {
       title: fileToTag.formations || '',
       artist: fileToTag.flyers || '',
       date: fileToTag.date || '',
@@ -57,75 +64,13 @@ export const action = async ({ request }: ActionArgs) => {
   return null;
 };
 
-type FileToTag = {
-  fileName: string
-  path: string
-  date?: string
-  flyers?: string
-  formations?: string
-  view?: string
-}
-
-type Action =
-  | { type: "formElementChange", fileName: string, field: keyof FileToTag, value: string }
-  | { type: "openVideoPreview", value: string }
-  | { type: "closeVideoPreview" }
-  | { type: "setOverrideDate", value: string }
-  | { type: "setSubmissionState", value?: 'success' | 'error' }
-
-type State = {
-  videoPreviewPath?: string
-  filesToTag: { [fileName: string]: FileToTag }
-  showModal: boolean
-  submissionState?: 'success' | 'error'
-}
-
-const reducer = (state: State, action: Action) => {
-  switch (action.type) {
-    case "formElementChange":
-      return {
-        ...state,
-        filesToTag: {
-          ...state.filesToTag,
-          [action.fileName]: {
-            ...state.filesToTag[action.fileName],
-            [action.field]: action.value
-          }
-        }
-      };
-    case "openVideoPreview":
-      return {
-        ...state,
-        showModal: true,
-        videoPreviewPath: action.value
-      };
-    case "closeVideoPreview":
-      return {
-        ...state,
-        showModal: false
-      };
-    case "setOverrideDate":
-      const newState = {...state}
-      Object.keys(state.filesToTag).forEach(fileName => newState.filesToTag[fileName].date = action.value)
-      return newState
-    case 'setSubmissionState':
-      return {
-        ...state,
-        submissionState: action.value
-      }
-    default:
-      return state;
-  }
-};
-
-
-export default function Tag() {
+export default function TagDir() {
   const loaderData = useLoaderData<typeof loader>();
-  const initialState: State = {
+  const initialState: TagState = {
     filesToTag: loaderData.filesToTag,
     showModal: false
   };
-  const [{ showModal, videoPreviewPath, filesToTag, submissionState }, dispatch] = useReducer(reducer, initialState);
+  const [{ showModal, videoPreviewPath, filesToTag, submissionState }, dispatch] = useReducer(tagReducer, initialState);
 
   function submitForm() {
     dispatch({type: 'setSubmissionState', value: undefined})
@@ -146,7 +91,7 @@ export default function Tag() {
   }
 
   return (
-    <Form method={"POST"}>
+    <div>
       {submissionState === 'success' &&
         <div role="alert" className="alert alert-success">
           <SuccessIcon/>
@@ -248,6 +193,6 @@ export default function Tag() {
       }
 
       <button className="btn" type="button" onClick={() => submitForm()}>Save</button>
-    </Form>
+    </div>
   );
 }
