@@ -41,7 +41,7 @@ export async function createFlight(flight: FlightCreateInput) {
     data: {
       sessionId: flight.sessionId,
       formations: {
-        connect: flight.formations.map((formation) => ({ letter: formation })),
+        connect: flight.formations.map((formation, idx) => ({ order: idx, formation: { letter: formation }})),
       },
       blocks: {
         connect: flight.blocks.map((block) => ({ id: block })),
