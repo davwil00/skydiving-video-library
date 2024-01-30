@@ -5,7 +5,7 @@ export function getByFormationLetter(letter: string) {
     where: {
       formations: {
         some: {
-          letter: letter,
+          formationLetter: letter,
         },
       },
     },
@@ -41,7 +41,14 @@ export async function createFlight(flight: FlightCreateInput) {
     data: {
       sessionId: flight.sessionId,
       formations: {
-        connect: flight.formations.map((formation, idx) => ({ order: idx, formation: { letter: formation }})),
+        create: flight.formations.map((formation, idx) => (
+          {
+            order: idx,
+            formation: {
+              connect: { letter: formation }
+            }
+          }
+        ))
       },
       blocks: {
         connect: flight.blocks.map((block) => ({ id: block })),
