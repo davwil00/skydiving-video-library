@@ -9,15 +9,17 @@ export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.sessionId, "session not found");
 
   const session = await getSession(params.sessionId);
+  const hasTopView = session?.flights.some(flight => flight.view === 'TOP')
+  const hasSideView = session?.flights.some(flight => flight.view === 'SIDE')
   if (!session) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ session });
+  return json({ session, hasTopView, hasSideView });
 };
 
 export default function SessionDetailsPage() {
-  const { session } = useLoaderData<typeof loader>();
+  const { session, hasTopView, hasSideView } = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const activeView = searchParams.get('view') || 'TOP'
 
@@ -26,10 +28,13 @@ export default function SessionDetailsPage() {
       <h1 className="text-2xl text-black">
         {format(new Date(session.date), "do MMMM")}
       </h1>
-      <div role="tablist" className="tabs tabs-lifted tabs-lg">
-        <a role="tab" className={`tab ${activeView === 'top' ? 'tab-active' : ''}`} href="?view=TOP">Top Down</a>
-        <a role="tab" className={`tab ${activeView === 'side' ? 'tab-active' : ''}`} href="?view=SIDE">Side View</a>
-      </div>
+      {hasTopView && hasSideView ?
+        <div role="tablist" className="tabs tabs-lifted tabs-lg">
+          {hasTopView ? <a role="tab" className={`tab ${activeView === 'top' ? 'tab-active' : ''}`} href="?view=TOP">Top Down</a> : null}
+          {hasSideView ? <a role="tab" className={`tab ${activeView === 'side' ? 'tab-active' : ''}`} href="?view=SIDE">Side View</a> : null}
+        </div>
+        : null
+      }
       <div className="flex flex-wrap justify-center">
         {session.flights
           .filter(session => session.view === activeView)
