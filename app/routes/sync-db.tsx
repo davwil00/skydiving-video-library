@@ -50,7 +50,8 @@ export const action = async ({ request }: ActionArgs) => {
 async function processFile(file: Dirent): Promise<VideoData | undefined> {
   if (file.isFile() && (file.name.endsWith(".mp4") || file.name.endsWith(".av1"))) {
     const tags = await readTag(`${VIDEO_DATA_PATH}/pending/${file.name}`)
-    const title: string[] = tags.title?.split("") || [];
+    const delimiter = tags.title?.includes(',') ? ',' : ''
+    const title: string[] = tags.title?.split(delimiter) || [];
     return {
       formations: title.filter(group => /[A-Z]/.test(group)),
       blocks: title.filter(group => /[0-9]/.test(group)).map(group => parseInt(group)),
