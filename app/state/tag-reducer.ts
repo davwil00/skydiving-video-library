@@ -12,13 +12,14 @@ export type TagAction =
   | { type: "openVideoPreview", value: string }
   | { type: "closeVideoPreview" }
   | { type: "setOverrideDate", value: string }
-  | { type: "setSubmissionState", value?: 'success' | 'error' }
+  | { type: "setSubmissionState", value?: 'submitting' | 'success' | 'error' }
+  | { type: "copy", value: string }
 
 export type TagState = {
   videoPreviewPath?: string
   filesToTag: { [fileName: string]: FileToTag }
   showModal: boolean
-  submissionState?: 'success' | 'error'
+  submissionState?: 'submitting' | 'success' | 'error'
 }
 
 export const tagReducer = (state: TagState, action: TagAction) => {
@@ -45,15 +46,27 @@ export const tagReducer = (state: TagState, action: TagAction) => {
         ...state,
         showModal: false
       };
-    case "setOverrideDate":
-      const newState = {...state}
+    case "setOverrideDate": {
+      const newState = { ...state }
       Object.keys(state.filesToTag).forEach(fileName => newState.filesToTag[fileName].date = action.value)
       return newState
+    }
     case 'setSubmissionState':
       return {
         ...state,
         submissionState: action.value
       }
+    case 'copy': {
+      const sourceFile = state.filesToTag[action.value]
+      const destFile = action.value.startsWith('source01') ? action.value.replace('source01', 'source02') : action.value.replace('source02', 'source01')
+      const newState = { ...state }
+      newState.filesToTag[destFile] = {
+        ...newState.filesToTag[destFile],
+        flyers: sourceFile.flyers,
+        formations: sourceFile.formations
+      }
+      return newState
+    }
     default:
       return state;
   }

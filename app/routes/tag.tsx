@@ -4,7 +4,7 @@ import { VIDEO_DATA_PATH } from "~/routes/sync-db";
 import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { readTag, writeTag } from "~/utils/tagUtils";
-import { ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
+import { CloneIcon, ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
 import { useReducer } from "react";
 import { type FileToTag, tagReducer, type TagState } from "~/state/tag-reducer";
 import type { LoaderFunctionArgs } from "@remix-run/router";
@@ -68,12 +68,12 @@ export default function TagDir() {
   const loaderData = useLoaderData<typeof loader>();
   const initialState: TagState = {
     filesToTag: loaderData.filesToTag,
-    showModal: false
+    showModal: false,
   };
   const [{ showModal, videoPreviewPath, filesToTag, submissionState }, dispatch] = useReducer(tagReducer, initialState);
 
   function submitForm() {
-    dispatch({type: 'setSubmissionState', value: undefined})
+    dispatch({type: 'setSubmissionState', value: 'submitting'})
     fetch('', {
       method: 'POST',
       body: JSON.stringify({ filesToTag: Object.values(filesToTag) }),
@@ -94,19 +94,19 @@ export default function TagDir() {
     <div>
       {submissionState === 'success' &&
         <div role="alert" className="alert alert-success">
-          <SuccessIcon/>
+          <SuccessIcon />
           <span>Tags saved</span>
         </div>
       }
       {
         submissionState === "error" &&
         <div role="alert" className="alert alert-error">
-          <ErrorIcon/>
+          <ErrorIcon />
           <span>Error saving tags</span>
         </div>
       }
       <div>
-        <label>Set Date:<input type="date" className="input input-bordered" onChange={e => dispatch({
+        <label>Set Date:<input type="date" className="input input-bordered ml-3" onChange={e => dispatch({
           type: "setOverrideDate",
           value: e.currentTarget.value
         })} /></label>
@@ -135,7 +135,7 @@ export default function TagDir() {
                          fileName: fileToTag.fileName,
                          field: 'date',
                          value: e.currentTarget.value
-                       })}/>
+                       })} />
               </div>
             </td>
             <td>
@@ -173,7 +173,12 @@ export default function TagDir() {
               </select>
             </td>
             <td>
-              <button type="button" onClick={() => dispatch({type: 'openVideoPreview', value: fileToTag.path})}><PlayIcon /></button>
+              <button type="button" onClick={() => dispatch({ type: "openVideoPreview", value: fileToTag.path })}>
+                <PlayIcon />
+              </button>
+              <button type="button" className="ml-3" onClick={() => dispatch({ type: "copy", value: fileToTag.fileName })}>
+                <CloneIcon />
+              </button>
             </td>
           </tr>
         )}
@@ -186,13 +191,18 @@ export default function TagDir() {
             <h3 className="font-bold text-lg">{videoPreviewPath}</h3>
             <video src={videoPreviewPath} controls />
             <div className="modal-action">
-              <button className="btn" type='button' onClick={() => dispatch({type: 'closeVideoPreview'})}>Close</button>
+              <button className="btn" type='button' onClick={() => dispatch({ type: 'closeVideoPreview' })}>Close
+              </button>
             </div>
           </div>
         </dialog>
       }
 
-      <button className="btn" type="button" onClick={() => submitForm()}>Save</button>
+      <button className="btn" type="button" onClick={() => submitForm()}>
+        Save
+        {submissionState === 'submitting' ? <span className="loading loading-spinner"></span> : null}
+      </button>
+      <a className="btn ml-3" href="/sync-db">Sync DB</a>
     </div>
   );
 }

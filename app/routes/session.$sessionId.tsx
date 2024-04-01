@@ -30,8 +30,8 @@ export default function SessionDetailsPage() {
       </h1>
       {hasTopView && hasSideView ?
         <div role="tablist" className="tabs tabs-lifted tabs-lg">
-          {hasTopView ? <a role="tab" className={`tab ${activeView === 'top' ? 'tab-active' : ''}`} href="?view=TOP">Top Down</a> : null}
-          {hasSideView ? <a role="tab" className={`tab ${activeView === 'side' ? 'tab-active' : ''}`} href="?view=SIDE">Side View</a> : null}
+          {hasTopView ? <a role="tab" className={`tab ${activeView === 'TOP' ? 'tab-active' : ''}`} href="?view=TOP">Top Down</a> : null}
+          {hasSideView ? <a role="tab" className={`tab ${activeView === 'SIDE' ? 'tab-active' : ''}`} href="?view=SIDE">Side View</a> : null}
         </div>
         : null
       }
