@@ -10,6 +10,9 @@ export default {
         'spin-b7-red': 'b7-red 10s ease-in-out 1 forwards',
         'spin-b7-blue': 'b7-blue 10s ease-in-out 1 forwards',
         'spin-b7-yellow': 'b7-yellow 10s ease-in-out 1 forwards',
+        'spin-b9-yellow-blue': 'b9-yellow-blue 5s ease-in-out 1 forwards',
+        'spin-b9-red': 'b9-red 5s ease-in-out 1 forwards',
+        'spin-b9-green': 'b9-green 5s ease-in-out 1 forwards',
       },
       keyframes: {
         'b7-green': {
@@ -42,6 +45,30 @@ export default {
           },
           to: {
             transform: 'rotate(-405deg)'
+          }
+        },
+        'b9-yellow-blue': {
+          from: {
+            transform: 'rotate(0deg)'
+          },
+          to: {
+            transform: 'rotate(-180deg)'
+          }
+        },
+        'b9-red': {
+          from: {
+            transform: 'rotate(270deg)',
+          },
+          to: {
+            transform: 'rotate(90deg)'
+          }
+        },
+        'b9-green': {
+          from: {
+            transform: "rotate(90deg)"
+          },
+          to: {
+            transform: "rotate(-90deg)"
           }
         }
       }
