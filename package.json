@@ -22,7 +22,7 @@
     "/public/build"
   ],
   "dependencies": {
-    "@prisma/client": "^5.8.1",
+    "@prisma/client": "^5.12.1",
     "@remix-run/css-bundle": "^1.19.2",
     "@remix-run/express": "^1.19.2",
     "@remix-run/node": "^1.19.2",
@@ -61,7 +61,7 @@
     "postcss": "^8.4.33",
     "prettier": "2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
-    "prisma": "^5.8.1",
+    "prisma": "^5.12.1",
     "tailwindcss": "^3.3.2",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
