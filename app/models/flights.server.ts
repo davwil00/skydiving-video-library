@@ -1,11 +1,11 @@
 import { prisma } from "~/db.server";
 
-export function getByFormationLetter(letter: string) {
+export function getByFormationId(formationId: string) {
   return prisma.flight.findMany({
     where: {
       formations: {
         some: {
-          formationLetter: letter,
+          formationId: formationId,
         },
       },
     },
@@ -13,27 +13,8 @@ export function getByFormationLetter(letter: string) {
       session: true,
       flyers: true,
       formations: true,
-      blocks: true
     },
   });
-}
-
-export function getByBlockId(id: number) {
-  return prisma.flight.findMany({
-    where: {
-      blocks: {
-        some: {
-          id: id
-        }
-      }
-    },
-    include: {
-      session: true,
-      flyers: true,
-      formations: true,
-      blocks: true
-    }
-  })
 }
 
 export async function createFlight(flight: FlightCreateInput) {
@@ -41,17 +22,12 @@ export async function createFlight(flight: FlightCreateInput) {
     data: {
       sessionId: flight.sessionId,
       formations: {
-        create: flight.formations.map((formation, idx) => (
+        create: flight.formationIds.map((formationId, idx) => (
           {
             order: idx,
-            formation: {
-              connect: { letter: formation }
-            }
+            formationId: formationId
           }
         ))
-      },
-      blocks: {
-        connect: flight.blocks.map((block) => ({ id: block })),
       },
       flyers: {
         connect: flight.flyers.map((flyer) => ({ name: flyer })),
@@ -64,8 +40,7 @@ export async function createFlight(flight: FlightCreateInput) {
 
 export type FlightCreateInput = {
   sessionId: string;
-  formations: string[];
-  blocks: number[];
+  formationIds: string[];
   flyers: string[];
   videoUrl: string;
   view: string;

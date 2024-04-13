@@ -142,32 +142,32 @@ export default function Sidebar(props: SidebarProps) {
           <ul>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/block/2" }}>
+                <Link to={{ pathname: "/formation/2" }}>
                   <kbd className="kbd">2</kbd>
                 </Link>
-                <Link to={{ pathname: "/block/4" }}>
+                <Link to={{ pathname: "/formation/4" }}>
                   <kbd className="kbd">4</kbd>
                 </Link>
-                <Link to={{ pathname: "/block/6" }}>
+                <Link to={{ pathname: "/formation/6" }}>
                   <kbd className="kbd">6</kbd>
                 </Link>
-                <Link to={{ pathname: "/block/7" }}>
+                <Link to={{ pathname: "/formation/7" }}>
                   <kbd className="kbd">7</kbd>
                 </Link>
               </div>
             </li>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/block/8" }}>
+                <Link to={{ pathname: "/formation/8" }}>
                   <kbd className="kbd">8</kbd>
                 </Link>
-                <Link to={{ pathname: "/block/9" }}>
+                <Link to={{ pathname: "/formation/9" }}>
                   <kbd className="kbd">9</kbd>
                 </Link>
-                <Link to={{ pathname: "/block/19" }}>
+                <Link to={{ pathname: "/formation/19" }}>
                   <kbd className="kbd">19</kbd>
                 </Link>
-                <Link to={{ pathname: "/block/21" }}>
+                <Link to={{ pathname: "/formation/21" }}>
                   <kbd className="kbd">21</kbd>
                 </Link>
               </div>

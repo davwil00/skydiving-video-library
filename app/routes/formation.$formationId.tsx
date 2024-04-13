@@ -2,16 +2,15 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { useLoaderData } from "@remix-run/react";
 import FlightCard from "~/components/flight-card";
-import { getFormation } from "~/models/formations.server";
-import { getByFormationLetter } from "~/models/flights.server";
+import { getByFormationId } from "~/models/flights.server";
 import { getFormationImageUrl } from "~/utils";
+import { FORMATIONS, getDisplayName } from "~/data/formations";
 
-export const loader = async ({ params, request }: LoaderArgs) => {
-  invariant(params.formationLetter, "formation not found");
-
-  const flights = await getByFormationLetter(params.formationLetter);
-  const formation = await getFormation(params.formationLetter);
-  if (!flights || !formation) {
+export const loader = async ({ params }: LoaderArgs) => {
+  invariant(params.formationId, "formation not found");
+  const formation = FORMATIONS[params.formationId]
+  const flights = await getByFormationId(params.formationId);
+  if (!flights) {
     throw new Response("Not Found", { status: 404 });
   }
 
@@ -24,13 +23,13 @@ export default function SessionDetailsPage() {
   return (
     <div>
       <h1 className="text-2xl">
-        {formation.letter} - {formation.name}
+        {formation.id} - {getDisplayName(formation)}
       </h1>
       <div className="flex flex-wrap justify-center">
         <div className="card card-compact m-4">
           <figure>
             <img src={getFormationImageUrl(formation)}
-                 alt={`${formation.name}`}
+                 alt={`${formation.id}`}
                  className="h-fit"
             />
           </figure>

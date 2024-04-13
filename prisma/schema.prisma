@@ -19,7 +19,6 @@ model Flight {
   sessionId  String
   flyers     Flyer[]
   formations FlightFormation[]
-  blocks     Blocks[]
   videoUrl   String
   view       String
 }
@@ -29,25 +28,11 @@ model Flyer {
   flights Flight[]
 }
 
-model Formation {
-  letter  String            @id
-  name    String
-  flights FlightFormation[]
-}
-
 model FlightFormation {
   flight          Flight    @relation(fields: [flightId], references: [id])
   flightId        String // relation scalar field (used in the `@relation` attribute above)
-  formation       Formation @relation(fields: [formationLetter], references: [letter])
-  formationLetter String // relation scalar field (used in the `@relation` attribute above)
+  formationId     String
   order           Int
 
-  @@id([flightId, formationLetter, order])
-}
-
-model Blocks {
-  id             Int      @id
-  startFormation String
-  endFormation   String
-  flights        Flight[]
+  @@id([flightId, formationId, order])
 }

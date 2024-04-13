@@ -1,11 +1,10 @@
-import type { Flyer, Blocks, FlightFormation } from "@prisma/client";
+import type { Flyer, FlightFormation } from "@prisma/client";
 import { format } from "date-fns";
 
 type FlightCardProps = {
   flight: {
     flyers: Flyer[];
     formations: FlightFormation[];
-    blocks: Blocks[];
     videoUrl: string;
   };
   session: { date: string };
@@ -16,8 +15,7 @@ export default function FlightCard(props: FlightCardProps) {
   const { flight, session, showDate } = props;
   const flightsAndFormations = flight.formations
     .sort((flightFormation1, flightFormation2 ) => flightFormation1.order - flightFormation2.order)
-    .map(formation => formation.formationLetter)
-    .concat(flight.blocks.map(block => block.id.toString()))
+    .map(formation => formation.formationId)
   return (
     <div className="card card-compact m-4 max-w-[480px] max-h-[350px] bg-base-100 shadow-xl">
       <figure>
