@@ -65,6 +65,6 @@ export const getDisplayName = (formation: Formation) => {
   if (isRandom(formation)) {
     return formation.name
   } else if (isBlock(formation)) {
-    return `${formation.startFormation} &rarr; ${formation.endFormation}`
+    return `${formation.startFormation} > ${formation.endFormation}`
   }
 }
