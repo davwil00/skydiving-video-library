@@ -1,4 +1,4 @@
-import { type Formation, A_BLOCKS, RANDOMS } from "~/data/formations";
+import { type Formation, A_BLOCKS, RANDOMS, isRandom } from "~/data/formations";
 
 export type QuizAction =
   | { type: "startQuiz" }
@@ -49,7 +49,9 @@ export const quizReducer = (state: QuizState, action: QuizAction): QuizState => 
     case "startQuiz":
       return {
         ...initialState,
+        questionNo: 1,
         quizType: state.quizType,
+        questionSet: state.questionSet,
         started: true,
         questions: generateQuestions(state.questionSet)
       }
@@ -102,20 +104,21 @@ function generateQuestions(questionSet: QuestionSet[]): Question[] {
     ...(questionSet.includes(QuestionSet.RANDOMS) ? RANDOMS : []),
     ...(questionSet.includes(QuestionSet.BLOCKS_A) ? A_BLOCKS : []),
   ]
+  const numberOfQuestionsToGenerate = formationsToInclude.length > 10 ? 10 : 5
   shuffle(formationsToInclude);
-  return formationsToInclude.slice(0, 10).map(formation => ({
+  return formationsToInclude.slice(0, numberOfQuestionsToGenerate).map(formation => ({
     answer: formation,
-    choices: generateMultipleChoiceAnswers(formation, [...formationsToInclude])
+    choices: generateMultipleChoiceAnswers(formation)
   }));
 }
 
-function generateMultipleChoiceAnswers(actualAnswer: Formation, formationsToInclude: Formation[]): Formation[] {
-  const actualAnswerIdx = formationsToInclude.indexOf(actualAnswer);
-  formationsToInclude.splice(actualAnswerIdx, 1);
-  shuffle(formationsToInclude);
-  const answers = formationsToInclude.slice(0, 3).concat(actualAnswer);
-  shuffle(answers);
-  return answers;
+function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
+  const answerPool: Formation[] = (isRandom(actualAnswer) ? RANDOMS : A_BLOCKS)
+  const possibleAlternateAnswers = answerPool.filter(it => it !== actualAnswer)
+  shuffle(possibleAlternateAnswers)
+  const answers = possibleAlternateAnswers.slice(0, 3).concat(actualAnswer)
+  shuffle(answers)
+  return answers
 }
 
 // From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542

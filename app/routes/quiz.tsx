@@ -1,13 +1,20 @@
-import { useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { CheckIcon, XIcon } from "~/components/icons";
 import { getFormationImageUrl } from "~/utils";
-import { initialState, type Question, type QuestionSet, quizReducer, type QuizType } from "~/state/quiz-reducer";
-import { type Formation, getDisplayName } from "~/data/formations";
-
-const QUESTIONS_PER_ROUND = 10;
+import { initialState, type Question, QuestionSet, quizReducer, QuizType } from "~/state/quiz-reducer";
+import { type Formation, isRandom } from "~/data/formations";
 
 export default function QuizPage() {
   const [quizState, dispatch] = useReducer(quizReducer, initialState)
+  const questionNoRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight)
+  }, [quizState.selectedAnswer])
+
+  useEffect(() => {
+    questionNoRef?.current?.scrollIntoView()
+  }, [quizState.questionNo])
 
   const checkAnswer = (selectedAnswer: Formation, actualAnswer: Formation) => {
     const isCorrect = selectedAnswer === actualAnswer;
@@ -17,7 +24,7 @@ export default function QuizPage() {
   function gameEnd() {
     return (
       <div className="">
-        <p className="text-center text-5xl text-black">You scored {quizState.score}/10</p>
+        <p className="text-center text-5xl text-black">You scored {quizState.score}/{quizState.questions.length}</p>
         <div className="text-center mt-8">
           <button className="btn text-white" onClick={() => dispatch({type: "reset"})}>Play again</button>
         </div>
@@ -28,15 +35,15 @@ export default function QuizPage() {
   function imageRow(choices: Formation[], answer: Formation) {
     const disabled = !!quizState.selectedAnswer
     return (
-      <div className="flex justify-center gap-2 mb-2">
+      <div className="flex justify-center gap-3 mb-3">
         {choices.map((choice, idx) =>
           <figure key={idx} className={quizState.selectedAnswer ?
-              quizState.selectedAnswer === choice ? 'ring-primary ring-offset-1 ring-4' :
+            quizState.selectedAnswer === choice ? 'ring-primary ring-offset-1 ring-4' :
               answer === choice ? 'ring-success ring-offset-1 ring-4' : ''
-              : ''}>
+            : ''}>
             <img
               key={idx}
-              className={`w-max`}
+              className={`w-max max-h-[calc(50vh-35px)]`}
               alt="skydiving formation"
               src={getFormationImageUrl(choice)}
               onClick={() => !disabled && checkAnswer(choice, answer)}
@@ -51,11 +58,11 @@ export default function QuizPage() {
     return (
       <div className="card text-black">
         <div className="justify-between flex mb-4">
-          <div>Question {quizState.questionNo + 1}</div>
+          <div>Question {quizState.questionNo}</div>
           <div>Score: {quizState.score}</div>
         </div>
         <div className="card-body items-center">
-          <h2 className="card-title text-center">{`${currentQuestion.answer.id} -${getDisplayName(currentQuestion.answer)}`}</h2>
+          <h2 className="card-title text-center" ref={questionNoRef}>{getFormationDisplayName(currentQuestion.answer)}</h2>
           <div className="w-full">
             {imageRow(currentQuestion.choices.slice(0,2), currentQuestion.answer)}
             {imageRow(currentQuestion.choices.slice(2), currentQuestion.answer)}
@@ -72,6 +79,14 @@ export default function QuizPage() {
     )
   }
 
+  function getFormationDisplayName(formation: Formation) {
+    if (isRandom(formation)) {
+      return `${formation.id} - ${formation.name}`
+    }
+
+    return `${formation.id}`
+  }
+
   function identifyFormationFromPicture(currentQuestion: Question) {
     return (
       <div className="card text-black">
@@ -82,6 +97,7 @@ export default function QuizPage() {
         <figure>
           <img
             alt="skydiving formation"
+            className="max-h-[50vh]"
             src={getFormationImageUrl(currentQuestion.answer)} />
         </figure>
         <div className="card-body">
@@ -89,17 +105,17 @@ export default function QuizPage() {
             <div className="flex flex-row gap-2" key={idx}>
               {quizState.selectedAnswer ?
                 <button className={`btn grow no-animation ${quizState.selectedAnswer === choice ?
-                  'btn-primary':  
-                  currentQuestion.answer === choice ? 'btn-success' : 'btn-disabled'}`}>{choice.id} - {getDisplayName(choice)}</button>
+                  'btn-primary':
+                  currentQuestion.answer === choice ? 'btn-success' : 'btn-disabled'}`}>{getFormationDisplayName(choice)}</button>
                 :
-              <input key={`input-${idx}`}
-                     type="radio"
-                     name={`answer-${idx}`}
-                     className={`btn grow text-white ${choice === currentQuestion.answer ? 'radio-success' : ''}`}
-                     disabled={!!quizState.selectedAnswer}
-                     checked={choice === quizState.selectedAnswer}
-                     aria-label={`${choice.id} - ${getDisplayName(choice)}`}
-                     onChange={() => checkAnswer(choice, currentQuestion.answer)} />
+                <input key={`input-${idx}`}
+                       type="radio"
+                       name={`answer-${idx}`}
+                       className={`btn grow text-white ${choice === currentQuestion.answer ? 'radio-success' : ''}`}
+                       disabled={!!quizState.selectedAnswer}
+                       checked={choice === quizState.selectedAnswer}
+                       aria-label={getFormationDisplayName(choice)}
+                       onChange={() => checkAnswer(choice, currentQuestion.answer)} />
               }
               {quizState.selectedAnswer &&
                 <span key={`ans-${idx}`}
@@ -133,7 +149,7 @@ export default function QuizPage() {
                  autoComplete="off"
                  onChange={() => dispatch({type: "setQuestionSet", value: QuestionSet.RANDOMS})} />
         </div>
-        <div className="form-control mt-4">
+        <div className="form-control mt-2">
           <input type="checkbox"
                  name="quiz-question-set"
                  className="btn text-white"
@@ -166,10 +182,10 @@ export default function QuizPage() {
     );
   }
 
-  if (quizState.questionNo === QUESTIONS_PER_ROUND) {
+  if (quizState.started && quizState.questionNo === quizState.questions.length) {
     return gameEnd();
   } else if (quizState.started) {
-    const currentQuestion = quizState.questions[quizState.questionNo];
+    const currentQuestion = quizState.questions[quizState.questionNo - 1];
     switch (quizState.quizType) {
       case QuizType.NAME_TO_PICTURE:
         return identifyPictureFromFormation(currentQuestion);
