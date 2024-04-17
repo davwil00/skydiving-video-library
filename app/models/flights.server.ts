@@ -14,6 +14,11 @@ export function getByFormationId(formationId: string) {
       flyers: true,
       formations: true,
     },
+    orderBy: {
+      session: {
+        date: 'desc'
+      }
+    }
   });
 }
 

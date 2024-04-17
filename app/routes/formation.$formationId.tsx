@@ -25,23 +25,21 @@ export default function SessionDetailsPage() {
       <h1 className="text-2xl">
         {formation.id} - {getDisplayName(formation)}
       </h1>
-      <div className="flex flex-wrap justify-center">
-        <div className="card card-compact m-4">
-          <figure>
+      <div className="flex">
             <img src={getFormationImageUrl(formation)}
                  alt={`${formation.id}`}
-                 className="h-fit"
+                 className="h-fit max-h-[80vh]"
             />
-          </figure>
+        <div className="flex flex-wrap justify-center">
+          {flights.map((flight, idx) => (
+            <FlightCard
+              key={idx}
+              flight={flight}
+              session={flight.session}
+              showDate={true}
+            />
+          ))}
         </div>
-        {flights.map((flight, idx) => (
-          <FlightCard
-            key={idx}
-            flight={flight}
-            session={flight.session}
-            showDate={true}
-          />
-        ))}
       </div>
     </div>
   );
