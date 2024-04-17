@@ -12,9 +12,9 @@ INSERT INTO "new_FlightFormation" ("flightId", "formationId", "order")
 INSERT INTO "new_FlightFormation" ("flightId", "formationId", "order")
 SELECT "B",
        "A",
-       "order"
+       coalesce("order", 1)
 FROM "_BlocksToFlight" btf
-         JOIN (SELECT "flightId", max("order") + 1 AS "order"
+         left JOIN (SELECT "flightId", max("order") + 1 AS "order"
                FROM "FlightFormation" ff
                GROUP BY ff."flightId") AS ff
               ON btf."B" = ff."flightId";
