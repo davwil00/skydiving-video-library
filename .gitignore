@@ -6,6 +6,5 @@ node_modules
 /public/video-data
 .env
 
-
 /prisma/data.db
 /prisma/data.db-journal
