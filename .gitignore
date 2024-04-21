@@ -1,0 +1,11 @@
+node_modules
+
+/.cache
+/build
+/public/build
+/public/video-data
+.env
+
+
+/prisma/data.db
+/prisma/data.db-journal
