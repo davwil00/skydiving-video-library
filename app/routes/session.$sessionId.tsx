@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { getSession } from "~/models/sessions.server";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
@@ -8,7 +8,7 @@ import { ViewSwitcher } from "~/components/view-switcher";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { capitalise } from "~/utils/utils";
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.sessionId, "session not found");
   const isLocal = isLocalRequest(request)
 
