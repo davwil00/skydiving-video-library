@@ -4,22 +4,25 @@ import { getSession } from "~/models/sessions.server";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
+import { ViewSwitcher } from "~/components/view-switcher";
+import { isLocalRequest } from "~/utils/localGuardUtils";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.sessionId, "session not found");
+  const isLocal = isLocalRequest(request)
 
   const session = await getSession(params.sessionId);
-  const hasTopView = session?.flights.some(flight => flight.view === 'TOP')
-  const hasSideView = session?.flights.some(flight => flight.view === 'SIDE')
   if (!session) {
     throw new Response("Not Found", { status: 404 });
   }
+  const hasTopView = session.flights.some(flight => flight.view === 'TOP')
+  const hasSideView = session.flights.some(flight => flight.view === 'SIDE')
 
-  return json({ session, hasTopView, hasSideView });
+  return json({ session, hasTopView, hasSideView, isLocal });
 };
 
 export default function SessionDetailsPage() {
-  const { session, hasTopView, hasSideView } = useLoaderData<typeof loader>();
+  const { session, hasTopView, hasSideView, isLocal } = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const activeView = searchParams.get('view') || 'TOP'
 
@@ -28,13 +31,7 @@ export default function SessionDetailsPage() {
       <h1 className="text-2xl text-black">
         {format(new Date(session.date), "do MMMM")}
       </h1>
-      {hasTopView && hasSideView ?
-        <div role="tablist" className="tabs tabs-lifted tabs-lg">
-          {hasTopView ? <a role="tab" className={`tab ${activeView === 'TOP' ? 'tab-active' : ''}`} href="?view=TOP">Top Down</a> : null}
-          {hasSideView ? <a role="tab" className={`tab ${activeView === 'SIDE' ? 'tab-active' : ''}`} href="?view=SIDE">Side View</a> : null}
-        </div>
-        : null
-      }
+      <ViewSwitcher hasTopView={hasTopView} hasSideView={hasSideView} activeView={activeView} />
       <div className="flex flex-wrap justify-center">
         {session.flights
           .filter(session => session.view === activeView)
@@ -44,6 +41,7 @@ export default function SessionDetailsPage() {
             flight={flight}
             session={session}
             showDate={false}
+            isLocal={isLocal}
           />
         ))}
       </div>

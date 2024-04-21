@@ -1,23 +1,33 @@
 import type { Flyer, FlightFormation } from "@prisma/client";
 import { format } from "date-fns";
+import { EditIcon } from "~/components/icons";
 
 type FlightCardProps = {
   flight: {
+    id: string
     flyers: Flyer[];
     formations: FlightFormation[];
     videoUrl: string;
   };
   session: { date: string };
   showDate: boolean;
+  isLocal: boolean
 };
 
 export default function FlightCard(props: FlightCardProps) {
-  const { flight, session, showDate } = props;
+  const { flight, session, showDate, isLocal = false } = props;
   const flightsAndFormations = flight.formations
-    .sort((flightFormation1, flightFormation2 ) => flightFormation1.order - flightFormation2.order)
-    .map(formation => formation.formationId)
+    .sort((flightFormation1, flightFormation2) => flightFormation1.order - flightFormation2.order)
+    .map(formation => formation.formationId);
   return (
-    <div className="card card-compact m-4 max-w-[480px] max-h-[350px] bg-base-100 shadow-xl">
+    <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
+      {isLocal ?
+        <div className="card-actions justify-end">
+          <a href={`/flight/${props.flight.id}/edit`} className="btn btn-square btn-sm">
+            <EditIcon fill="#FFF" height="16px" />
+          </a>
+        </div> : null
+      }
       <figure>
         <video controls width="480" muted={true} preload="none">
           <source src={`${flight.videoUrl}`} />

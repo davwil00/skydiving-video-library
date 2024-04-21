@@ -1,13 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import { readdir } from "fs/promises";
 import { VIDEO_DATA_PATH } from "~/routes/sync-db";
-import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { readTag, writeTag } from "~/utils/tagUtils";
 import { CloneIcon, ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
 import { useReducer } from "react";
 import { type FileToTag, tagReducer, type TagState } from "~/state/tag-reducer";
-import type { LoaderFunctionArgs } from "@remix-run/router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/router";
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const url = new URL(request.url)
@@ -43,7 +42,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method !== "POST") {
     return json({ message: "Method not allowed" }, 405);
   }
