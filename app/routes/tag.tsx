@@ -6,9 +6,9 @@ import { readTag, writeTag } from "~/utils/tagUtils";
 import { CloneIcon, ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
 import { useReducer } from "react";
 import { type FileToTag, tagReducer, type TagState } from "~/state/tag-reducer";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/router";
 
-export const loader = async ({request}: LoaderArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
   const url = new URL(request.url)
   const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
   const pendingDir = await readdir(`${videoDataPath}`, {
@@ -42,7 +42,7 @@ export const loader = async ({request}: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method !== "POST") {
     return json({ message: "Method not allowed" }, 405);
   }

@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/router";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { json, redirect } from "@remix-run/node";
 import { getFlight, updateFlight } from "~/models/flights.server";
@@ -9,7 +9,7 @@ import { editFlightReducer, type EditFlightState } from "~/state/edit-flight-red
 import { format } from "date-fns";
 import { readTag, writeTag } from "~/utils/tagUtils";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!isLocalRequest(request)) {
     throw new Response("Forbidden", { status: 403 });
   }
@@ -19,7 +19,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ ...flight });
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (request.method !== "POST") {
     return json({ message: "Method not allowed" }, 405);
   }

@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import FlightCard from "~/components/flight-card";
@@ -8,7 +8,7 @@ import { FORMATIONS, getDisplayName } from "~/data/formations";
 import { ViewSwitcher } from "~/components/view-switcher";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.formationId, "formation not found");
   const isLocal = isLocalRequest(request);
   const formation = FORMATIONS[params.formationId];

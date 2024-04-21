@@ -1,17 +1,16 @@
-import { json, LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
+import { json } from "@remix-run/node";
 import { getLatestSession } from "~/models/sessions.server";
 import { useLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 
-export const meta = () => {
-  return [
-    { title: "Chocolate Chip Rookies Video Library" }
-  ]
-}
+export const meta: MetaFunction = () => [
+  { title: "Chocolate Chip Rookies Video Library" },
+];
 
-export const loader = async ({request}: LoaderArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
   const latestSession = await getLatestSession();
   const isLocal = isLocalRequest(request)
   return json({ latestSession, isLocal });

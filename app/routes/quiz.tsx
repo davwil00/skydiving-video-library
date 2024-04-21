@@ -50,6 +50,7 @@ export default function QuizPage() {
                             className={`w-max max-h-[calc(50vh-35px)]`}
                             alt="skydiving formation"
                             src={getFormationImageUrl(choice)}
+              onClick={() => !disabled && checkAnswer(choice, answer)}
                         />
                     </button>
                 )}
