@@ -32,12 +32,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const flyersTag = formData.get("flyers") as string;
   const formationIds = formationsTag?.split(',')
   const flyers = flyersTag.split('/')
-  // const originalData = readTag(fileName)
-  // await writeTag(fileName, {
-  //   ...originalData,
-  //   title: formationsTag,
-  //   artist: flyersTag
-  // })
+  const originalData = readTag(fileName)
+  await writeTag(fileName, {
+    ...originalData,
+    title: formationsTag,
+    artist: flyersTag
+  })
 
   await updateFlight(flightId, formationIds, flyers)
   return redirect(`/flight/${flightId}`)

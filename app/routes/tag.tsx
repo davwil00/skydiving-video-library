@@ -188,7 +188,7 @@ export default function TagDir() {
         <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">{videoPreviewPath}</h3>
-            <video src={videoPreviewPath} controls />
+            <video src={videoPreviewPath} controls muted />
             <div className="modal-action">
               <button className="btn" type='button' onClick={() => dispatch({ type: 'closeVideoPreview' })}>Close
               </button>
