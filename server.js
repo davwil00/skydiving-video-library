@@ -38,7 +38,7 @@ if (viteDevServer) {
         express.static("build/client/assets", { immutable: true, maxAge: "1y" })
     );
     app.use(
-        "/image",
+        "/images",
         express.static("public/images", { immutable: true, maxAge: "1y" })
     );
     app.use(
