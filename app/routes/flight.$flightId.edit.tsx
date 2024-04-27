@@ -27,7 +27,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  const flightId = params.flightId;
+  const flightId = params.flightId
   invariant(flightId, "flight not found");
   const formData = await request.formData();
   const fileName = `./public${formData.get("filename")}`;
