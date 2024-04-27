@@ -37,6 +37,20 @@ if (viteDevServer) {
         "/assets",
         express.static("build/client/assets", { immutable: true, maxAge: "1y" })
     );
+    app.use(
+        "/image",
+        express.static("public/images", { immutable: true, maxAge: "1y" })
+    );
+    app.use(
+        "/video-data",
+        express.static("public/images", { immutable: true, maxAge: "1y" })
+    );
+    ["favicon.ico", "choc-chip-rookies-text.png"].forEach(file => {
+        app.use(
+            `/${file}`,
+            express.static(`public/${file}`, { immutable: true, maxAge: "1y" })
+        );
+    })
 }
 
 // Everything else (like favicon.ico) is cached for an hour. You may want to be
