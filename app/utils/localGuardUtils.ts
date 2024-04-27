@@ -1,4 +1,4 @@
 export function isLocalRequest(request: Request): boolean {
-  console.log("headers", request.headers)
-  return process.env.NODE_ENV === "development"
+  const forwardedForHeader = request.headers.get('x-forwarded-for')
+  return process.env.NODE_ENV === "development" || forwardedForHeader === null
 }
