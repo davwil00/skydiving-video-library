@@ -27,7 +27,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const flightId = params.flightId
   invariant(flightId, "flight not found");
   const formData = await request.formData()
-  const fileName = formData.get('filename') as string
+  const fileName = `./public${formData.get('filename')}`
   const formationsTag = formData.get("formations") as string;
   const flyersTag = formData.get("flyers") as string;
   const formationIds = formationsTag?.split(',')
