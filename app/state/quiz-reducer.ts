@@ -49,7 +49,7 @@ export const quizReducer = (state: QuizState, action: QuizAction): QuizState => 
     case "startQuiz":
       return {
         ...initialState,
-        questionNo: 1,
+        questionNo: 0,
         quizType: state.quizType,
         questionSet: state.questionSet,
         started: true,
@@ -122,7 +122,7 @@ function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
 }
 
 // From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542
-function shuffle(a: any[], b?: number, c?: number, d?: string) {
+function shuffle<T>(a: T[], b?: number, c?: number, d?: T) {
   c = a.length;
   while (c) {
     b = Math.random() * (--c + 1) | 0;

@@ -1,11 +1,11 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getLatestSession } from "~/models/sessions.server";
 import { useLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: "Chocolate Chip Rookies Video Library" },
 ];
 

@@ -7,11 +7,11 @@ import { format } from "date-fns";
 import { useLoaderData } from "@remix-run/react";
 import { readTag } from "~/utils/tagUtils";
 
-export const VIDEO_DATA_PATH = "./public/video-data";
+export const VIDEO_DATA_PATH = "./public/video-data"
 
 export const action = async ({ request }: ActionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405);
+    return json({ message: "Method not allowed" }, 405)
   }
 
   // search pending folder, read tags and move to library
@@ -19,7 +19,7 @@ export const action = async ({ request }: ActionArgs) => {
     withFileTypes: true
   });
   if (pendingDir.length == 0) {
-    return json({ message: "Nothing to sync" }, 200);
+    return json({ message: "Nothing to sync" }, 200)
   }
 
   for (const file of pendingDir) {
@@ -36,12 +36,12 @@ export const action = async ({ request }: ActionArgs) => {
         ...videoData,
         videoUrl: `${newPath.substring(8)}/${file.name}`,
       });
-      await mkdir(newPath, { recursive: true });
+      await mkdir(newPath, { recursive: true })
       await rename(
         `${VIDEO_DATA_PATH}/pending/${file.name}`,
         `${newPath}/${file.name}`
       );
-      console.log(`Processed ${file.name})`);
+      console.log(`Processed ${file.name})`)
     }
   }
   return json({ message: "Sync complete" }, 201);
@@ -53,8 +53,7 @@ async function processFile(file: Dirent): Promise<VideoData | undefined> {
     const delimiter = tags.title?.includes(',') ? ',' : ''
     const title: string[] = tags.title?.split(delimiter) || [];
     return {
-      formations: title.filter(group => /[A-Z]/.test(group)),
-      blocks: title.filter(group => /[0-9]/.test(group)).map(group => parseInt(group)),
+      formationIds: title,
       flyers: tags.artist?.split("/") || [],
       date: new Date(tags.date!),
       view: tags.comment!
@@ -63,8 +62,7 @@ async function processFile(file: Dirent): Promise<VideoData | undefined> {
 }
 
 type VideoData = {
-  formations: string[];
-  blocks: number[];
+  formationIds: string[];
   flyers: string[];
   date: Date;
   view: string;
@@ -114,8 +112,7 @@ export default function SyncDb() {
             <td>{data.fileName}</td>
             <td>{format(new Date(data.date), "dd-MM-yyyy")}</td>
             <td>{data.flyers.join(",")}</td>
-            <td>{data.formations}</td>
-            <td>{data.blocks}</td>
+            <td>{data.formationIds.join(',')}</td>
             <td>{data.view}</td>
           </tr> : null
         )}

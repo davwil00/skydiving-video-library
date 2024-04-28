@@ -1,15 +1,14 @@
 import { useLoaderData } from "@remix-run/react";
 import { readdir } from "fs/promises";
 import { VIDEO_DATA_PATH } from "~/routes/sync-db";
-import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { readTag, writeTag } from "~/utils/tagUtils";
 import { CloneIcon, ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
 import { useReducer } from "react";
 import { type FileToTag, tagReducer, type TagState } from "~/state/tag-reducer";
-import type { LoaderFunctionArgs } from "@remix-run/router";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderArgs) => {
   const url = new URL(request.url)
   const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
   const pendingDir = await readdir(`${videoDataPath}`, {
@@ -189,7 +188,7 @@ export default function TagDir() {
         <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">{videoPreviewPath}</h3>
-            <video src={videoPreviewPath} controls />
+            <video src={videoPreviewPath} controls muted />
             <div className="modal-action">
               <button className="btn" type='button' onClick={() => dispatch({ type: 'closeVideoPreview' })}>Close
               </button>
