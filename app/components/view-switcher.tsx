@@ -8,7 +8,7 @@ export const ViewSwitcher = ({ views, activeView }: ViewSwitcherProps) => {
     return (
       <div role="tablist" className="tabs tabs-lifted tabs-lg">
         {views.map((view, key) => (
-          <a role="tab" className={`tab ${activeView === view.view ? "tab-active" : ""}`} href={`?view=${view.view}`}>{view.name} key={key}</a>
+          <a role="tab" className={`tab ${activeView === view.view ? "tab-active" : ""}`} href={`?view=${view.view}`} key={key}>{view.name}</a>
         ))}
       </div>
     );
