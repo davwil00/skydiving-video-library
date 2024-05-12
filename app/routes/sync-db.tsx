@@ -102,7 +102,6 @@ export default function SyncDb() {
           <th>Date</th>
           <th>Flyers</th>
           <th>Formations</th>
-          <th>Blocks</th>
           <th>View</th>
         </tr>
         </thead>

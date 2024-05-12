@@ -1,21 +1,22 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getLatestSession } from "~/models/sessions.server";
 import { useLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
+import { isLocalRequest } from "~/utils/localGuardUtils";
 
-export const meta: MetaFunction = () => [
-  { title: "Chocolate Chip Rookies Video Library" },
-];
+export const meta: MetaFunction = () =>
+  ({ title: "Chocolate Chip Rookies Video Library" });
 
-export const loader = async () => {
+export const loader = async ({request}: LoaderArgs) => {
   const latestSession = await getLatestSession();
-  return json({ latestSession });
+  const isLocal = isLocalRequest(request)
+  return json({ latestSession, isLocal });
 };
 
 export default function Index() {
-  const { latestSession } = useLoaderData<typeof loader>()
+  const { latestSession, isLocal } = useLoaderData<typeof loader>()
 
   if (!latestSession) {
     return null
@@ -31,6 +32,7 @@ export default function Index() {
             flight={flight}
             session={latestSession}
             showDate={false}
+            isLocal={isLocal}
           />
         ))}
       </div>

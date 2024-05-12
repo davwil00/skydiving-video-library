@@ -1,15 +1,18 @@
 import { Link } from "@remix-run/react";
 import { format } from "date-fns";
+import { RefObject } from "react";
 
 type Session = { id: string; date: string }
 type SidebarProps = {
   sessions: Session[];
+  isLocal: boolean
+  drawerRef: RefObject<HTMLInputElement>
 };
 
 export default function Sidebar(props: SidebarProps) {
-  const { sessions } = props;
+  const { sessions, isLocal, drawerRef } = props;
   const sessionsByYear = sessions.reduce((groups: { [year: string]: Session[] }, session) => {
-    const year = new Date(session.date).getFullYear().toString()
+    const year = new Date(session.date).getFullYear().toString();
     if (groups[year]) {
       return {
         ...groups,
@@ -17,14 +20,15 @@ export default function Sidebar(props: SidebarProps) {
           ...groups[year],
           session
         ]
-      }
+      };
     } else {
       return {
         ...groups,
         [year]: [session]
-      }
+      };
     }
-  }, {})
+  }, {});
+  const clickCallback = () => drawerRef.current && (drawerRef.current.checked = false);
 
   return (
     <div className="drawer-side overflow-x-hidden">
@@ -46,6 +50,7 @@ export default function Sidebar(props: SidebarProps) {
                         to={{
                           pathname: `/session/${session.id}`
                         }}
+                        onClick={clickCallback}
                       >
                         {format(new Date(session.date), "dd/MM")}
                       </Link>
@@ -60,7 +65,10 @@ export default function Sidebar(props: SidebarProps) {
           <div className="divider"></div>
         </li>
         <li>
-          <Link to={{ pathname: '/quiz' }}>Quiz</Link>
+          <Link to={{ pathname: "/quiz" }}
+                onClick={clickCallback}>Quiz</Link>
+          {isLocal ? <Link to={{ pathname: "/tag" }}
+                           onClick={clickCallback}>Tag</Link> : null}
         </li>
         <li>
           <div className="divider"></div>
@@ -70,66 +78,50 @@ export default function Sidebar(props: SidebarProps) {
           <ul>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/formation/A" }}>
-                  <kbd className="kbd">A</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/B" }}>
-                  <kbd className="kbd">B</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/C" }}>
-                  <kbd className="kbd">C</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/D" }}>
-                  <kbd className="kbd">D</kbd>
-                </Link>
+                {["A", "B", "C", "D"].map((letter) => (
+                  <Link to={{ pathname: `/formation/${letter}` }}
+                        onClick={clickCallback}
+                        key={letter}
+                  >
+                    <kbd className="kbd">{letter}</kbd>
+                  </Link>
+                ))}
               </div>
             </li>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/formation/E" }}>
-                  <kbd className="kbd">E</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/F" }}>
-                  <kbd className="kbd">F</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/G" }}>
-                  <kbd className="kbd">G</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/H" }}>
-                  <kbd className="kbd">H</kbd>
-                </Link>
+                {["E", "F", "G", "H"].map((letter) => (
+                  <Link to={{ pathname: `/formation/${letter}` }}
+                        onClick={clickCallback}
+                        key={letter}
+                  >
+                    <kbd className="kbd">{letter}</kbd>
+                  </Link>
+                ))}
               </div>
             </li>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/formation/J" }}>
-                  <kbd className="kbd">J</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/K" }}>
-                  <kbd className="kbd">K</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/L" }}>
-                  <kbd className="kbd">L</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/M" }}>
-                  <kbd className="kbd">M</kbd>
-                </Link>
+                {["J", "K", "L", "M"].map((letter) => (
+                  <Link to={{ pathname: `/formation/${letter}` }}
+                        onClick={clickCallback}
+                        key={letter}
+                  >
+                    <kbd className="kbd">{letter}</kbd>
+                  </Link>
+                ))}
               </div>
             </li>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/formation/N" }}>
-                  <kbd className="kbd">N</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/O" }}>
-                  <kbd className="kbd">O</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/P" }}>
-                  <kbd className="kbd">P</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/Q" }}>
-                  <kbd className="kbd">Q</kbd>
-                </Link>
+                {["N", "O", "P", "Q"].map((letter) => (
+                  <Link to={{ pathname: `/formation/${letter}` }}
+                        onClick={clickCallback}
+                        key={letter}
+                  >
+                    <kbd className="kbd">{letter}</kbd>
+                  </Link>
+                ))}
               </div>
             </li>
           </ul>
@@ -142,34 +134,26 @@ export default function Sidebar(props: SidebarProps) {
           <ul>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/formation/2" }}>
-                  <kbd className="kbd">2</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/4" }}>
-                  <kbd className="kbd">4</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/6" }}>
-                  <kbd className="kbd">6</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/7" }}>
-                  <kbd className="kbd">7</kbd>
-                </Link>
+                {["2", "4", "6", "7"].map((letter) => (
+                  <Link to={{ pathname: `/formation/${letter}` }}
+                        onClick={clickCallback}
+                        key={letter}
+                  >
+                    <kbd className="kbd">{letter}</kbd>
+                  </Link>
+                ))}
               </div>
             </li>
             <li>
               <div className="flex justify-around">
-                <Link to={{ pathname: "/formation/8" }}>
-                  <kbd className="kbd">8</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/9" }}>
-                  <kbd className="kbd">9</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/19" }}>
-                  <kbd className="kbd">19</kbd>
-                </Link>
-                <Link to={{ pathname: "/formation/21" }}>
-                  <kbd className="kbd">21</kbd>
-                </Link>
+                {["8", "9", "19", "21"].map((letter) => (
+                  <Link to={{ pathname: `/formation/${letter}` }}
+                        onClick={clickCallback}
+                        key={letter}
+                  >
+                    <kbd className="kbd">{letter}</kbd>
+                  </Link>
+                ))}
               </div>
             </li>
           </ul>

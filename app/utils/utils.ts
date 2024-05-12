@@ -15,3 +15,7 @@ export function getRandomImageUrl(random: Random) {
 export function getBlockImageUrl(blockId: number): string {
   return `/images/blocks/${blockId}.png`
 }
+
+export function capitalise(string: string): string {
+  return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase()
+}

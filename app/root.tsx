@@ -1,5 +1,5 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -15,15 +15,18 @@ import stylesheet from "~/tailwind.css";
 import Sidebar from "~/components/sidebar";
 import { getAllSessionDates } from "~/models/sessions.server";
 import Navbar from "~/components/navbar";
+import { isLocalRequest } from "~/utils/localGuardUtils";
+import { useRef } from "react";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : [])
 ];
 
-export const loader = async () => {
+export const loader = async ({request}: LoaderArgs) => {
   const sessions = await getAllSessionDates();
-  return json({ sessions });
+  const isLocal = isLocalRequest(request)
+  return json({ sessions, isLocal });
 };
 
 export const meta = () => {
@@ -34,7 +37,8 @@ export const meta = () => {
 };
 
 export default function App() {
-  const { sessions } = useLoaderData<typeof loader>();
+  const { sessions, isLocal } = useLoaderData<typeof loader>();
+  const drawerRef = useRef<HTMLInputElement>(null);
   return (
     <html lang="en" className="h-full" data-theme="bumblebee">
     <head>
@@ -46,14 +50,14 @@ export default function App() {
     <body className="h-full">
     <main className="relative min-h-screen bg-white sm:flex sm:justify-center">
       <div className="drawer md:drawer-open">
-        <input id="drawer-toggle" type="checkbox" className="drawer-toggle" />
+        <input id="drawer-toggle" type="checkbox" className="drawer-toggle" ref={drawerRef} />
         <div className="drawer-content">
           <Navbar />
           <div className="p-4">
             <Outlet />
           </div>
         </div>
-        <Sidebar sessions={sessions} />
+        <Sidebar sessions={sessions} isLocal={isLocal} drawerRef={drawerRef} />
       </div>
     </main>
     <ScrollRestoration />
