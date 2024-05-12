@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { format } from "date-fns";
-import { RefObject } from "react";
+import type { RefObject } from "react";
 
 type Session = { id: string; date: string }
 type SidebarProps = {
