@@ -96,7 +96,7 @@ export function getFlight(flightId: string) {
         include: {
             session: true,
             flyers: true,
-            formations: true
+            formations: { orderBy: { order: 'asc' } }
         }
     });
 }
