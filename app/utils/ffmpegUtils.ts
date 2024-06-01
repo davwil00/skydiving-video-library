@@ -1,12 +1,13 @@
 import {spawn} from 'node:child_process'
 import {renameSync, rmSync} from 'node:fs'
 
-export function trim(filePath: string, startTime?: number, endTime?: number): Promise<string | void> {
+export function trim(filePath: string, startTime?: string, endTime?: string): Promise<string | void> {
   const file = `./public${filePath}`
+  const startTimeInSeconds = timeToSeconds(startTime || "")
   const args: string[] = []
   if (startTime) {
     args.push(`-ss`)
-    args.push(startTime.toString())
+    args.push(startTimeInSeconds.toString())
   }
   args.push('-i')
   args.push(file)
@@ -14,7 +15,7 @@ export function trim(filePath: string, startTime?: number, endTime?: number): Pr
   if (endTime) {
     args.push("-to")
     if (startTime) {
-      const duration = startTime - endTime
+      const duration = startTimeInSeconds - timeToSeconds(endTime)
       args.push(duration.toString())
     } else {
       args.push(endTime.toString())
@@ -38,14 +39,26 @@ export function trim(filePath: string, startTime?: number, endTime?: number): Pr
       console.error(e)
       reject(e)
     })
+    const errorChunks: Buffer[] = []
     process.stdout.on('data', (data) => console.log(`stdout:  ${data}`))
-    process.stderr.on('data', (data) => console.error(`stderr: ${data}`))
+    process.stderr.on('data', (data) => errorChunks.push(data))
     process.on('close', (code) => {
       if (code === 0) {
         rmSync(file)
         renameSync(outputFile, file)
         resolve()
+      } else {
+        reject(errorChunks)
       }
     })
   })
+}
+
+function timeToSeconds(time: string): number {
+  if (time.includes(':')) {
+    const [minutes, seconds] = time.split(':')
+    return parseInt(minutes) * 60 + parseInt(seconds)
+  }
+
+  return parseInt(time)
 }

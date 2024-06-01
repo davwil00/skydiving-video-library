@@ -2,27 +2,47 @@ import { type ActionArgs, json, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { trim } from "~/utils/ffmpegUtils";
 import { isLocalRequest } from "~/utils/localGuardUtils";
+import { useActionData } from "@remix-run/react";
+import { type Buffer } from 'node:buffer'
 
-export const action = async({request, params}: ActionArgs) => {
-  if (request.method !== 'POST') {
-    return json({message: "Method not allowed"}, 405)
+export const action = async ({ request, params }: ActionArgs) => {
+  if (request.method !== "POST") {
+    return json({ message: "Method not allowed" }, 405);
   }
   if (!isLocalRequest(request)) {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  const flightId = params.flightId
-  invariant(flightId, 'flight id is required')
+  const flightId = params.flightId;
+  invariant(flightId, "flight id is required");
 
-  const formData = await request.formData()
-  const fileName = `${formData.get('filename')?.toString()}`
-  const startTime = parseInt(formData.get('startTime')?.toString() || "")
-  const endTime = parseInt(formData.get('endTime')?.toString() || "")
+  const formData = await request.formData();
+  const fileName = `${formData.get("filename")?.toString()}`;
+  const startTime = formData.get("startTime")?.toString();
+  const endTime = formData.get("endTime")?.toString();
   if (fileName && (startTime || endTime)) {
-    return trim(fileName, startTime, endTime)
-      .then(() => redirect(`/flight/${flightId}`))
-      .catch((error) => json({ error }))
+    try {
+      await trim(fileName, startTime, endTime);
+      return redirect(`/flight/${flightId}`);
+    } catch (error) {
+      return json({ error: (error as Buffer[]).map(line => line.toString('utf8')) });
+    }
   } else {
-    return redirect(`/flight/${flightId}`)
+    return redirect(`/flight/${flightId}`);
   }
+};
+
+export default function TrimFlight() {
+  const data = useActionData<{ error: string[] }>();
+  if (data) {
+    return (
+      <>
+        {data.error.map((line, index) =>
+          <code key={index} className="block mt-4 text-red">{line}</code>
+        )}
+      </>
+    );
+  }
+
+  return null;
 }

@@ -8,7 +8,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData
+  useLoaderData, useRouteError
 } from "@remix-run/react";
 
 import stylesheet from "~/tailwind.css";
@@ -44,6 +44,7 @@ export default function App() {
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <title>Chocolate Chip Rookies Video Library</title>
       <Meta />
       <Links />
     </head>
@@ -63,6 +64,28 @@ export default function App() {
     <ScrollRestoration />
     <Scripts />
     <LiveReload />
+    </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html>
+    <head>
+      <title>Error</title>
+      <Meta />
+      <Links />
+    </head>
+    <body>
+    <h1>Error</h1>
+    <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix it</p>
+    <code>
+      {String(error)}
+    </code>
+    <Scripts />
     </body>
     </html>
   );
