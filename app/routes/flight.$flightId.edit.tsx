@@ -21,26 +21,29 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export const action = async ({ request, params }: ActionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405)
+    return json({ message: "Method not allowed" }, 405);
+  }
+  if (!isLocalRequest(request)) {
+    throw new Response("Forbidden", { status: 403 });
   }
 
-  const flightId = params.flightId
+  const flightId = params.flightId;
   invariant(flightId, "flight not found");
-  const formData = await request.formData()
-  const fileName = `./public${formData.get('filename')}`
+  const formData = await request.formData();
+  const fileName = `./public${formData.get("filename")}`;
   const formationsTag = formData.get("formations") as string;
   const flyersTag = formData.get("flyers") as string;
-  const formationIds = formationsTag?.split(',')
-  const flyers = flyersTag.split('/')
-  const originalData = readTag(fileName)
+  const formationIds = formationsTag?.split(",");
+  const flyers = flyersTag.split("/");
+  const originalData = readTag(fileName);
   await writeTag(fileName, {
     ...originalData,
     title: formationsTag,
     artist: flyersTag
-  })
+  });
 
-  await updateFlight(flightId, formationIds, flyers)
-  return redirect(`/flight/${flightId}`)
+  await updateFlight(flightId, formationIds, flyers);
+  return redirect(`/flight/${flightId}`);
 };
 
 export default function EditFlight() {
@@ -53,33 +56,55 @@ export default function EditFlight() {
 
   const [state, dispatch] = useReducer(editFlightReducer, initialState);
   return (
-    <form method="post" action={`/flight/${flight.id}/edit`}>
-      <input type="hidden" value={flight.videoUrl} name="filename"/>
+    <>
       <div className="flex justify-between items-start">
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Formations</span>
-            </div>
-            <input type="text" className="input input-bordered" name="formations" value={state.formations}
-                   onChange={(event) => dispatch({
-                     type: "formElementChange",
-                     field: "formations",
-                     value: event.currentTarget.value
-                   })} />
-          </label>
+          <form method="post" action={`/flight/${flight.id}/edit`}>
+            <input type="hidden" value={flight.videoUrl} name="filename" />
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Formations</span>
+              </div>
+              <input type="text" className="input input-bordered" name="formations" value={state.formations}
+                     onChange={(event) => dispatch({
+                       type: "formElementChange",
+                       field: "formations",
+                       value: event.currentTarget.value
+                     })} />
+            </label>
 
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Flyers</span>
-            </div>
-            <input type="text" className="input input-bordered" name="flyers" value={state.flyers}
-                   onChange={(event) => dispatch({
-                     type: "formElementChange",
-                     field: "flyers",
-                     value: event.currentTarget.value
-                   })} />
-          </label>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Flyers</span>
+              </div>
+              <input type="text" className="input input-bordered" name="flyers" value={state.flyers}
+                     onChange={(event) => dispatch({
+                       type: "formElementChange",
+                       field: "flyers",
+                       value: event.currentTarget.value
+                     })} />
+            </label>
+
+            <button className="btn btm-primary mt-3" type="submit">Submit</button>
+          </form>
+
+          <form method="post" action={`/flight/${flight.id}/trim`} className="mt-8">
+            <input type="hidden" value={flight.videoUrl} name="filename" />
+            <h2 className="text-2xl">Trim</h2>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Start time</span>
+              </div>
+              <input type="text" className="input input-bordered" name="startTime" pattern="^(?:\d+|\d+:\d{2})$"/>
+            </label>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">End time</span>
+              </div>
+              <input type="text" className="input input-bordered" name="endTime" pattern="^(?:\d+|\d+:\d{2})$" />
+            </label>
+            <button type="submit" className="btn mt-4">Trim</button>
+          </form>
         </div>
         <figure>
           <video controls width="480" muted={true} preload="none">
@@ -87,8 +112,6 @@ export default function EditFlight() {
           </video>
         </figure>
       </div>
-
-      <button className="btn btm-primary mt-3" type="submit">Submit</button>
-    </form>
+    </>
   );
 }
