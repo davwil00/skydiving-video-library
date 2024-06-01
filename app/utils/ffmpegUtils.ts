@@ -1,6 +1,5 @@
 import {spawn} from 'node:child_process'
 import {renameSync, rmSync} from 'node:fs'
-import { ar } from "date-fns/locale";
 
 export function trim(filePath: string, startTime?: number, endTime?: number): Promise<string | void> {
   const file = `./public${filePath}`
