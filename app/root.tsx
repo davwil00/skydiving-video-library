@@ -1,9 +1,10 @@
 import {
+  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration, useLoaderData,
+  ScrollRestoration, useLoaderData, useRouteError, useRouteLoaderData,
 } from '@remix-run/react';
 import { getAllSessionDates } from '~/models/sessions.server'
 import { json, LinksFunction } from '@remix-run/node'
@@ -32,7 +33,7 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({children}: { children: React.ReactNode }) {
-  const {sessions, isLocal} = useLoaderData<typeof loader>();
+  const data = useRouteLoaderData<typeof loader>('root');
   const drawerRef = useRef<HTMLInputElement>(null);
   return (
     <html lang="en" data-theme="dark">
@@ -54,7 +55,7 @@ export function Layout({children}: { children: React.ReactNode }) {
             {children}
           </div>
         </div>
-        <Sidebar sessions={sessions} isLocal={isLocal} drawerRef={drawerRef}/>
+        <Sidebar sessions={data?.sessions || []} isLocal={data?.isLocal || false} drawerRef={drawerRef}/>
       </div>
     </main>
     <ScrollRestoration/>
@@ -66,4 +67,30 @@ export function Layout({children}: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet/>;
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  if (isRouteErrorResponse(error)) {
+    return (<>
+      <h1>Error</h1>
+      <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix it</p>
+      <h1>
+        {error.status}: {error.statusText}
+        <code className="block mt-4">
+          {error.data}
+        </code>
+      </h1>
+    </>)
+  }
+  return (
+    <>
+      <h1>Error</h1>
+      <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix it</p>
+      <code>
+        {JSON.stringify(error)}
+      </code>
+    </>
+  );
 }
