@@ -7,7 +7,7 @@ export function getAllSessionDates() {
   });
 }
 
-const flightsInclude: Prisma.Session$flightsArgs = {
+const flightsInclude = {
   select: {
     id: true,
     flyers: true,
