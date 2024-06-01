@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
 import { ViewSwitcher } from "~/components/view-switcher";
 import { isLocalRequest } from "~/utils/localGuardUtils";
+import { capitalise } from '~/utils/utils'
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.sessionId, "session not found");
@@ -15,14 +16,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   if (!session) {
     throw new Response("Not Found", { status: 404 });
   }
-  const hasTopView = session.flights.some(flight => flight.view === 'TOP')
-  const hasSideView = session.flights.some(flight => flight.view === 'SIDE')
+  const views = ["TOP", "SIDE"].flatMap(view =>
+    session.flights.some(flight => flight.view === view) ? { view: view, name: `${capitalise(view)} View` } : []);
 
-  return json({ session, hasTopView, hasSideView, isLocal });
+  return json({ session, views, isLocal });
 };
 
 export default function SessionDetailsPage() {
-  const { session, hasTopView, hasSideView, isLocal } = useLoaderData<typeof loader>();
+  const { session, views, isLocal } = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const activeView = searchParams.get('view') || 'TOP'
 
@@ -31,7 +32,7 @@ export default function SessionDetailsPage() {
       <h1 className="text-2xl text-black">
         {format(new Date(session.date), "do MMMM")}
       </h1>
-      <ViewSwitcher hasTopView={hasTopView} hasSideView={hasSideView} activeView={activeView} />
+      <ViewSwitcher views={views} activeView={activeView} />
       <div className="flex flex-wrap justify-center">
         {session.flights
           .filter(session => session.view === activeView)

@@ -16,9 +16,6 @@ type FlightCardProps = {
 
 export default function FlightCard(props: FlightCardProps) {
   const { flight, session, showDate, isLocal = false } = props;
-  const flightsAndFormations = flight.formations
-    .sort((flightFormation1, flightFormation2) => flightFormation1.order - flightFormation2.order)
-    .map(formation => formation.formationId);
   return (
     <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
       {isLocal ?
@@ -41,9 +38,9 @@ export default function FlightCard(props: FlightCardProps) {
         )}
         <div className="card-action flex items-center justify-between">
           <div>
-            {flightsAndFormations.map((formation, formationIdx) => (
+            {flight.formations.map((formation, formationIdx) => (
               <kbd key={formationIdx} className="kbd m-1">
-                {formation}
+                {formation.formationId}
               </kbd>
             ))}
           </div>

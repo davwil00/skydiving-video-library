@@ -1,4 +1,4 @@
-import { type ActionArgs, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { mkdir, readdir, rename } from "fs/promises";
 import { type Dirent } from "fs";
 import { getOrCreateSession } from "~/models/sessions.server";
@@ -6,10 +6,11 @@ import { createFlight } from "~/models/flights.server";
 import { format } from "date-fns";
 import { useLoaderData } from "@remix-run/react";
 import { readTag } from "~/utils/tagUtils";
+import { ActionFunctionArgs } from '@remix-run/router'
 
 export const VIDEO_DATA_PATH = "./public/video-data"
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method !== "POST") {
     return json({ message: "Method not allowed" }, 405)
   }
@@ -102,7 +103,6 @@ export default function SyncDb() {
           <th>Date</th>
           <th>Flyers</th>
           <th>Formations</th>
-          <th>Blocks</th>
           <th>View</th>
         </tr>
         </thead>
@@ -112,7 +112,7 @@ export default function SyncDb() {
             <td>{data.fileName}</td>
             <td>{format(new Date(data.date), "dd-MM-yyyy")}</td>
             <td>{data.flyers.join(",")}</td>
-            <td>{data.formationIds}</td>
+            <td>{data.formationIds.join(',')}</td>
             <td>{data.view}</td>
           </tr> : null
         )}

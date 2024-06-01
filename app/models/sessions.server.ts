@@ -6,7 +6,7 @@ export function getAllSessionDates() {
   });
 }
 
-const flightsInclude = { select: { flyers: true, formations: true, videoUrl: true, view: true } };
+const flightsInclude = { select: { id: true, flyers: true, formations: true, videoUrl: true, view: true } };
 
 export function getSession(sessionId: string) {
   return prisma.session.findUnique({
