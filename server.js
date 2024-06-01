@@ -43,7 +43,7 @@ if (viteDevServer) {
     );
     app.use(
         "/video-data",
-        express.static("public/images", { immutable: true, maxAge: "1y" })
+        express.static("public/video-data", { immutable: true, maxAge: "1y" })
     );
     ["favicon.ico", "choc-chip-rookies-text.png"].forEach(file => {
         app.use(
