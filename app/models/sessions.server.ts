@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import { Prisma } from '@prisma/client'
 
 export function getAllSessionDates() {
   return prisma.session.findMany({
@@ -6,7 +7,15 @@ export function getAllSessionDates() {
   });
 }
 
-const flightsInclude = { select: { id: true, flyers: true, formations: true, videoUrl: true, view: true } };
+const flightsInclude: Prisma.Session$flightsArgs = {
+  select: {
+    id: true,
+    flyers: true,
+    formations: { orderBy: { order: Prisma.SortOrder.asc } },
+    videoUrl: true,
+    view: true
+  }
+};
 
 export function getSession(sessionId: string) {
   return prisma.session.findUnique({
