@@ -15,7 +15,7 @@ export function trim(filePath: string, startTime?: string, endTime?: string): Pr
   if (endTime) {
     args.push("-to")
     if (startTime) {
-      const duration = startTimeInSeconds - timeToSeconds(endTime)
+      const duration = timeToSeconds(endTime) - startTimeInSeconds
       args.push(duration.toString())
     } else {
       args.push(endTime.toString())
