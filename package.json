@@ -10,29 +10,27 @@
     "setup": "prisma generate && prisma migrate deploy && tsx prisma/seed.ts",
     "migrate-dev": "prisma generate && prisma migrate dev",
     "migrate-deploy": "prisma generate && prisma migrate deploy",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "start": "remix-serve ./build/server/index.js"
   },
   "dependencies": {
     "@prisma/client": "^5.13.0",
-    "@remix-run/express": "^2.9.1",
-    "@remix-run/node": "^2.9.1",
-    "@remix-run/react": "^2.9.1",
-    "@remix-run/serve": "^2.9.1",
-    "compression": "^1.7.4",
+    "@remix-run/express": "^2.9.2",
+    "@remix-run/node": "^2.9.2",
+    "@remix-run/react": "^2.9.2",
+    "@remix-run/serve": "^2.9.2",
     "date-fns": "^3.6.0",
-    "express": "^4.19.2",
     "ffmetadata": "^1.7.0",
-    "isbot": "^5.1.5",
-    "morgan": "^1.10.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "isbot": "^4.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tiny-invariant": "^1.3.3"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@remix-run/dev": "^2.9.1",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
+    "@remix-run/dev": "^2.9.2",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "autoprefixer": "^10.4.19",
@@ -47,11 +45,10 @@
     "prettier": "^3.2.5",
     "prisma": "^5.13.0",
     "tailwindcss": "^3.4.3",
-    "ts-node": "^10.9.2",
     "tsx": "^4.11.0",
     "typescript": "^5.4.5",
-    "vite": "^5.2.10",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite": "^5.1.0",
+    "vite-tsconfig-paths": "^4.2.1"
   },
   "engines": {
     "node": ">=20.11.0"
