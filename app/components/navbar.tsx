@@ -13,13 +13,13 @@ export default function Navbar() {
       </div>
       <div className="flex-1 hidden lg:block">
         <div className="flex-1">
-          <img src="/choc-chip-rookies-text.png"
+          <img src="/images/logo-text.png"
                className="h-[64px]"
                alt="the words chocolate chip cookies written in a font that looks like the letters contains chocolate chips" />
         </div>
       </div>
       <div className="flex-1 justify-end">
-        <SkydiverIcon height={64} fill={"white"}/>
+        <SkydiverIcon fill={"white"}/>
       </div>
     </div>
   );
