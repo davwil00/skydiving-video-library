@@ -1,6 +1,7 @@
 import type { Flyer, FlightFormation } from "@prisma/client";
 import { format } from "date-fns";
 import { EditIcon } from "~/components/icons";
+import { ChangeEvent } from "react";
 
 type FlightCardProps = {
   flight: {
@@ -11,20 +12,24 @@ type FlightCardProps = {
   };
   session: { date: string };
   showDate: boolean;
-  isLocal: boolean
+  isLocal?: boolean;
+  allowSelection?: boolean;
+  onSelect?: (event: ChangeEvent<HTMLInputElement>, flightId: string) => void
+  isSelected?: boolean;
 };
 
 export default function FlightCard(props: FlightCardProps) {
-  const { flight, session, showDate, isLocal = false } = props;
+  const { flight, session, showDate, isLocal = false,  allowSelection = false, onSelect = () => {}, isSelected = false } = props;
   return (
     <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
-      {isLocal ?
-        <div className="card-actions justify-end">
-          <a href={`/flight/${props.flight.id}/edit`} className="btn btn-square btn-sm">
+      <div className="card-actions justify-end">
+        {isLocal ?
+          <a href={`/flight/${flight.id}/edit`} className="btn btn-square btn-sm">
             <EditIcon fill="#FFF" height="16px" />
           </a>
-        </div> : null
-      }
+          : null}
+        {allowSelection ? <input type="checkbox" className="checkbox checkbox-sm mr-2 mt-2 border-white" defaultChecked={isSelected} autoComplete="false" onChange={(event) => onSelect(event, flight.id)}/> : null }
+      </div>
       <figure>
         <video controls width="480" muted={true} preload="none">
           <source src={`${flight.videoUrl}`} />
