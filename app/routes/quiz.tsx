@@ -47,7 +47,7 @@ export default function QuizPage() {
                     >
                         <img
                             key={idx}
-                            className={`w-max max-h-[calc(50vh-35px)]`}
+                            className={`w-max max-h-[calc(50vh-35px)] mx-auto`}
                             alt="skydiving formation"
                             src={getFormationImageUrl(choice)}
                         />
