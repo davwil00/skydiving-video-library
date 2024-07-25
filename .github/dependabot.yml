@@ -9,3 +9,11 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      minor:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "eslint*"
+
