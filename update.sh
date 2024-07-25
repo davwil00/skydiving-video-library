@@ -7,6 +7,6 @@ echo 'Pulling latest changes'
 git pull
 echo 'Building...'
 npm i
-npm run build-nolint
+npm run build
 echo 'Starting service...'
 sudo systemctl start skydiving.service
