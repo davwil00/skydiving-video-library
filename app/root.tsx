@@ -4,7 +4,7 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration, useLoaderData, useRouteError, useRouteLoaderData,
+  ScrollRestoration, useRouteError, useRouteLoaderData,
 } from '@remix-run/react';
 import { getAllSessionDates } from '~/models/sessions.server'
 import { json, LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
