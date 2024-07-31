@@ -63,7 +63,7 @@ export default function logos() {
 function Img({ src, imgClass = "" }: { src: string, imgClass?: string }) {
   return (
     <li className="w-1/4">
-      <a href={src} className="cursor-pointer"download target="_blank" rel="noopener noreferrer">
+      <a href={src} className="cursor-pointer" download target="_blank" rel="noopener noreferrer">
         <img src={src} className={`border border-black ${imgClass}`} />
       </a>
     </li>
