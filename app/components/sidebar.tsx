@@ -20,7 +20,7 @@ export default function Sidebar(props: SidebarProps) {
           ...groups[year],
           session
         ]
-      }
+      };
     } else {
       return {
         ...groups,
@@ -69,6 +69,10 @@ export default function Sidebar(props: SidebarProps) {
                 onClick={clickCallback}>Quiz</Link>
           {isLocal ? <Link to={{ pathname: "/tag" }}
                            onClick={clickCallback}>Tag</Link> : null}
+          <Link to={{ pathname: "/logos" }}
+                onClick={clickCallback}>Logos</Link>
+          <Link to={{ pathname: "/customise-logo" }}
+                onClick={clickCallback}>Customise Logo</Link>
         </li>
         <li>
           <div className="divider"></div>

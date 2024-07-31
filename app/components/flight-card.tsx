@@ -28,7 +28,7 @@ export default function FlightCard(props: FlightCardProps) {
             <EditIcon fill="#FFF" height="16px" />
           </a>
           : null}
-        {allowSelection ? <input type="checkbox" className="checkbox checkbox-sm mr-2 mt-2 border-white" defaultChecked={isSelected} autoComplete="false" onChange={(event) => onSelect(event, flight.id)}/> : null }
+        {allowSelection ? <input type="checkbox" className="checkbox checkbox-sm mr-2 mt-2 border-white" defaultChecked={isSelected} autoComplete="off" onChange={(event) => onSelect(event, flight.id)}/> : null }
       </div>
       <figure>
         <video controls width="480" muted={true} preload="none">
