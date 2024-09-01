@@ -26,7 +26,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 export default function SessionDetailsPage() {
   const { flights, formation, views, isLocal } = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
-  const activeView = searchParams.get("view") || "TOP";
+  const activeView = searchParams.get("view") || "diagram";
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const onSelect = (event: ChangeEvent<HTMLInputElement>, flightId: string) => {
     if (event.currentTarget.checked) {
