@@ -39,8 +39,8 @@ export default function FlightCard(props: FlightCardProps) {
                  autoComplete="off" onChange={(event) => onSelect(event, flight.id)} /> : null}
       </div>
       <figure>
-        <video controls width="480" muted={true} preload="none">
-          <source src={`${flight.videoUrl}`} />
+        <video controls width="480" height="270" muted={true} preload="none">
+          <source src={`https://d3sblpf3xfzlw7.cloudfront.net/${flight.videoUrl.substring(20)}`} />
         </video>
       </figure>
       <div className="card-body">
