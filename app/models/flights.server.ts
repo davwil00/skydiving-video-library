@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { Prisma } from '@prisma/client'
+import { Prisma } from "@prisma/client";
 
 export function getByFormationId(formationId: string) {
   return prisma.flight.findMany({
@@ -13,7 +13,7 @@ export function getByFormationId(formationId: string) {
     include: {
       session: true,
       flyers: true,
-      formations: true
+      formations: { orderBy: { order: "asc" } }
     },
     orderBy: {
       session: {
@@ -72,20 +72,8 @@ export async function updateFlight(flightId: string, formationIds: string[], fly
         }))
       },
       flyers: {
-        deleteMany: {
-          name: { notIn: flyers }
-        },
-        upsert: flyers.map((flyer) => ({
-          where: {
-            name: flyer
-          },
-          update: {
-            name: flyer
-          },
-          create: {
-            name: flyer
-          }
-        }))
+        set: [],
+        connect: flyers.map((flyer) => ({ name: flyer }))
       }
     }
   });
