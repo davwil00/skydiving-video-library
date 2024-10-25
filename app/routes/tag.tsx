@@ -51,14 +51,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
 
   const formData = await request.json();
-  for (const fileToTag of formData.filesToTag) {
-    await writeTag(`${videoDataPath}/${fileToTag.fileName}`, {
+  await Promise.all(formData.filesToTag.map((fileToTag: FileToTag) => {
+    writeTag(`${videoDataPath}/${fileToTag.fileName}`, {
       title: fileToTag.formations || '',
       artist: fileToTag.flyers || '',
       date: fileToTag.date || '',
       comment: fileToTag.view || ''
     });
-  }
+  }))
 
   return null;
 };
@@ -72,6 +72,11 @@ export default function TagDir() {
   const [{ showModal, videoPreviewPath, filesToTag, submissionState }, dispatch] = useReducer(tagReducer, initialState);
 
   function submitForm() {
+    const missingDates = Object.values(filesToTag).some( file => file.date === '' || !!file.date)
+    if (missingDates) {
+      dispatch({type: 'setSubmissionState', value: 'error'})
+    }
+
     dispatch({type: 'setSubmissionState', value: 'submitting'})
     fetch('', {
       method: 'POST',
