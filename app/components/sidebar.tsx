@@ -34,6 +34,7 @@ export default function Sidebar(props: SidebarProps) {
     <div className="drawer-side overflow-x-hidden">
       <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
       <ul className="menu min-h-full w-80 bg-base-200 p-4 text-base-content flex-nowrap">
+        <li><Link to={{pathname: '/'}} onClick={clickCallback}>Home</Link></li>
         <li>
           <h2 className="menu-title">Sessions</h2>
           <ul>
