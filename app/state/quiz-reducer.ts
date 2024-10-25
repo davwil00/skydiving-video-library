@@ -1,4 +1,5 @@
 import { type Formation, A_BLOCKS, RANDOMS, isRandom } from "~/data/formations";
+import { shuffle } from "~/utils/utils";
 
 export type QuizAction =
   | { type: "startQuiz" }
@@ -119,15 +120,4 @@ function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
   const answers = possibleAlternateAnswers.slice(0, 3).concat(actualAnswer)
   shuffle(answers)
   return answers
-}
-
-// From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542
-function shuffle<T>(a: T[], b?: number, c?: number, d?: T) {
-  c = a.length;
-  while (c) {
-    b = Math.random() * (--c + 1) | 0;
-    d = a[c];
-    a[c] = a[b];
-    a[b] = d;
-  }
 }

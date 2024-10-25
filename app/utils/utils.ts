@@ -19,3 +19,14 @@ export function getBlockImageUrl(blockId: number): string {
 export function capitalise(string: string): string {
   return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase()
 }
+
+// From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542
+export function shuffle<T>(a: T[], b?: number, c?: number, d?: T) {
+  c = a.length;
+  while (c) {
+    b = Math.random() * (--c + 1) | 0;
+    d = a[c];
+    a[c] = a[b];
+    a[b] = d;
+  }
+}

@@ -1,3 +1,6 @@
+import { shuffle } from "@vitest/utils";
+import { format } from "date-fns";
+
 export const RANDOMS: Random[] = [
   { id: "A", name: "Unipod" },
   { id: "B", name: "Stairstep Diamond" },
@@ -67,4 +70,17 @@ export const getDisplayName = (formation: Formation) => {
   } else if (isBlock(formation)) {
     return `${formation.startFormation} > ${formation.endFormation}`
   }
+}
+
+export function generateRandomDive(seed?: number): string[] {
+  const pool = shuffle([...RANDOMS, ...A_BLOCKS], seed)
+  let points = 0
+  const dive = []
+  while (points < 3) {
+    const formation = pool.pop()!;
+    points += (RANDOMS as Array<unknown>).includes(formation) ? 1: 2
+    dive.push(`${formation.id}`)
+  }
+
+  return dive
 }
