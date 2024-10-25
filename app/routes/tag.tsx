@@ -22,7 +22,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const files: FileToTag[] = await Promise.all(pendingDir
     .filter(file => file.name.endsWith(".mp4"))
     .map(async file => {
-      const tagData = await readTag(`${file.path}/${file.name}`);
+      const tagData = await readTag(`${file.parentPath}/${file.name}`);
       return {
         fileName: file.name,
         path: `video-data/pending/${file.name}`,
