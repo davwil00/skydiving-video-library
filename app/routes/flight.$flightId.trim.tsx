@@ -1,11 +1,11 @@
-import { type ActionArgs, json, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { trim } from "~/utils/ffmpegUtils";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { useActionData } from "@remix-run/react";
 import { type Buffer } from 'node:buffer'
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (request.method !== "POST") {
     return json({ message: "Method not allowed" }, 405);
   }
