@@ -59,13 +59,16 @@ export const tagReducer = (state: TagState, action: TagAction) => {
     case 'copy': {
       const sourceFile = state.filesToTag[action.value]
       const destFile = action.value.startsWith('source01') ? action.value.replace('source01', 'source02') : action.value.replace('source02', 'source01')
-      const newState = { ...state }
-      newState.filesToTag[destFile] = {
-        ...newState.filesToTag[destFile],
-        flyers: sourceFile.flyers,
-        formations: sourceFile.formations
+      if (state.filesToTag[destFile]) {
+        const newState = { ...state }
+        newState.filesToTag[destFile] = {
+          ...newState.filesToTag[destFile],
+          flyers: sourceFile.flyers,
+          formations: sourceFile.formations
+        }
+        return newState
       }
-      return newState
+      return state
     }
     default:
       return state;
