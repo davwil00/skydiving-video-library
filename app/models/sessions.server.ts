@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client'
 
 export function getAllSessionDates() {
   return prisma.session.findMany({
-    select: { id: true, date: true },
+    select: { id: true, date: true, name: true },
   });
 }
 
