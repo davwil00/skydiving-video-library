@@ -7,8 +7,8 @@ import { capitalise } from "~/utils/utils";
 type FlightCardProps = {
   flight: {
     id: string
-    flyers: Flyer[];
-    formations: FlightFormation[];
+    flyers: Pick<Flyer, 'name'>[];
+    formations: Pick<FlightFormation, 'formationId'>[];
     videoUrl: string;
     view: string;
   };
@@ -26,6 +26,7 @@ export default function FlightCard(props: FlightCardProps) {
     flight, session, showDate, showView = false, isLocal = false, allowSelection = false, onSelect = () => {
     }, isSelected = false
   } = props;
+  const videoUrl = process.env.NODE_ENV === "development" ? flight.videoUrl : `https://d3sblpf3xfzlw7.cloudfront.net/${flight.videoUrl.substring(20)}`
   return (
     <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
       <div className="card-actions justify-end">
@@ -40,7 +41,7 @@ export default function FlightCard(props: FlightCardProps) {
       </div>
       <figure>
         <video controls width="480" height="270" muted={true} preload="none">
-          <source src={`https://d3sblpf3xfzlw7.cloudfront.net/${flight.videoUrl.substring(20)}`} />
+          <source src={`${videoUrl}`} />
         </video>
       </figure>
       <div className="card-body">
