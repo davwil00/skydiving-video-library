@@ -2,6 +2,7 @@ import {spawn} from 'node:child_process'
 import {renameSync, rmSync} from 'node:fs'
 
 export function trim(filePath: string, startTime?: string, endTime?: string): Promise<string | void> {
+  console.info(`trimming ${filePath} from ${startTime} to ${endTime}`)
   const file = `./public${filePath}`
   const startTimeInSeconds = timeToSeconds(startTime || "")
   const args: string[] = []
@@ -49,6 +50,32 @@ export function trim(filePath: string, startTime?: string, endTime?: string): Pr
         resolve()
       } else {
         reject(errorChunks)
+      }
+    })
+  })
+}
+
+export function getDuration(fileName: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    console.info('getting duration')
+    const process = spawn('ffprobe', ['-i', fileName, '-show_entries', 'format=duration', '-v', 'error',  '-of', 'json'], {timeout: 10000})
+    const chunks: Buffer[] = []
+    const errorChunks: Buffer[] = []
+    process.stdout.on('data', (data) => {
+      chunks.push(data)
+    })
+    process.stderr.on('data', (data) => {
+      errorChunks.push(data)
+    })
+    process.on('error', (e) => {
+      console.error(e)
+      reject(e)
+    })
+    process.on('close', (code) => {
+      if (code === 0) {
+        resolve(JSON.parse(chunks.join('').toString()).format.duration)
+      } else {
+        reject(errorChunks.toString())
       }
     })
   })

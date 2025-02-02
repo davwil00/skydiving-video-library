@@ -29,10 +29,26 @@ model Flyer {
 }
 
 model FlightFormation {
-  flight          Flight    @relation(fields: [flightId], references: [id])
-  flightId        String // relation scalar field (used in the `@relation` attribute above)
-  formationId     String
-  order           Int
+  flight      Flight @relation(fields: [flightId], references: [id])
+  flightId    String // relation scalar field (used in the `@relation` attribute above)
+  formationId String
+  order       Int
 
   @@id([flightId, formationId, order])
+}
+
+model SoloSession {
+  id         String       @id @default(cuid())
+  date       DateTime
+  duration   Int
+  notes      String
+  skills     String
+  flights    SoloFlight[]
+}
+
+model SoloFlight {
+  id              String      @id @default(cuid())
+  solo_session    SoloSession @relation(fields: [solo_session_id], references: [id])
+  solo_session_id String
+  videoUrl        String
 }
