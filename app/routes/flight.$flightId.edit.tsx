@@ -60,11 +60,11 @@ export default function EditFlight() {
         <div>
           <form method="post" action={`/flight/${flight.id}/edit`}>
             <input type="hidden" value={flight.videoUrl} name="filename" />
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Formations</span>
-              </div>
-              <input type="text" className="input input-bordered" name="formations" value={state.formations}
+            <label className="input w-full max-w-xs">
+              {/*<div className="label">*/}
+              {/*  <span className="label-text">Formations</span>*/}
+              {/*</div>*/}
+              <input type="text" placeholder="Formations" className="bg-white" name="formations" value={state.formations}
                      onChange={(event) => dispatch({
                        type: "formElementChange",
                        field: "formations",

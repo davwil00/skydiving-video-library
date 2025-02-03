@@ -18,7 +18,7 @@ export default function Navbar() {
                alt="the words chocolate chip cookies written in a font that looks like the letters contains chocolate chips" />
         </div>
       </div>
-      <div className="flex-1 justify-end">
+      <div>
         <SkydiverIcon fill={"white"}/>
       </div>
     </div>

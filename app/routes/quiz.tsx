@@ -115,7 +115,7 @@ export default function QuizPage() {
                             {quizState.selectedAnswer ?
                                 <button className={`btn grow no-animation ${quizState.selectedAnswer === choice ?
                                     'btn-primary' :
-                                    currentQuestion.answer === choice ? 'btn-success' : 'btn-disabled'}`}>{getFormationDisplayName(choice)}</button>
+                                    currentQuestion.answer === choice ? 'btn-success' : 'btn-disabled darker'}`}>{getFormationDisplayName(choice)}</button>
                                 :
                                 <input key={`input-${idx}`}
                                        type="radio"
