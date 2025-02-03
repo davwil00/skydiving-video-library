@@ -69,10 +69,10 @@ export default function CustomiseLogo() {
                      colourProps={{ ...state }}
           />
         </div>
-        <div className="flex-grow">
+        <div className="grow">
           <label className="label text-black cursor-pointer justify-start ml-2 mb-4">
             Use colour picker
-            <input type="checkbox" defaultChecked={state.useColourPicker} className="checkbox checkbox-sm ml-4"
+            <input type="checkbox" defaultChecked={state.useColourPicker} className="checkbox checkbox-neutral checkbox-sm ml-4"
                    onChange={e => setState(prev => ({ ...prev, useColourPicker: e.target.checked }))} />
           </label>
           <div className="flex flex-wrap grow gap-2">
@@ -107,7 +107,7 @@ export default function CustomiseLogo() {
               <label
                 className="text-black flex items-center gap-2 cursor-pointer justify-between input-sm max-w-[250px]">
                 Show wind
-                <input type="checkbox" className="checkbox checkbox-sm" autoComplete="off"
+                <input type="checkbox" className="checkbox checkbox-neutral checkbox-sm" autoComplete="off"
                        defaultChecked={state.showWind}
                        onChange={e => setWind(e.target.checked)} />
               </label>

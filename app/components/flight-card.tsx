@@ -52,7 +52,7 @@ export default function FlightCard(props: FlightCardProps) {
         <div className="card-action flex items-center justify-between">
           <div>
             {flight.formations.map((formation, formationIdx) => (
-              <kbd key={formationIdx} className="kbd m-1">
+              <kbd key={formationIdx} className="kbd m-1 text-white">
                 {formation.formationId}
               </kbd>
             ))}
