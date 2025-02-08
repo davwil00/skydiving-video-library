@@ -1,27 +1,26 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/router";
 import { isLocalRequest } from "~/utils/localGuardUtils";
-import { json, redirect } from "@remix-run/node";
+import { data, redirect, useLoaderData } from "react-router";
 import { getFlight, updateFlight } from "~/models/flights.server";
 import invariant from "tiny-invariant";
-import { useLoaderData } from "@remix-run/react";
 import { useReducer } from "react";
 import { editFlightReducer, type EditFlightState } from "~/state/edit-flight-reducer";
 import { format } from "date-fns";
 import { readTag, writeTag } from "~/utils/tagUtils";
+import type { Route } from './+types/flight.$flightId._index';
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
   if (!isLocalRequest(request)) {
     throw new Response("Forbidden", { status: 403 });
   }
 
   invariant(params.flightId, "flight not found");
   const flight = await getFlight(params.flightId);
-  return json({ ...flight });
+  return { ...flight };
 };
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
+export const action = async ({ request, params }: Route.ActionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405);
+    return data({ message: "Method not allowed", status: 405 });
   }
   if (!isLocalRequest(request)) {
     throw new Response("Forbidden", { status: 403 });

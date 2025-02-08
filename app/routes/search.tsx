@@ -1,11 +1,10 @@
-import { useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { useLoaderData } from "react-router";
 import { findFlightsWithFormations } from "~/models/flights.server";
 import invariant from "tiny-invariant";
 import FlightCard from "~/components/flight-card";
-import { LoaderFunctionArgs } from "@remix-run/router";
+import type { Route } from './+types/search';
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
   const query = searchParams.get("query");
   invariant(query, "Please specify a search query");
@@ -17,7 +16,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   const results = await findFlightsWithFormations(formationIds);
-  return json({ results, formationIds });
+  return { results, formationIds };
 }
 
 export default function Search() {

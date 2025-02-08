@@ -1,7 +1,6 @@
 // @ts-expect-error no types exist for this package
 import ffmetadata from "ffmetadata";
 import type {Dirent} from "fs";
-import {VIDEO_DATA_PATH} from "~/routes/sync-db";
 
 export function readTag(path: string): Promise<TagData> {
   return new Promise((resolve, reject) => {

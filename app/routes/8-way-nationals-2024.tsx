@@ -1,9 +1,8 @@
 import FlightCard from "~/components/flight-card";
-import {json} from "@remix-run/node";
-import {useLoaderData} from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import {processFile} from "~/utils/tagUtils";
 import {VIDEO_DATA_PATH} from "~/routes/sync-db";
-import {readdir} from "fs/promises";
+import {readdir} from "node:fs/promises";
 
 export const loader = async () => {
     const videoDataPath = `${VIDEO_DATA_PATH}/library/2024-11-08/8-way`
@@ -24,7 +23,7 @@ export const loader = async () => {
             };
         })
     );
-    return json({files});
+    return {files};
 };
 
 
@@ -40,7 +39,7 @@ export default function EightWay() {
                         <FlightCard
                             key={idx}
                             flight={flight}
-                            session={{date: '2024-11-08'}}
+                            session={{date: new Date('2024-11-08')}}
                             showDate={false}
                             isLocal={false}
                         />

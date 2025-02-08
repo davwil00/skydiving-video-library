@@ -1,14 +1,14 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { getSession } from "~/models/sessions.server";
-import { useLoaderData, useSearchParams } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "react-router";
 import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
 import { ViewSwitcher } from "~/components/view-switcher";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { capitalise } from "~/utils/utils";
+import type { Route } from './+types/session.$sessionId';
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   invariant(params.sessionId, "session not found");
   const isLocal = isLocalRequest(request)
 
@@ -19,7 +19,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const views = ["TOP", "SIDE"].flatMap(view =>
     session.flights.some(flight => flight.view === view) ? { view: view, name: `${capitalise(view)} View` } : []);
 
-  return json({ session, views, isLocal });
+  return { session, views, isLocal };
 };
 
 export default function SessionDetailsPage() {

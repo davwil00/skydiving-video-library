@@ -1,13 +1,13 @@
-import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { data, redirect, useActionData } from "react-router";
 import invariant from "tiny-invariant";
 import { trim } from "~/utils/ffmpegUtils";
 import { isLocalRequest } from "~/utils/localGuardUtils";
-import { useActionData } from "@remix-run/react";
 import { type Buffer } from 'node:buffer'
+import type { Route } from './+types/flight.$flightId.trim';
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
+export const action = async ({ request, params }: Route.ActionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405);
+    return data({ message: "Method not allowed", status: 405 });
   }
   if (!isLocalRequest(request)) {
     throw new Response("Forbidden", { status: 403 });
@@ -25,7 +25,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       await trim(fileName, startTime, endTime);
       return redirect(`/flight/${flightId}`);
     } catch (error) {
-      return json({ error: (error as Buffer[]).map(line => line.toString('utf8')) });
+      return { error: (error as Buffer[]).map(line => line.toString('utf8')) };
     }
   } else {
     return redirect(`/flight/${flightId}`);

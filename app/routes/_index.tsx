@@ -1,22 +1,22 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { json } from "@remix-run/node";
+import type { MetaFunction } from "react-router";
 import { getLatestSession } from "~/models/sessions.server";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { format } from "date-fns";
 import FlightCard from "~/components/flight-card";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { generateRandomDive } from "~/data/formations";
+import type { Route } from './+types/_index'
 
 export const meta: MetaFunction = () => [
-  { title: "Chocolate Chip Rookies Video Library" },
+  { title: "Chocolate Chip Cookies Video Library" },
 ];
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: Route.LoaderArgs) => {
   const latestSession = await getLatestSession();
   const isLocal = isLocalRequest(request)
   const seed = parseInt(format(new Date(), 'yyyyMMdd'));
   const diveOfTheDay = generateRandomDive(seed)
-  return json({ latestSession, isLocal, diveOfTheDay });
+  return { latestSession, isLocal, diveOfTheDay };
 };
 
 export default function Index() {

@@ -1,17 +1,16 @@
-import { json } from "@remix-run/node";
 import { getSoloSession } from "~/models/solo-sessions.server";
-import { LoaderFunctionArgs } from "@remix-run/router";
 import invariant from "tiny-invariant";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { format } from "date-fns";
+import type { Route } from './+types/solo.$id';
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: Route.LoaderArgs) => {
   invariant(params.id, "id not found");
   const session = await getSoloSession(params.id);
   if (!session) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json(session);
+  return session;
 };
 
 export default function SoloView() {

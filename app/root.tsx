@@ -4,25 +4,28 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration, useRouteError, useRouteLoaderData,
-} from '@remix-run/react';
+  ScrollRestoration,
+  useRouteError,
+  useRouteLoaderData,
+  LinksFunction
+} from 'react-router';
 import { getAllSessionDates } from '~/models/sessions.server'
-import { json, LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import Navbar from '~/components/navbar'
 import Sidebar from '~/components/sidebar'
 import stylesheet from "~/tailwind.css?url";
 import { isLocalRequest } from '~/utils/localGuardUtils'
 import { useRef } from 'react'
+import type { Route } from './+types/root'
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: Route.LoaderArgs) => {
   const sessions = await getAllSessionDates();
   const isLocal = isLocalRequest(request)
-  return json({sessions, isLocal});
+  return {sessions, isLocal};
 };
 
 export const meta = () => {
     return [
-        {title: 'Chocolate Chip Rookies Video Library'},
+        {title: 'Chocolate Chip Cookies Video Library'},
         {name: 'description', content: ''}
     ];
 };
@@ -41,6 +44,7 @@ export function Layout({children}: { children: React.ReactNode }) {
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
             <Meta/>
             <Links/>
+            <title>Chocolate Chip Cookies Video Library</title>
         </head>
 
         <body className="h-full">

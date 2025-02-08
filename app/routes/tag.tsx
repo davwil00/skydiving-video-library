@@ -1,14 +1,13 @@
-import { useLoaderData } from "@remix-run/react";
+import { data, useLoaderData } from "react-router";
 import { readdir } from "fs/promises";
 import { VIDEO_DATA_PATH } from "~/routes/sync-db";
-import { json } from "@remix-run/node";
 import { readTag, writeTag } from "~/utils/tagUtils";
 import { CloneIcon, ErrorIcon, PlayIcon, SuccessIcon } from "~/components/icons";
 import { useReducer } from "react";
 import { type FileToTag, tagReducer, type TagState } from "~/state/tag-reducer";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/router";
+import type { Route } from './+types/tag';
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: Route.LoaderArgs) => {
   const url = new URL(request.url)
   const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
   const pendingDir = await readdir(`${videoDataPath}`, {
@@ -34,7 +33,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     })
   );
 
-  return json({
+  return ({
     filesToTag: files.reduce((acc, curr) => ({
       ...acc,
       [curr.fileName]: curr
@@ -42,9 +41,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: Route.ActionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405);
+    return data({ message: "Method not allowed", status: 405 });
   }
 
   const url = new URL(request.url)

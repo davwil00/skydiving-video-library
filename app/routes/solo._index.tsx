@@ -1,6 +1,5 @@
-import { json, MetaFunction } from "@remix-run/node";
 import { getAllSoloSessions } from "~/models/solo-sessions.server";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, type MetaFunction } from "react-router";
 import { format } from "date-fns";
 
 export const meta: MetaFunction = () => [
@@ -9,7 +8,7 @@ export const meta: MetaFunction = () => [
 
 export const loader = async () => {
   const sessions = await getAllSoloSessions();
-  return json(sessions);
+  return sessions;
 };
 
 export default function Solo_index() {

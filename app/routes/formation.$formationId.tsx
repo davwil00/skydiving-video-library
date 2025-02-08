@@ -1,6 +1,5 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
-import { useLoaderData, useNavigate, useSearchParams } from "@remix-run/react";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router";
 import FlightCard from "~/components/flight-card";
 import { getByFormationId } from "~/models/flights.server";
 import { capitalise, getFormationImageUrl } from "~/utils/utils";
@@ -8,8 +7,9 @@ import { FORMATIONS, getDisplayName } from "~/data/formations";
 import { ViewSwitcher } from "~/components/view-switcher";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { ChangeEvent, useState } from "react";
+import type { Route } from './+types/formation.$formationId';
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   invariant(params.formationId, "formation not found");
   const isLocal = isLocalRequest(request);
   const formation = FORMATIONS[params.formationId];
@@ -20,7 +20,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ flights, formation, views, isLocal });
+  return { flights, formation, views, isLocal };
 };
 
 export default function SessionDetailsPage() {
