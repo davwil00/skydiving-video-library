@@ -1,12 +1,12 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import invariant from "tiny-invariant";
-import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { getFlight } from "~/models/flights.server";
 import { useRef, useState } from "react";
 import { FlightFormation } from "@prisma/client";
 import { format } from "date-fns";
+import type { Route } from './+types/flights.compare';
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
   const flight1Id = searchParams.get("flight1Id");
   const flight2Id = searchParams.get("flight2Id");
@@ -20,7 +20,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   invariant(flight1, "Unable to find flight1");
   invariant(flight2, "Unable to find flight2");
 
-  return json({ flight1, flight2 });
+  return { flight1, flight2 };
 }
 
 export default function CompareFlights() {

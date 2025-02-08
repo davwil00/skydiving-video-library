@@ -1,17 +1,16 @@
-import {json} from "@remix-run/node";
 import {mkdir, readdir, rename} from "fs/promises";
 import {getOrCreateSession} from "~/models/sessions.server";
 import {createFlight} from "~/models/flights.server";
 import {format} from "date-fns";
-import {useLoaderData} from "@remix-run/react";
+import { data, useLoaderData } from "react-router";
 import {processFile} from "~/utils/tagUtils";
-import {type ActionFunctionArgs} from "@remix-run/router";
+import { type ActionFunctionArgs } from "react-router";
 
 export const VIDEO_DATA_PATH = "./public/video-data"
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405)
+    return data({ message: "Method not allowed", status: 405 })
   }
 
   // search pending folder, read tags and move to library
@@ -19,7 +18,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     withFileTypes: true
   });
   if (pendingDir.length == 0) {
-    return json({ message: "Nothing to sync" }, 200)
+    return data({ message: "Nothing to sync", status: 200 })
   }
 
   for (const file of pendingDir) {
@@ -44,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       console.log(`Processed ${file.name})`)
     }
   }
-  return json({ message: "Sync complete" }, 201);
+  return data({ message: "Sync complete", status: 201 });
 };
 
 export const loader = async () => {
@@ -66,7 +65,7 @@ export const loader = async () => {
       }
     }));
 
-  return json({ videoData });
+  return { videoData };
 };
 
 export default function SyncDb() {

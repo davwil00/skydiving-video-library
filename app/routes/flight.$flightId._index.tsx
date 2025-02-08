@@ -1,16 +1,15 @@
-import type { LoaderFunctionArgs } from "@remix-run/router";
 import { isLocalRequest } from "~/utils/localGuardUtils";
-import { json } from "@remix-run/node";
 import { getFlight } from "~/models/flights.server";
 import invariant from "tiny-invariant";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import FlightCard from "~/components/flight-card";
+import type { Route } from './+types/flight.$flightId._index'
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
   invariant(params.flightId, "flight not found");
   const isLocal = isLocalRequest(request)
   const flight = await getFlight(params.flightId);
-  return json({ flight, isLocal });
+  return { flight, isLocal };
 };
 
 export default function EditFlight() {

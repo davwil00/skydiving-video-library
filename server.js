@@ -1,10 +1,7 @@
-import { createRequestHandler } from "@remix-run/express";
-import { installGlobals } from "@remix-run/node";
+import { createRequestHandler } from "@react-router/express";
 import compression from "compression";
 import express from "express";
 import morgan from "morgan";
-
-installGlobals();
 
 const viteDevServer =
     process.env.NODE_ENV === "production"
@@ -17,7 +14,7 @@ const viteDevServer =
 
 const remixHandler = createRequestHandler({
     build: viteDevServer
-        ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
+        ? () => viteDevServer.ssrLoadModule("virtual:react-router/server-build")
         : await import("./build/server/index.js"),
 });
 
@@ -45,7 +42,7 @@ if (viteDevServer) {
         "/video-data",
         express.static("public/video-data", { immutable: true, maxAge: "1y" })
     );
-    ["favicon.ico", "choc-chip-rookies-text.png"].forEach(file => {
+    ["favicon.ico", "*.png"].forEach(file => {
         app.use(
             `/${file}`,
             express.static(`public/${file}`, { immutable: true, maxAge: "1y" })

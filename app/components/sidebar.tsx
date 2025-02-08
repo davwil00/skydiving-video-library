@@ -1,11 +1,10 @@
-import {Link} from "@remix-run/react";
+import { Link } from "react-router";
 import {format} from "date-fns";
 import type {RefObject} from "react";
 import {Session} from "@prisma/client";
-import {SerializeFrom} from "@remix-run/node";
 
 type SidebarProps = {
-    sessions: SerializeFrom<Session>[];
+    sessions: Session[];
     isLocal: boolean
     drawerRef: RefObject<HTMLInputElement>
 };
@@ -29,7 +28,7 @@ export default function Sidebar(props: SidebarProps) {
                     [year]: [session]
                 };
             }
-        }, {} as { [year: string]: SerializeFrom<Session>[] });
+        }, {} as { [year: string]: Session[] });
     const clickCallback = () => drawerRef.current && (drawerRef.current.checked = false);
 
     return (

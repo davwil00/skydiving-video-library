@@ -1,13 +1,12 @@
-import { json, redirect } from "@remix-run/node";
+import { redirect, useLoaderData, data } from "react-router";
 import { createSoloSession } from "~/models/solo-sessions.server";
-import { ActionFunctionArgs } from "@remix-run/router";
 import { VIDEO_DATA_PATH } from "~/routes/sync-db";
 import { mkdir, readdir, rename } from "fs/promises";
-import { useLoaderData } from "@remix-run/react";
 import { Dirent } from "fs";
 import { getDuration, trim } from "~/utils/ffmpegUtils";
 import { format } from "date-fns";
 import { Prisma } from "@prisma/client";
+import type { Route } from './+types/solo.add';
 
 async function getAllFiles() {
   const videoDataPath = `${VIDEO_DATA_PATH}/solo/pending`;
@@ -24,14 +23,14 @@ function trimAllPendingFiles(files: Dirent[]): Promise<string | void>[] {
   });
 }
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: Route.ActionArgs) => {
   if (request.method !== "POST") {
-    return json({ message: "Method not allowed" }, 405);
+    return data({ message: "Method not allowed", status: 405 });
   }
 
   const formData = await request.formData();
 
-  const data: Prisma.SoloSessionCreateInput = {
+  const createSoloSessionData: Prisma.SoloSessionCreateInput = {
     date: new Date(formData.get("date") as string),
     duration: parseInt(formData.get("duration") as string),
     notes: formData.get("notes") as string,
@@ -44,17 +43,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       await Promise.all(trimAllPendingFiles(pendingDir));
     } catch (e) {
       console.error(e);
-      return json({ message: "Error trimming files" }, 500);
+      return data({ message: "Error trimming files", status: 500 });
     }
   }
 
-  const date = format(data.date, "yyyy-MM-dd");
+  const date = format(createSoloSessionData.date, "yyyy-MM-dd");
   const fileNames = pendingDir.map(file => `/video-data/solo/library/${date}/${file.name}`);
-  data.flights = {
+  createSoloSessionData.flights = {
     create: fileNames.map(fileName => ({ videoUrl: fileName }))
   }
 
-  const session = await createSoloSession(data);
+  const session = await createSoloSession(createSoloSessionData);
   const newPath = `${VIDEO_DATA_PATH}/solo/library/${date}`;
   await mkdir(newPath, { recursive: true });
   for (const file of pendingDir) {
@@ -69,11 +68,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export const loader = async () => {
   const pendingDir = await getAllFiles();
   const files = pendingDir.map(file => `/video-data/solo/pending/${file.name}`);
-  return json(files);
+  return { files };
 };
 
 export default function AddSoloSession() {
-  const files = useLoaderData<typeof loader>();
+  const { files } = useLoaderData<typeof loader>();
   return (
     <div>
       <h1>Add Solo Session</h1>

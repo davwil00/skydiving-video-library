@@ -12,7 +12,7 @@ type FlightCardProps = {
     videoUrl: string;
     view: string;
   };
-  session: { date: string };
+  session: { date: Date };
   showDate: boolean;
   showView?: boolean;
   isLocal?: boolean;
