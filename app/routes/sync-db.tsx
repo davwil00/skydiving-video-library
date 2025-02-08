@@ -1,12 +1,11 @@
-import { json } from "@remix-run/node";
-import { mkdir, readdir, rename } from "fs/promises";
-import { type Dirent } from "fs";
-import { getOrCreateSession } from "~/models/sessions.server";
-import { createFlight } from "~/models/flights.server";
-import { format } from "date-fns";
-import { useLoaderData } from "@remix-run/react";
-import { readTag } from "~/utils/tagUtils";
-import { type ActionFunctionArgs } from "@remix-run/router";
+import {json} from "@remix-run/node";
+import {mkdir, readdir, rename} from "fs/promises";
+import {getOrCreateSession} from "~/models/sessions.server";
+import {createFlight} from "~/models/flights.server";
+import {format} from "date-fns";
+import {useLoaderData} from "@remix-run/react";
+import {processFile} from "~/utils/tagUtils";
+import {type ActionFunctionArgs} from "@remix-run/router";
 
 export const VIDEO_DATA_PATH = "./public/video-data"
 
@@ -25,7 +24,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   for (const file of pendingDir) {
     console.log(`Found pending video file: ${file.name}`);
-    const videoData = await processFile(file);
+    const videoData = await processFile(file, `${VIDEO_DATA_PATH}/pending`);
     if (videoData) {
       const sessionId = await getOrCreateSession(videoData.date);
       const newPath = `${VIDEO_DATA_PATH}/library/${format(
@@ -48,27 +47,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return json({ message: "Sync complete" }, 201);
 };
 
-async function processFile(file: Dirent): Promise<VideoData | undefined> {
-  if (file.isFile() && (file.name.endsWith(".mp4") || file.name.endsWith(".av1"))) {
-    const tags = await readTag(`${VIDEO_DATA_PATH}/pending/${file.name}`)
-    const delimiter = tags.title?.includes(',') ? ',' : ''
-    const title: string[] = tags.title?.split(delimiter) || [];
-    return {
-      formationIds: title,
-      flyers: tags.artist?.split("/") || [],
-      date: new Date(tags.date!),
-      view: tags.comment!
-    };
-  }
-}
-
-type VideoData = {
-  formationIds: string[];
-  flyers: string[];
-  date: Date;
-  view: string;
-};
-
 export const loader = async () => {
   const pendingDir = await readdir(`${VIDEO_DATA_PATH}/pending`, {
     withFileTypes: true
@@ -77,7 +55,7 @@ export const loader = async () => {
   const videoData = await Promise.all(pendingDir
     .filter(file => file.name.endsWith(".mp4") || file.name.endsWith(".av1"))
     .map(async file => {
-      const videoData = await processFile(file)
+      const videoData = await processFile(file, `${VIDEO_DATA_PATH}/pending`)
       if (videoData === undefined) {
         return null
       } else {

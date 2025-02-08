@@ -30,7 +30,7 @@ export default function SessionDetailsPage() {
   return (
     <div>
       <h1 className="text-2xl text-black">
-        {format(new Date(session.date), "do MMMM")}
+        {session.name ?? format(new Date(session.date), "do MMMM")}
       </h1>
       <ViewSwitcher views={views} activeView={activeView} />
       <div className="flex flex-wrap justify-center">

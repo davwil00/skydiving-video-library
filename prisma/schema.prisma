@@ -10,6 +10,7 @@ generator client {
 model Session {
   id      String   @id @default(cuid())
   date    DateTime
+  name    String?
   flights Flight[]
 }
 
