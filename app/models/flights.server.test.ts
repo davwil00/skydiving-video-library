@@ -2,7 +2,7 @@ import { prisma } from "~/db.server";
 import { createFlight, getByFormationId, getFlight, updateFlight } from "~/models/flights.server";
 import { beforeEach, describe, expect, test } from "vitest";
 
-describe('getByFormationId', () => {
+describe('flights model', () => {
   beforeEach(async () => {
     await prisma.flightFormation.deleteMany()
     await prisma.flight.deleteMany()

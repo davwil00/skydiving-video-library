@@ -12,7 +12,8 @@
     "migrate-deploy": "prisma generate && prisma migrate deploy",
     "typecheck": "tsc",
     "test": "dotenv -e .env.test -- npx prisma migrate deploy && vitest --run",
-    "start": "remix-serve ./build/server/index.js"
+    "start": "remix-serve ./build/server/index.js",
+    "generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
