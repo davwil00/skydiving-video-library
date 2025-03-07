@@ -59,6 +59,14 @@ export default function TrimPending() {
               <td>
                 <input type="checkbox" name={file.name} defaultChecked={file.name.startsWith("source01")} />
               </td>
+              <td>
+                <video src={`video-data/pending/${file.name}`}
+                       muted={true}
+                       preload={file.name.startsWith('source01') ? 'auto' : 'none'}
+                       controls={true}
+                       className="w-1/3">
+                </video>
+              </td>
             </tr>
           ))}
           </tbody>
