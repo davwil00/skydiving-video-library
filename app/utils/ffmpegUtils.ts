@@ -3,7 +3,6 @@ import {renameSync, rmSync} from 'node:fs'
 
 export function trim(filePath: string, startTime?: string, endTime?: string): Promise<string | void> {
   console.info(`trimming ${filePath} from ${startTime} to ${endTime}`)
-  const file = `./public${filePath}`
   const startTimeInSeconds = timeToSeconds(startTime || "")
   const args: string[] = []
   if (startTime) {
@@ -11,7 +10,7 @@ export function trim(filePath: string, startTime?: string, endTime?: string): Pr
     args.push(startTimeInSeconds.toString())
   }
   args.push('-i')
-  args.push(file)
+  args.push(filePath)
 
   if (endTime) {
     args.push("-to")
@@ -27,7 +26,7 @@ export function trim(filePath: string, startTime?: string, endTime?: string): Pr
   args.push('copy')
   args.push('-an')
 
-  const outputFile = file.replace('.mp4', '-trimmed.mp4')
+  const outputFile = filePath.replace('.mp4', '-trimmed.mp4')
   args.push(outputFile)
 
   console.log("Calling ffmpeg with args ", args)
@@ -45,8 +44,8 @@ export function trim(filePath: string, startTime?: string, endTime?: string): Pr
     process.stderr.on('data', (data) => errorChunks.push(data))
     process.on('close', (code) => {
       if (code === 0) {
-        rmSync(file)
-        renameSync(outputFile, file)
+        rmSync(filePath)
+        renameSync(outputFile, filePath)
         resolve()
       } else {
         reject(errorChunks)

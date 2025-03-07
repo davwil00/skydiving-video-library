@@ -19,7 +19,7 @@ function trimAllPendingFiles(files: Dirent[]): Promise<string | void>[] {
   console.info('trimming files')
   return files.map(async file => {
     const duration = await getDuration(`${file.parentPath}/${file.name}`);
-    await trim(`/video-data/solo/pending/${file.name}`, "12", `${parseFloat(duration) - 15}`);
+    await trim(`${VIDEO_DATA_PATH}/solo/pending/${file.name}`, "12", `${parseFloat(duration) - 15}`);
   });
 }
 
