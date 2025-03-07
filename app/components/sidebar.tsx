@@ -142,7 +142,7 @@ export default function Sidebar(props: SidebarProps) {
                     <div className="divider"></div>
                 </li>
                 <li className="items-start">
-                    <h2 className="menu-title">Blocks</h2>
+                    <h2 className="menu-title">A Blocks</h2>
                     <ul>
                         <li>
                             <div className="flex justify-around">
@@ -165,6 +165,35 @@ export default function Sidebar(props: SidebarProps) {
                                     >
                                         <kbd className="kbd">{letter}</kbd>
                                     </Link>
+                                ))}
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li className="items-start">
+                    <h2 className="menu-title">AA Blocks</h2>
+                    <ul>
+                        <li>
+                            <div className="flex justify-around">
+                                {["11", "14", "15"].map((letter) => (
+                                  <Link to={{pathname: `/formation/${letter}`}}
+                                        onClick={clickCallback}
+                                        key={letter}
+                                  >
+                                      <kbd className="kbd">{letter}</kbd>
+                                  </Link>
+                                ))}
+                            </div>
+                        </li>
+                        <li>
+                            <div className="flex justify-around">
+                                {["18", "20", "22"].map((letter) => (
+                                  <Link to={{pathname: `/formation/${letter}`}}
+                                        onClick={clickCallback}
+                                        key={letter}
+                                  >
+                                      <kbd className="kbd">{letter}</kbd>
+                                  </Link>
                                 ))}
                             </div>
                         </li>
