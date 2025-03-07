@@ -4,6 +4,7 @@ import { trim } from "~/utils/ffmpegUtils";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { type Buffer } from 'node:buffer'
 import type { Route } from './+types/flight.$flightId.trim';
+import { VIDEO_DATA_PATH } from "~/routes/sync-db";
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
   if (request.method !== "POST") {
@@ -22,7 +23,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
   const endTime = formData.get("endTime")?.toString();
   if (fileName && (startTime || endTime)) {
     try {
-      await trim(fileName, startTime, endTime);
+      await trim(`./public/${fileName}`, startTime, endTime);
       return redirect(`/flight/${flightId}`);
     } catch (error) {
       return { error: (error as Buffer[]).map(line => line.toString('utf8')) };
