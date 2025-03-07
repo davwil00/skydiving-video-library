@@ -4,7 +4,6 @@ import { trim } from "~/utils/ffmpegUtils";
 import { isLocalRequest } from "~/utils/localGuardUtils";
 import { type Buffer } from 'node:buffer'
 import type { Route } from './+types/flight.$flightId.trim';
-import { VIDEO_DATA_PATH } from "~/routes/sync-db";
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
   if (request.method !== "POST") {
