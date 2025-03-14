@@ -72,7 +72,9 @@ export function getDuration(fileName: string): Promise<string> {
     })
     process.on('close', (code) => {
       if (code === 0) {
-        resolve(JSON.parse(chunks.join('').toString()).format.duration)
+        const duration = JSON.parse(chunks.join('').toString()).format.duration;
+        const rounded = parseFloat(duration).toFixed(2)
+        resolve(rounded)
       } else {
         reject(errorChunks.toString())
       }
