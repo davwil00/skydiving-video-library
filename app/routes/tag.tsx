@@ -26,7 +26,7 @@ export const loader = async ({request}: Route.LoaderArgs) => {
         fileName: file.name,
         path: `video-data/pending/${file.name}`,
         date: tagData.date,
-        flyers: tagData.artist || "David F/David W/Karen/Nick",
+        flyers: tagData.artist || "David F/Karen/David W/Nick",
         formations: tagData.title?.startsWith('Power Punch') ? '' : tagData.title || '',
         view: tagData.comment || determineViewFromFilename(file.name)
       };
