@@ -93,6 +93,75 @@ export default function TagDir() {
     })
   }
 
+  function row(fileToTag: FileToTag, idx: number) {
+    const clone = () => dispatch({ type: "copy", value: fileToTag.fileName })
+    return (
+      <tr key={idx}>
+        <td>{fileToTag.fileName}<input type="hidden" value={fileToTag.fileName} readOnly /></td>
+        <td>
+          <div className="join">
+            <input type="date"
+                   className="input input-bordered join-item tag-date"
+                   value={fileToTag.date}
+                   onChange={(e) => dispatch({
+                     type: 'formElementChange',
+                     fileName: fileToTag.fileName,
+                     field: 'date',
+                     value: e.currentTarget.value
+                   })} />
+          </div>
+        </td>
+        <td>
+          <input type="text" className="input input-bordered"
+                 value={fileToTag.flyers}
+                 onChange={(e) => dispatch({
+                   type: 'formElementChange',
+                   fileName: fileToTag.fileName,
+                   field: 'flyers',
+                   value: e.currentTarget.value
+                 })}
+                 onBlur={clone}
+          />
+        </td>
+        <td>
+          <input type="text" pattern="[A-HJ-Q0-9]+"
+                   className="input input-bordered"
+                   onChange={(e) => dispatch({
+                     type: 'formElementChange',
+                     fileName: fileToTag.fileName,
+                     field: 'formations',
+                     value: e.currentTarget.value
+                   })}
+                   value={fileToTag.formations}
+                   onBlur={clone}
+          />
+        </td>
+        <td>
+          <select className="select input-bordered"
+                  onChange={(e) => dispatch({
+                    type: 'formElementChange',
+                    fileName: fileToTag.fileName,
+                    field: 'view',
+                    value: e.currentTarget.value
+                  })}
+                  value={fileToTag.view}
+          >
+            <option value="TOP">Top</option>
+            <option value="SIDE">Side</option>
+          </select>
+        </td>
+        <td>
+          <button type="button" onClick={() => dispatch({ type: "openVideoPreview", value: fileToTag.path })}>
+            <PlayIcon />
+          </button>
+          <button type="button" className="ml-3" onClick={clone}>
+            <CloneIcon />
+          </button>
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <div>
       {submissionState === 'success' &&
@@ -125,66 +194,7 @@ export default function TagDir() {
         </tr>
         </thead>
         <tbody>
-        {Object.values(filesToTag).map((fileToTag, idx) =>
-          <tr key={idx}>
-            <td>{fileToTag.fileName}<input type="hidden" value={fileToTag.fileName} readOnly /></td>
-            <td>
-              <div className="join">
-                <input type="date"
-                       className="input input-bordered join-item tag-date"
-                       value={fileToTag.date}
-                       onChange={(e) => dispatch({
-                         type: 'formElementChange',
-                         fileName: fileToTag.fileName,
-                         field: 'date',
-                         value: e.currentTarget.value
-                       })} />
-              </div>
-            </td>
-            <td>
-              <input type="text" className="input input-bordered"
-                     value={fileToTag.flyers}
-                     onChange={(e) => dispatch({
-                       type: 'formElementChange',
-                       fileName: fileToTag.fileName,
-                       field: 'flyers',
-                       value: e.currentTarget.value
-                     })} />
-            </td>
-            <td><input type="text" pattern="[A-HJ-Q0-9]+"
-                       className="input input-bordered"
-                       onChange={(e) => dispatch({
-                         type: 'formElementChange',
-                         fileName: fileToTag.fileName,
-                         field: 'formations',
-                         value: e.currentTarget.value
-                       })}
-                       value={fileToTag.formations} />
-            </td>
-            <td>
-              <select className="select input-bordered"
-                      onChange={(e) => dispatch({
-                        type: 'formElementChange',
-                        fileName: fileToTag.fileName,
-                        field: 'view',
-                        value: e.currentTarget.value
-                      })}
-                      value={fileToTag.view}
-              >
-                <option value="TOP">Top</option>
-                <option value="SIDE">Side</option>
-              </select>
-            </td>
-            <td>
-              <button type="button" onClick={() => dispatch({ type: "openVideoPreview", value: fileToTag.path })}>
-                <PlayIcon />
-              </button>
-              <button type="button" className="ml-3" onClick={() => dispatch({ type: "copy", value: fileToTag.fileName })}>
-                <CloneIcon />
-              </button>
-            </td>
-          </tr>
-        )}
+        {Object.values(filesToTag).map(row)}
         </tbody>
       </table>
 
