@@ -7,9 +7,9 @@ export function readTag(path: string): Promise<TagData> {
     ffmetadata.read(path, (err: unknown, data: TagData) => {
       if (err) {
         console.error("Error reading tags", err)
-        reject(err)
+        return reject(err)
       }
-      resolve(data)
+      return resolve(data)
     });
   })
 }
@@ -19,9 +19,9 @@ export function writeTag(path: string, tags: TagData): Promise<void> {
     ffmetadata.write(path, tags, (err: unknown) => {
       if (err) {
         console.error("Error writing tag", err)
-        reject(err)
+        return reject(err)
       }
-      resolve()
+      return resolve()
     })
   })
 }
