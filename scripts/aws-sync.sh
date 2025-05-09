@@ -1,3 +1,4 @@
+#!/bin/bash
 sync_main() {
   local run=${1}
   src="./public/video-data/library"
@@ -26,24 +27,21 @@ sync_solo() {
 
 select_library() {
   local runType=${1}
-  select library in "main" "solo"
-  do
+  select library in "main" "solo"; do
     case $library in
-      (main)
+      main)
         sync_main "$1";;
-      (solo)
+      solo)
         sync_solo "$1";;
     esac
   done
 }
 
-select runType in "run" "dryrun"
-
-do
+select runType in "run" "dryrun"; do
   case $runType in
-    (run)
+    run)
       select_library "true";;
-    (dryrun)
+    dryrun)
       select_library "false";;
   esac
 done
