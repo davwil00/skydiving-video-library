@@ -199,6 +199,35 @@ export default function Sidebar(props: SidebarProps) {
                         </li>
                     </ul>
                 </li>
+                <li className="items-start">
+                    <h2 className="menu-title">AAA Blocks</h2>
+                    <ul>
+                        <li>
+                            <div className="flex justify-around">
+                                {["1", "3", "5", "10"].map((letter) => (
+                                  <Link to={{pathname: `/formation/${letter}`}}
+                                        onClick={clickCallback}
+                                        key={letter}
+                                  >
+                                      <kbd className="kbd">{letter}</kbd>
+                                  </Link>
+                                ))}
+                            </div>
+                        </li>
+                        <li>
+                            <div className="flex justify-around">
+                                {["12", "13", "16", "17"].map((letter) => (
+                                  <Link to={{pathname: `/formation/${letter}`}}
+                                        onClick={clickCallback}
+                                        key={letter}
+                                  >
+                                      <kbd className="kbd">{letter}</kbd>
+                                  </Link>
+                                ))}
+                            </div>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     <div className="divider"></div>
                 </li>
