@@ -26,7 +26,7 @@ export default function FlightCard(props: FlightCardProps) {
     flight, session, showDate, showView = false, isLocal = false, allowSelection = false, onSelect = () => {
     }, isSelected = false
   } = props;
-  const videoUrl = process.env.NODE_ENV === "development" ? flight.videoUrl : `https://d3sblpf3xfzlw7.cloudfront.net/${flight.videoUrl.substring(20)}`
+  const videoUrl = isLocal ? flight.videoUrl : `https://d3sblpf3xfzlw7.cloudfront.net/${flight.videoUrl.substring(20)}`
   return (
     <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
       <div className="card-actions justify-end">
