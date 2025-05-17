@@ -163,7 +163,7 @@ export default function TagDir() {
   }
 
   return (
-    <div>
+    <div className="tag">
       {submissionState === 'success' &&
         <div role="alert" className="alert alert-success">
           <SuccessIcon />

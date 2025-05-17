@@ -37,6 +37,8 @@
     --depth: 1;
     --noise: 0;
     --card-p: 1em;
+    --btn-neutral: oklch(0.313815 0.021108 254.139);
+    --btn-neutral-border: oklab(0.97807 -0.00659901 -0.0282392 / 0.2)
 }
 
 .btn {
@@ -62,4 +64,23 @@
 
 .tab-active {
     color: var(--color-base-content);
+}
+
+.drawer-content {
+    .tag {
+        input, select {
+            background-color: var(--color-base-content);
+            color: var(--color-base-100);
+            border: 1px solid var(--color-base-100);
+        }
+    }
+
+    table th {
+        color: var(--color-base-100);
+    }
+}
+
+.btn-neutral {
+    background-color: var(--btn-neutral);
+    border: 1px solid var(--btn-neutral-border);
 }
