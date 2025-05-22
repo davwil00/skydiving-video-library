@@ -29,19 +29,20 @@ export function writeTag(path: string, tags: TagData): Promise<void> {
 export type VideoData = {
   formationIds: string[];
   flyers: string[];
-  date: Date;
+  date: Date | null;
   view: string;
 };
 
 export async function processFile(file: Dirent, path: string): Promise<VideoData | undefined> {
   if (file.isFile() && (file.name.endsWith(".mp4") || file.name.endsWith(".av1"))) {
+    console.log("processing file", file.name)
     const tags = await readTag(`${path}/${file.name}`)
     const delimiter = tags.title?.includes(',') ? ',' : ''
     const title: string[] = tags.title?.split(delimiter) || [];
     return {
       formationIds: title,
       flyers: tags.artist?.split("/") || [],
-      date: new Date(tags.date!),
+      date: tags.date ? new Date(tags.date) : null,
       view: tags.comment!
     };
   }

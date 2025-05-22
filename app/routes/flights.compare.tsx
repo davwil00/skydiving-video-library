@@ -3,8 +3,8 @@ import invariant from "tiny-invariant";
 import { getFlight } from "~/models/flights.server";
 import { useRef, useState } from "react";
 import { FlightFormation } from "@prisma/client";
-import { format } from "date-fns";
 import type { Route } from './+types/flights.compare';
+import { formatDate } from "~/utils/utils";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
@@ -43,12 +43,12 @@ export default function CompareFlights() {
   return (
     <div className="flex align-center">
       <div>
-        <h2>Flight 1: {format(flight1.session.date, "dd-MM-yyyy")} {formationsToString(flight1.formations)}</h2>
+        <h2>Flight 1: {formatDate(flight1.session.date)} {formationsToString(flight1.formations)}</h2>
         <video ref={video1Ref} controls muted={true} preload="auto" className="h-[40dvh]"
                onCanPlayThrough={() => setVideo1Ready(true)}>
           <source src={`${flight1.videoUrl}`} />
         </video>
-        <h2>Flight 2 {format(flight1.session.date, "dd-MM-yyyy")} {formationsToString(flight1.formations)}</h2>
+        <h2>Flight 2 {formatDate(flight1.session.date)} {formationsToString(flight1.formations)}</h2>
         <video ref={video2Ref} controls muted={true} preload="auto" className="h-[40dvh]"
                onCanPlayThrough={() => setVideo2Ready(true)}>
           <source src={`${flight2.videoUrl}`} />
