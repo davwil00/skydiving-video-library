@@ -50,14 +50,14 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const videoDataPath = url.searchParams.get("dir") || `${VIDEO_DATA_PATH}/pending`
 
   const formData = await request.json();
-  await Promise.all(formData.filesToTag.map((fileToTag: FileToTag) => {
-    writeTag(`${videoDataPath}/${fileToTag.fileName}`, {
+  for (const fileToTag of formData.filesToTag) {
+    await writeTag(`${videoDataPath}/${fileToTag.fileName}`, {
       title: fileToTag.formations || '',
       artist: fileToTag.flyers || '',
       date: fileToTag.date || '',
       comment: fileToTag.view || ''
     });
-  }))
+  }
 
   return null;
 };
