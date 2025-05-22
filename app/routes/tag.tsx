@@ -163,7 +163,7 @@ export default function TagDir() {
   }
 
   return (
-    <div className="tag">
+    <div className="form-light">
       {submissionState === 'success' &&
         <div role="alert" className="alert alert-success">
           <SuccessIcon />

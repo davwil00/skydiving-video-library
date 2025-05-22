@@ -6,7 +6,7 @@ import { useReducer } from "react";
 import { editFlightReducer, type EditFlightState } from "~/state/edit-flight-reducer";
 import { format } from "date-fns";
 import { readTag, writeTag } from "~/utils/tagUtils";
-import type { Route } from './+types/flight.$flightId._index';
+import type { Route } from "./+types/flight.$flightId._index";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   if (!isLocalRequest(request)) {
@@ -26,7 +26,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  const flightId = params.flightId
+  const flightId = params.flightId;
   invariant(flightId, "flight not found");
   const formData = await request.formData();
   const fileName = `./public${formData.get("filename")}`;
@@ -55,62 +55,62 @@ export default function EditFlight() {
 
   const [state, dispatch] = useReducer(editFlightReducer, initialState);
   return (
-    <>
-      <div className="flex justify-between items-start">
-        <div>
-          <form method="post" action={`/flight/${flight.id}/edit`}>
-            <input type="hidden" value={flight.videoUrl} name="filename" />
-            <label className="input w-full max-w-xs">
-              {/*<div className="label">*/}
-              {/*  <span className="label-text">Formations</span>*/}
-              {/*</div>*/}
-              <input type="text" placeholder="Formations" className="bg-white" name="formations" value={state.formations}
-                     onChange={(event) => dispatch({
-                       type: "formElementChange",
-                       field: "formations",
-                       value: event.currentTarget.value
-                     })} />
-            </label>
+    <div className="flex justify-between items-start form-light">
+      <div>
+        <form method="post" action={`/flight/${flight.id}/edit`}>
+          <input type="hidden" value={flight.videoUrl} name="filename" />
+          <label className="">
+            <div className="label-text">Formations</div>
+            <input type="text"
+                   className="input input-bordered"
+                   placeholder="Formations"
+                   name="formations"
+                   value={state.formations}
+                   onChange={(event) => dispatch({
+                     type: "formElementChange",
+                     field: "formations",
+                     value: event.currentTarget.value
+                   })} />
+          </label>
 
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Flyers</span>
-              </div>
-              <input type="text" className="input input-bordered" name="flyers" value={state.flyers}
-                     onChange={(event) => dispatch({
-                       type: "formElementChange",
-                       field: "flyers",
-                       value: event.currentTarget.value
-                     })} />
-            </label>
+          <label className="">
+            <div className="label-text">Flyers</div>
+            <input type="text"
+                   className="input input-bordered"
+                   name="flyers" value={state.flyers}
+                   onChange={(event) => dispatch({
+                     type: "formElementChange",
+                     field: "flyers",
+                     value: event.currentTarget.value
+                   })} />
+          </label>
 
-            <button className="btn btm-primary mt-3" type="submit">Submit</button>
-          </form>
+          <button className="btn btm-primary mt-3" type="submit">Submit</button>
+        </form>
 
-          <form method="post" action={`/flight/${flight.id}/trim`} className="mt-8">
-            <input type="hidden" value={flight.videoUrl} name="filename" />
-            <h2 className="text-2xl">Trim</h2>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Start time</span>
-              </div>
-              <input type="text" className="input input-bordered" name="startTime" pattern="^(?:\d+|\d+:\d{2})$"/>
-            </label>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">End time</span>
-              </div>
-              <input type="text" className="input input-bordered" name="endTime" pattern="^(?:\d+|\d+:\d{2})$" />
-            </label>
-            <button type="submit" className="btn mt-4">Trim</button>
-          </form>
-        </div>
-        <figure>
-          <video controls width="480" muted={true} preload="none">
-            <source src={`${flight.videoUrl}`} />
-          </video>
-        </figure>
+        <form method="post" action={`/flight/${flight.id}/trim`} className="mt-8">
+          <input type="hidden" value={flight.videoUrl} name="filename" />
+          <h2 className="text-2xl">Trim</h2>
+          <label className="">
+            <div className="label-text">
+              <span className="label-text">Start time</span>
+            </div>
+            <input type="text" className="input input-bordered" name="startTime" pattern="^(?:\d+|\d+:\d{2})$" />
+          </label>
+          <label className="">
+            <div className="label-text">
+              <span className="label-text">End time</span>
+            </div>
+            <input type="text" className="input input-bordered" name="endTime" pattern="^(?:\d+|\d+:\d{2})$" />
+          </label>
+          <button type="submit" className="btn mt-4">Trim</button>
+        </form>
       </div>
-    </>
+      <figure>
+        <video controls width="480" muted={true} preload="none">
+          <source src={`${flight.videoUrl}`} />
+        </video>
+      </figure>
+    </div>
   );
 }

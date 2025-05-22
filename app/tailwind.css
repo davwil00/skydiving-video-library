@@ -50,13 +50,6 @@
     }
 }
 
-.drawer-content {
-    color: var(--color-base-100);
-    &:hover {
-        color: var(--color-base-200);
-    }
-}
-
 .tab {
     color: var(--color-base-100);
     flex-grow: 1;
@@ -67,7 +60,12 @@
 }
 
 .drawer-content {
-    .tag {
+    color: var(--color-base-100);
+    &:hover {
+        color: var(--color-base-200);
+    }
+
+    .form-light {
         input, select {
             background-color: var(--color-base-content);
             color: var(--color-base-100);
