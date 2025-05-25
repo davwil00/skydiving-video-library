@@ -28,7 +28,7 @@ export default function FlightCard(props: FlightCardProps) {
   } = props;
   const videoUrl = isLocal ? flight.videoUrl : `https://d3sblpf3xfzlw7.cloudfront.net/${flight.videoUrl.substring(20)}`
   return (
-    <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
+    <a className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl" href={`/flight/${flight.id}/view`}>
       <div className="card-actions justify-end">
         {isLocal ?
           <a href={`/flight/${flight.id}/edit`} className="btn btn-square btn-sm">
@@ -66,6 +66,6 @@ export default function FlightCard(props: FlightCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }

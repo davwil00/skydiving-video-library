@@ -82,3 +82,7 @@
     background-color: var(--btn-neutral);
     border: 1px solid var(--btn-neutral-border);
 }
+
+.fullscreen {
+    background-color: black;
+}
