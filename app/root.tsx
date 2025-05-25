@@ -1,26 +1,24 @@
 import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useRouteError,
-  useRouteLoaderData,
-  LinksFunction
+    isRouteErrorResponse,
+    Links,
+    LinksFunction,
+    Meta,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+    useRouteError, useRouteLoaderData
 } from 'react-router';
 import { getAllSessionDates } from '~/models/sessions.server'
-import Navbar from '~/components/navbar'
-import Sidebar from '~/components/sidebar'
-import stylesheet from "~/tailwind.css?url";
+import stylesheet from '~/tailwind.css?url';
 import { isLocalRequest } from '~/utils/localGuardUtils'
-import { useRef } from 'react'
 import type { Route } from './+types/root'
+import { PageStateProvider } from '~/contexts/page-state'
+import Main from '~/main'
 
 export const loader = async ({request}: Route.LoaderArgs) => {
-  const sessions = await getAllSessionDates();
-  const isLocal = isLocalRequest(request)
-  return {sessions, isLocal};
+    const sessions = await getAllSessionDates();
+    const isLocal = isLocalRequest(request)
+    return {sessions, isLocal};
 };
 
 export const meta = () => {
@@ -31,12 +29,12 @@ export const meta = () => {
 };
 
 export const links: LinksFunction = () => [
-    { rel: "stylesheet", href: stylesheet },
+    {rel: 'stylesheet', href: stylesheet},
 ];
 
 export function Layout({children}: { children: React.ReactNode }) {
-  const data = useRouteLoaderData<typeof loader>('root');
-    const drawerRef = useRef<HTMLInputElement>(null);
+    const data = useRouteLoaderData<typeof loader>('root');
+
     return (
         <html lang="en" data-theme="dark">
         <head>
@@ -48,23 +46,16 @@ export function Layout({children}: { children: React.ReactNode }) {
         </head>
 
         <body className="h-full">
-        <main className="relative min-h-screen bg-white sm:flex sm:justify-center">
-          <div className="drawer md:drawer-open">
-            <input id="drawer-toggle" type="checkbox" className="drawer-toggle" ref={drawerRef}/>
-            <div className="drawer-content">
-              <Navbar/>
-              <div className="p-4">
+        <PageStateProvider>
+            <Main data={data}>
                 {children}
-              </div>
-            </div>
-        <Sidebar sessions={data?.sessions || []} isLocal={data?.isLocal || false} drawerRef={drawerRef}/>
-          </div>
-        </main>
+            </Main>
+        </PageStateProvider>
         <ScrollRestoration/>
         <Scripts/>
         </body>
         </html>
-    );
+    )
 }
 
 export default function App() {
@@ -72,27 +63,29 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
-  const error = useRouteError();
-  console.error(error);
-  if (isRouteErrorResponse(error)) {
-    return (<>
-      <h1>Error</h1>
-      <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix it</p>
-      <h1>
-        {error.status}: {error.statusText}
-        <code className="block mt-4">
-          {error.data}
-        </code>
-      </h1>
-    </>)
-  }
-  return (
-    <>
-      <h1>Error</h1>
-      <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix it</p>
-      <code>
-        {JSON.stringify(error)}
-      </code>
-    </>
-  );
+    const error = useRouteError();
+    console.error(error);
+    if (isRouteErrorResponse(error)) {
+        return (<>
+            <h1>Error</h1>
+            <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix
+                it</p>
+            <h1>
+                {error.status}: {error.statusText}
+                <code className="block mt-4">
+                    {error.data}
+                </code>
+            </h1>
+        </>)
+    }
+    return (
+        <>
+            <h1>Error</h1>
+            <p>Sorry, an error occurred. Please let David know what you were doing at the time and he will try and fix
+                it</p>
+            <code>
+                {JSON.stringify(error)}
+            </code>
+        </>
+    );
 }

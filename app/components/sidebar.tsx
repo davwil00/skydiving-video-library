@@ -1,12 +1,13 @@
-import { Link } from "react-router";
-import {format} from "date-fns";
-import type {RefObject} from "react";
-import {Session} from "@prisma/client";
+import { Link } from 'react-router';
+import { format } from 'date-fns';
+import { RefObject } from 'react';
+import { Session } from '@prisma/client';
+import { usePageStateContext } from '~/contexts/page-state'
 
 type SidebarProps = {
     sessions: Session[];
     isLocal: boolean
-    drawerRef: RefObject<HTMLInputElement>
+    drawerRef: RefObject<HTMLInputElement | null>
 };
 
 export default function Sidebar(props: SidebarProps) {
@@ -30,6 +31,11 @@ export default function Sidebar(props: SidebarProps) {
             }
         }, {} as { [year: string]: Session[] });
     const clickCallback = () => drawerRef.current && (drawerRef.current.checked = false);
+    const {isFullScreen} = usePageStateContext()
+
+    if (isFullScreen) {
+        return null
+    }
 
     return (
         <div className="drawer-side overflow-x-hidden">
