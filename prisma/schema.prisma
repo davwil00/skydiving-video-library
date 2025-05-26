@@ -15,13 +15,13 @@ model Session {
 }
 
 model Flight {
-  id         String            @id @default(cuid())
-  session    Session           @relation(fields: [sessionId], references: [id])
-  sessionId  String
-  flyers     Flyer[]
-  formations FlightFormation[]
-  videoUrl   String
-  view       String
+  id           String            @id @default(cuid())
+  session      Session           @relation(fields: [sessionId], references: [id])
+  sessionId    String
+  flyers       Flyer[]
+  formations   FlightFormation[]
+  sideVideoUrl String?
+  topVideoUrl  String?
 }
 
 model Flyer {
@@ -39,12 +39,12 @@ model FlightFormation {
 }
 
 model SoloSession {
-  id         String       @id @default(cuid())
-  date       DateTime
-  duration   Int
-  notes      String
-  skills     String
-  flights    SoloFlight[]
+  id       String       @id @default(cuid())
+  date     DateTime
+  duration Int
+  notes    String
+  skills   String
+  flights  SoloFlight[]
 }
 
 model SoloFlight {

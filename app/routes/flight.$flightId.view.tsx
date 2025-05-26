@@ -16,44 +16,39 @@ export const loader = async ({request, params}: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');
     const flight = await getFlight(params.flightId);
     invariant(flight, 'Flight not found');
-    // Find video with the other view
-    let topSource, bottomSource;
-    if (flight.view === 'SIDE') {
-        topSource = flight.videoUrl;
-        bottomSource = flight.videoUrl.replace('source01', 'source02')
-    } else {
-        topSource = flight.videoUrl.replace('source02', 'source01');
-        bottomSource = flight.videoUrl;
-    }
-    return {date: flight.session.date, topSource, bottomSource, formations: flight.formations.join(',')};
+    return {
+        date: flight.session.date,
+        topVideoUrl: flight.topVideoUrl,
+        sideVideoUrl: flight.sideVideoUrl,
+        formations: flight.formations.map(formation => formation.formationId).join(','),
+        canToggle: !!flight.sideVideoUrl && !!flight.topVideoUrl
+    };
 };
 
 export default function ViewFlight() {
-    const {date, topSource, bottomSource, formations} = useLoaderData<typeof loader>();
+    const {date, topVideoUrl, sideVideoUrl, formations, canToggle} = useLoaderData<typeof loader>();
     const topVideo = useRef<HTMLVideoElement>(null);
-    const bottomVideo = useRef<HTMLVideoElement>(null);
+    const sideVideo = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [speed, setSpeed] = useState(1);
     const [time, setTime] = useState(0);
 
     const toggleView = () => {
-        if (topVideo.current && bottomVideo.current) {
+        if (topVideo.current && sideVideo.current) {
             topVideo.current.classList.toggle('hidden');
-            bottomVideo.current.classList.toggle('hidden');
+            sideVideo.current.classList.toggle('hidden');
         }
     };
 
     const playPause = async () => {
-        if (topVideo.current && bottomVideo.current) {
-            if (isPlaying) {
-                topVideo.current.pause();
-                bottomVideo.current.pause();
-                setIsPlaying(false);
-            } else {
-                await Promise.all([topVideo.current.play(), bottomVideo.current.play()])
-                setIsPlaying(true);
-            }
+        if (isPlaying) {
+            setIsPlaying(false);
+            topVideo.current?.pause();
+            sideVideo.current?.pause();
+        } else {
+            setIsPlaying(true);
+            await Promise.all([topVideo.current?.play(), sideVideo.current?.play()]).catch()
         }
     }
 
@@ -72,18 +67,18 @@ export default function ViewFlight() {
     const changeSpeed = (e: ChangeEvent<HTMLInputElement>) => {
         const speed = parseFloat(e.target.value);
         setSpeed(speed);
-        if (topVideo.current && bottomVideo.current) {
+        if (topVideo.current && sideVideo.current) {
             topVideo.current.playbackRate = speed;
-            bottomVideo.current.playbackRate = speed;
+            sideVideo.current.playbackRate = speed;
         }
     };
 
     const changeTime = (e: ChangeEvent<HTMLInputElement>) => {
         const timePercent = parseFloat(e.target.value)
         const newTime = (timePercent / 100) * topVideo.current!.duration;
-        if (topVideo.current && bottomVideo.current) {
+        if (topVideo.current && sideVideo.current) {
             topVideo.current.currentTime = newTime;
-            bottomVideo.current.currentTime = newTime;
+            sideVideo.current.currentTime = newTime;
             setTime(timePercent);
         }
     }
@@ -103,10 +98,10 @@ export default function ViewFlight() {
             {!isFullScreen ? <h1>{formatDate(date)} - {formations}</h1> : null}
             <figure className="flex">
                 <video muted={true} preload="auto" ref={topVideo}>
-                    <source src={topSource}/>
+                    <source src={`${topVideoUrl}`}/>
                 </video>
-                <video muted={true} preload="auto" className="hidden" ref={bottomVideo}>
-                    <source src={`${bottomSource}`}/>
+                <video muted={true} preload="auto" className="hidden" ref={sideVideo}>
+                    <source src={`${sideVideoUrl}`}/>
                 </video>
                 <div className="w-[50px] flex flex-col pt-4 relative right-[50px]">
                     <PlaySpeedIcon height="30" fill="#f9ffff"/>
@@ -124,7 +119,7 @@ export default function ViewFlight() {
                 <button onClick={playPause} className="btn btn-primary">
                     {isPlaying ? <PauseIcon/> : <PlayIcon/>}
                 </button>
-                <button onClick={toggleView} className="btn btn-primary"><CameraSwitchIcon/></button>
+                {canToggle ? <button onClick={toggleView} className="btn btn-primary"><CameraSwitchIcon/></button> : null}
                 <input type="range" min={0} max={100} value={time} step="any" onChange={changeTime} className="grow range [--range-bg:var(--color-primary)] [--range-fill:0] text-base-content" />
                 <button onClick={toggleFullScreen} className="btn btn-primary"><FullScreenIcon/></button>
             </div>

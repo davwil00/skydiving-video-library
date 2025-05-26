@@ -17,7 +17,8 @@ export const loader = async () => {
             return {
                 ...videoData,
                 id: file.name,
-                videoUrl: `/video-data/library/2024-11-08/8-way/${file.name}`,
+                topVideoUrl: `/video-data/library/2024-11-08/8-way/${file.name}`,
+                sideVideoUrl: null,
                 flyers: videoData.flyers.map(name => ({name})),
                 formations: videoData.formationIds.map(formationId => ({formationId})),
             };

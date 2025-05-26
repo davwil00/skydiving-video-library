@@ -46,12 +46,12 @@ export default function CompareFlights() {
         <h2>Flight 1: {formatDate(flight1.session.date)} {formationsToString(flight1.formations)}</h2>
         <video ref={video1Ref} controls muted={true} preload="auto" className="h-[40dvh]"
                onCanPlayThrough={() => setVideo1Ready(true)}>
-          <source src={`${flight1.videoUrl}`} />
+          <source src={`${flight1.topVideoUrl}`} />
         </video>
         <h2>Flight 2 {formatDate(flight1.session.date)} {formationsToString(flight1.formations)}</h2>
         <video ref={video2Ref} controls muted={true} preload="auto" className="h-[40dvh]"
                onCanPlayThrough={() => setVideo2Ready(true)}>
-          <source src={`${flight2.videoUrl}`} />
+          <source src={`${flight2.topVideoUrl}`} />
         </video>
       </div>
       <div className="content-center">

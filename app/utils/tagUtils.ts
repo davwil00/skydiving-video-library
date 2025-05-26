@@ -54,3 +54,15 @@ export type TagData = {
   date?: string
   comment?: string
 }
+
+export function extractIdFromFileName(fileName: string) {
+  if (fileName.startsWith('source')) {
+    return fileName.substring(9)
+  }
+
+  return fileName
+}
+
+export function determineViewFromFilename(fileName: string) {
+  return fileName.startsWith('source01') ? 'SIDE' : 'TOP';
+}

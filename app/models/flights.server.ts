@@ -38,8 +38,8 @@ export function createFlight(flight: FlightCreateInput) {
       flyers: {
         connect: flight.flyers.map((flyer) => ({ name: flyer }))
       },
-      videoUrl: flight.videoUrl,
-      view: flight.view
+      sideVideoUrl: flight.sideVideoUrl,
+      topVideoUrl: flight.topVideoUrl,
     }
   });
 }
@@ -94,8 +94,8 @@ export type FlightCreateInput = {
   sessionId: string;
   formationIds: string[];
   flyers: string[];
-  videoUrl: string;
-  view: string;
+  sideVideoUrl?: string;
+  topVideoUrl?: string;
 };
 
 export function findFlightsWithFormations(formations: string[]) {

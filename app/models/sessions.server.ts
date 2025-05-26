@@ -12,8 +12,8 @@ const flightsInclude = {
     id: true,
     flyers: true,
     formations: { orderBy: { order: Prisma.SortOrder.asc } },
-    videoUrl: true,
-    view: true
+    sideVideoUrl: true,
+    topVideoUrl: true,
   }
 };
 

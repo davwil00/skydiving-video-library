@@ -1,30 +1,28 @@
-import invariant from "tiny-invariant";
-import { useLoaderData, useNavigate, useSearchParams } from "react-router";
-import FlightCard from "~/components/flight-card";
-import { getByFormationId } from "~/models/flights.server";
-import { capitalise, getFormationImageUrl } from "~/utils/utils";
-import { FORMATIONS, getDisplayName } from "~/data/formations";
-import { ViewSwitcher } from "~/components/view-switcher";
-import { isLocalRequest } from "~/utils/localGuardUtils";
-import { ChangeEvent, useState } from "react";
+import invariant from 'tiny-invariant';
+import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import FlightCard from '~/components/flight-card';
+import { getByFormationId } from '~/models/flights.server';
+import { getFormationImageUrl } from '~/utils/utils';
+import { FORMATIONS, getDisplayName } from '~/data/formations';
+import { isLocalRequest } from '~/utils/localGuardUtils';
+import { ChangeEvent, useState } from 'react';
 import type { Route } from './+types/formation.$formationId';
+import { ViewSwitcher } from '~/components/view-switcher'
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   invariant(params.formationId, "formation not found");
   const isLocal = isLocalRequest(request);
   const formation = FORMATIONS[params.formationId];
   const flights = await getByFormationId(params.formationId);
-  const views = ["TOP", "SIDE"].flatMap(view =>
-    flights.some(flight => flight.view === view) ? { view: view, name: `${capitalise(view)} View` } : []);
   if (!flights) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { flights, formation, views, isLocal };
+  return { flights, formation, isLocal };
 };
 
 export default function SessionDetailsPage() {
-  const { flights, formation, views, isLocal } = useLoaderData<typeof loader>();
+  const { flights, formation, isLocal } = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const activeView = searchParams.get("view") || "diagram";
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -46,7 +44,7 @@ export default function SessionDetailsPage() {
       <h1 className="text-2xl">
         {formation.id} - {getDisplayName(formation)}
       </h1>
-      <ViewSwitcher views={[{ view: "diagram", name: "Diagram" }, ...views]} activeView={activeView} />
+      <ViewSwitcher views={[{ view: "diagram", name: "Diagram" }, { view: "videos", name: "Videos"}]} activeView={activeView} />
       {activeView === "diagram" ?
         <div>
           <img src={getFormationImageUrl(formation)}
@@ -56,7 +54,6 @@ export default function SessionDetailsPage() {
         </div> :
         <div className="flex flex-wrap justify-center">
           {flights
-            .filter(flight => flight.view === activeView)
             .map((flight, idx) => (
               <FlightCard
                 key={idx}

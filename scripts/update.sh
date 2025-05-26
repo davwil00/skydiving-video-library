@@ -8,5 +8,6 @@ git pull
 echo 'Building...'
 npm i
 npm run build
+npm run migrate-deploy
 echo 'Starting service...'
 sudo systemctl start skydiving.service

@@ -29,7 +29,7 @@ export default function Search() {
       <h1 className="text-xl">Results for {formationIds.map(id => id.toUpperCase()).join(",")}</h1>
       <div className="flex flex-wrap justify-center">
         {results.map((flight, idx) =>
-          <FlightCard flight={flight} session={flight.session} showDate={true} showView={true} key={idx} />
+          <FlightCard flight={flight} session={flight.session} showDate={true} key={idx} />
         )}
       </div>
     </>
