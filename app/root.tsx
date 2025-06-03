@@ -9,6 +9,7 @@ import {
     useRouteError, useRouteLoaderData
 } from 'react-router';
 import { getAllSessionDates } from '~/models/sessions.server'
+import { getAllSoloSessions } from '~/models/solo-sessions.server'
 import stylesheet from '~/tailwind.css?url';
 import { isLocalRequest } from '~/utils/localGuardUtils'
 import type { Route } from './+types/root'
@@ -16,9 +17,12 @@ import { PageStateProvider } from '~/contexts/page-state'
 import Main from '~/main'
 
 export const loader = async ({request}: Route.LoaderArgs) => {
+
     const sessions = await getAllSessionDates();
+    const soloSessions = await getAllSoloSessions();
     const isLocal = isLocalRequest(request)
-    return {sessions, isLocal};
+    const hostName = request.url
+    return {sessions, soloSessions, isLocal, hostName};
 };
 
 export const meta = () => {

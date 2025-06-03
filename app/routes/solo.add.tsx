@@ -76,7 +76,7 @@ export default function AddSoloSession() {
   return (
     <div>
       <h1>Add Solo Session</h1>
-      <form method="post">
+      <form method="post" className="form-light flex flex-col">
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Date</span>
@@ -101,8 +101,8 @@ export default function AddSoloSession() {
           </div>
           <input type="text" className="input input-bordered" name="skills" />
         </label>
-        <label className="form-control fieldset-label mt-4">
-          <input type="checkbox" defaultChecked className="checkbox" name="trim" />
+        <label className="my-4 label">
+          <input type="checkbox" defaultChecked className="checkbox input" name="trim" />
           Trim
         </label>
         <div className="flex flex-wrap gap-1">
@@ -110,7 +110,7 @@ export default function AddSoloSession() {
             <video src={file} muted={true} controls={true} key={idx} className="w-1/3" />
           ))}
         </div>
-        <button type="submit" className="btn mt-4">Add</button>
+        <button type="submit" className="btn mt-4 max-w-xs">Add</button>
       </form>
     </div>
   );

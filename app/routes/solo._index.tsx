@@ -17,11 +17,9 @@ export default function Solo_index() {
     <div>
       <h1 className="text-2xl text-black">Solo</h1>
       <div className="flex gap-4">
-        <div className="card bg-base-100 w-96 shadow-xl">
-          <div className="card-body justify-center">
-              <Link to={{ pathname: "/solo/add" }}><span className="btn btn-neutral text-white text-center">Add Session</span></Link>
-          </div>
-        </div>
+      <Link to={{ pathname: "/solo/add" }}>
+          <span className="btn btn-neutral text-white text-center">Add Session</span>
+      </Link>
 
         {sessions.map((session, idx) => (
           <div className="card bg-base-100 w-96 shadow-xl" key={idx}>

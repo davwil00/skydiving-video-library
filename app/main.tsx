@@ -2,10 +2,14 @@ import Navbar from '~/components/navbar'
 import Sidebar from '~/components/sidebar'
 import { usePageStateContext } from '~/contexts/page-state'
 import { useRef } from 'react'
-import { Session } from '@prisma/client'
+import { Session, SoloSession } from '@prisma/client'
 import { type ReactNode } from 'react'
+import { LibraryStateProvider } from './contexts/library-state'
 
-export default function Main({children, data}: { children: ReactNode, data?: { sessions: Session[], isLocal: boolean } }) {
+export default function Main({children, data}: {
+    children: ReactNode,
+    data?: { sessions: Session[], soloSessions: SoloSession[], isLocal: boolean, hostName: string }
+}) {
     const drawerRef = useRef<HTMLInputElement>(null);
 
     const {isFullScreen} = usePageStateContext()
@@ -20,7 +24,12 @@ export default function Main({children, data}: { children: ReactNode, data?: { s
                         {children}
                     </div>
                 </div>
-                <Sidebar sessions={data?.sessions || []} isLocal={data?.isLocal || false} drawerRef={drawerRef}/>
+                <LibraryStateProvider hostName={data?.hostName}>
+                    <Sidebar sessions={data?.sessions || []}
+                             soloSessions={data?.soloSessions || []}
+                             isLocal={data?.isLocal || false}
+                             drawerRef={drawerRef}/>
+                </LibraryStateProvider>
             </div>
         </main>
     )

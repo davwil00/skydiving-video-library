@@ -11,5 +11,8 @@ export default defineConfig({
   ],
   build: {
     copyPublicDir: false
+  },
+  server: {
+    allowedHosts: ['localhost', 'skydiving-solo']
   }
 });
