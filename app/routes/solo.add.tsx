@@ -15,12 +15,12 @@ async function getAllFiles() {
   });
 }
 
-function trimAllPendingFiles(files: Dirent[]): Promise<string | void>[] {
+async function trimAllPendingFiles(files: Dirent[]) {
   console.info('trimming files')
-  return files.map(async file => {
+  for (const file of files) {
     const duration = await getDuration(`${file.parentPath}/${file.name}`);
     await trim(`${VIDEO_DATA_PATH}/solo/pending/${file.name}`, "12", `${parseFloat(duration) - 15}`);
-  });
+  }
 }
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -40,7 +40,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const pendingDir = await getAllFiles();
   if (formData.get("trim") === "on") {
     try {
-      await Promise.all(trimAllPendingFiles(pendingDir));
+      await trimAllPendingFiles(pendingDir);
     } catch (e) {
       console.error(e);
       return data({ message: "Error trimming files", status: 500 });
