@@ -15,10 +15,11 @@ const LibraryStateContext = createContext<LibraryState>(initialState);
 const LibraryStateDispatchContext = createContext<Dispatch<LibraryStateAction>>(() => {});
 
 export function LibraryStateProvider({ hostName, children }: {hostName?: string, children: ReactNode}) {
+    const libraryType = hostName?.includes('solo') ? LibraryType.SOLO : LibraryType.TEAM
     const canSwitch = hostName?.includes('solo') || false
     const [libraryState, dispatch] = useReducer(
         libraryStateReducer,
-        {...initialState, canSwitch}
+        {libraryType, canSwitch}
     );
 
     return (
