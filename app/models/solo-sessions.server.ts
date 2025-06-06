@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 export function getAllSoloSessions() {
   return prisma.soloSession.findMany({
     orderBy: {
-      date: "desc"
+      date: "asc"
     }
   });
 }
