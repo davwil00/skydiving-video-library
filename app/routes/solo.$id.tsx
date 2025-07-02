@@ -19,7 +19,7 @@ export default function SoloView() {
     const {session, isLocal} = useLoaderData<typeof loader>();
 
     function video(flight: {id: string, videoUrl: string}) {
-        const videoUrl = !isLocal ? flight.videoUrl : `https://d2npnhjbm12f3a.cloudfront.net/${flight.videoUrl?.substring(25)}`
+        const videoUrl = isLocal ? flight.videoUrl : `https://d2npnhjbm12f3a.cloudfront.net/${flight.videoUrl?.substring(25)}`
         return (<video key={flight.id} src={videoUrl} controls muted className="w-[calc(50%-10px)]"/>)
     }
 
