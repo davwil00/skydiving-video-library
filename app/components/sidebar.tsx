@@ -218,7 +218,7 @@ export default function Sidebar(props: SidebarProps) {
                             <ul>
                                 <li>
                                     <div className="flex justify-around">
-                                        {['11', '14', '15'].map((letter) => (
+                                        {['1', '11', '13', '14'].map((letter) => (
                                             <Link to={{pathname: `/formation/${letter}`}}
                                                   onClick={clickCallback}
                                                   key={letter}
@@ -230,7 +230,7 @@ export default function Sidebar(props: SidebarProps) {
                                 </li>
                                 <li>
                                     <div className="flex justify-around">
-                                        {['18', '20', '22'].map((letter) => (
+                                        {['15', '18', '20', '22'].map((letter) => (
                                             <Link to={{pathname: `/formation/${letter}`}}
                                                   onClick={clickCallback}
                                                   key={letter}
@@ -247,7 +247,7 @@ export default function Sidebar(props: SidebarProps) {
                             <ul>
                                 <li>
                                     <div className="flex justify-around">
-                                        {['1', '3', '5', '10'].map((letter) => (
+                                        {['3', '5', '10'].map((letter) => (
                                             <Link to={{pathname: `/formation/${letter}`}}
                                                   onClick={clickCallback}
                                                   key={letter}
@@ -259,7 +259,7 @@ export default function Sidebar(props: SidebarProps) {
                                 </li>
                                 <li>
                                     <div className="flex justify-around">
-                                        {['12', '13', '16', '17'].map((letter) => (
+                                        {['12', '16', '17'].map((letter) => (
                                             <Link to={{pathname: `/formation/${letter}`}}
                                                   onClick={clickCallback}
                                                   key={letter}
