@@ -1,4 +1,4 @@
-import { data, useLoaderData } from 'react-router';
+import { data, redirect, useLoaderData } from 'react-router';
 import { readdir } from 'fs/promises';
 import { VIDEO_DATA_PATH } from '~/routes/sync-db';
 import { determineViewFromFilename, extractIdFromFileName, readTag, writeTag } from '~/utils/tagUtils';
@@ -73,7 +73,7 @@ export const action = async ({request}: Route.ActionArgs) => {
         return data({message: error, status: 500});
     }
 
-    return null;
+    return redirect('/sync-db');
 };
 
 export default function TagDir() {
@@ -100,8 +100,12 @@ export default function TagDir() {
             }
         }).then(response => {
             if (response.ok) {
-                window.scrollTo(0, 0)
-                dispatch({type: 'setSubmissionState', value: 'success'})
+                if (response.redirected) {
+                    window.location.href = response.url
+                } else {
+                    window.scrollTo(0, 0)
+                    dispatch({type: 'setSubmissionState', value: 'success'})
+                }
             } else {
                 dispatch({type: 'setSubmissionState', value: 'error'})
             }
