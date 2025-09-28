@@ -25,6 +25,7 @@
     "dotenv-cli": "^8.0.0",
     "ffmetadata": "^1.7.0",
     "isbot": "^5.1.28",
+    "mediabunny": "^1.17.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.3",
