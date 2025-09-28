@@ -3,8 +3,11 @@ import { useLoaderData } from "react-router";
 import {processFile} from "~/utils/tagUtils";
 import {VIDEO_DATA_PATH} from "~/routes/sync-db";
 import {readdir} from "node:fs/promises";
+import { isLocalRequest } from '~/utils/localGuardUtils'
+import { Route } from '../../.react-router/types/app/routes/+types/8-way-nationals-2024'
 
-export const loader = async () => {
+export const loader = async ({request}: Route.LoaderArgs) => {
+    const isLocal = isLocalRequest(request)
     const videoDataPath = `${VIDEO_DATA_PATH}/library/2024-11-08/8-way`
     const dir = await readdir(`${videoDataPath}`, {
         withFileTypes: true
@@ -12,7 +15,6 @@ export const loader = async () => {
     const files = await Promise.all(dir
         .filter(file => file.name.endsWith(".mp4"))
         .map(async file => {
-            // const tagData = await readTag(`${file.parentPath}/${file.name}`);
             const videoData = (await processFile(file, videoDataPath))!
             return {
                 ...videoData,
@@ -24,12 +26,12 @@ export const loader = async () => {
             };
         })
     );
-    return {files};
+    return {files, isLocal};
 };
 
 
 export default function EightWay() {
-    const {files} = useLoaderData<typeof loader>()
+    const {files, isLocal} = useLoaderData<typeof loader>()
     return (
         <div>
             <h1 className="text-2xl text-black">
@@ -42,7 +44,7 @@ export default function EightWay() {
                             flight={flight}
                             session={{date: new Date('2024-11-08')}}
                             showDate={false}
-                            isLocal={false}
+                            isLocal={isLocal}
                         />
                     ))}
             </div>
