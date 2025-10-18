@@ -2,7 +2,7 @@ import { mkdir, readdir, rename } from 'fs/promises';
 import { getOrCreateSession } from '~/models/sessions.server';
 import { createFlight } from '~/models/flights.server';
 import { format } from 'date-fns';
-import { data, useLoaderData } from 'react-router';
+import { data, useActionData, useLoaderData } from 'react-router';
 import { extractIdFromFileName, processFile } from '~/utils/tagUtils';
 import { type ActionFunctionArgs } from 'react-router';
 import { formatDate } from '~/utils/utils';
@@ -68,7 +68,7 @@ async function processFlightFiles(flight: LabelledDirEnt) {
 
 export const action = async ({request}: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return data({message: 'Method not allowed', status: 405});
+        return data({message: 'Method not allowed', title: "", status: 405});
     }
 
     // search pending folder, read tags and move to library
@@ -90,9 +90,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
         errors.push(`Error processing file ${error}`);
     }
     if (errors.length > 0) {
-        return data({message: errors.join(', '), status: 500});
+        return data({title: 'Sync failed', message: errors.join(', '), status: 500});
     }
-    return data({message: 'Sync complete', status: 201});
+    return data({title: 'Sync complete', message: "Don't forget to sync to AWS", status: 201});
 }
 
 export const loader = async () => {
@@ -123,6 +123,16 @@ export const loader = async () => {
 
 export default function SyncDb() {
     const {videoData} = useLoaderData<typeof loader>();
+    const actionData = useActionData<typeof action>()
+
+    if (actionData) {
+        return (
+            <>
+                <h1>{actionData.title}</h1>
+                <p>{actionData.message}</p>
+            </>
+        )
+    }
 
     return (
         <div>
