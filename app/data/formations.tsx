@@ -37,13 +37,13 @@ const AA_BLOCKS: Block[] = [
   { id: 10, startFormation: "Diamond", endFormation: "Bunyip" },
   { id: 11, startFormation: "Photon", endFormation: "Photon" },
   { id: 12, startFormation: "Bundy", endFormation: "Bundy" },
-  { id: 13, startFormation: "Offest", endFormation: "Spinner" },
+  { id: 13, startFormation: "Mixed Accordions", endFormation: "Mixed Accordions" },
   { id: 14, startFormation: "Bipole", endFormation: "Bipole" },
   { id: 15, startFormation: "Caterpillar", endFormation: "Caterpillar" },
   { id: 16, startFormation: "Compressed", endFormation: "Box" },
   { id: 17, startFormation: "Danish Tree", endFormation: "Murphy" },
   { id: 18, startFormation: "Ziroon", endFormation: "Ziroon" },
-  { id: 20, startFormation: "Piver", endFormation: "Viper" },
+  { id: 20, startFormation: "Zipper", endFormation: "Zipper" },
   { id: 22, startFormation: "Tee", endFormation: "Chinese Tee" }
 ]
 
