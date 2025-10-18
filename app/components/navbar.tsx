@@ -9,7 +9,7 @@ export default function Navbar() {
     return (
         <div className="w-full navbar bg-base-200">
             <div className="flex-none md:hidden">
-                <label htmlFor="drawer-toggle" className="btn btn-square btn-ghost">
+                <label htmlFor="drawer-toggle" className="btn btn-square">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                          className="inline-block w-6 h-6 stroke-current">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
