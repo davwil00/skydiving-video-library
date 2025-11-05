@@ -274,6 +274,139 @@ export default function Sidebar(props: SidebarProps) {
                         <li>
                             <div className="divider"></div>
                         </li>
+                        <li className="items-start">
+                            <h2 className="menu-title">8 Way Randoms</h2>
+                            <ul>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['A', 'B', 'C', 'D'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['E', 'F', 'G', 'H'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['J', 'K', 'L', 'M'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['N', 'O', 'P', 'Q'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li className="items-start">
+                            <h2 className="menu-title">8 Way Blocks</h2>
+                            <ul>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['1', '2', '3', '4'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['5', '6', '7', '8'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['9', '10', '11', '12'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['13', '14', '15', '16'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['17', '18', '19', '20'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="flex justify-around">
+                                        {['21', '22'].map((letter) => (
+                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
+                                                  onClick={clickCallback}
+                                                  key={letter}
+                                            >
+                                                <kbd className="kbd">{letter}</kbd>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div className="divider"></div>
+                        </li>
                         <ul>
                             <form className="join" action="/search" method="GET">
                                 <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
