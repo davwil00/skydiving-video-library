@@ -9,12 +9,28 @@ export function getFormationImageUrl(formation: Formation): string {
   }
 }
 
+export function get8WayFormationImageUrl(formation: Formation): string {
+  if (isRandom(formation)) {
+    return get8WayRandomImageUrl(formation);
+  } else {
+    return get8WayBlockImageUrl(formation.id);
+  }
+}
+
 export function getRandomImageUrl(random: Random) {
   return `/images/randoms/${random.id}-${random.name.replace(" ", "-")}.png`.toLowerCase();
 }
 
 export function getBlockImageUrl(blockId: number): string {
   return `/images/blocks/${blockId}.png`;
+}
+
+export function get8WayRandomImageUrl(random: Random) {
+  return `/images/8-way/randoms/${random.id}.png`;
+}
+
+export function get8WayBlockImageUrl(blockId: number): string {
+  return `/images/8-way/blocks/${blockId}.png`;
 }
 
 export function capitalise(string: string): string {
