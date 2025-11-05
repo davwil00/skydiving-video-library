@@ -47,10 +47,37 @@ const AA_BLOCKS: Block[] = [
   { id: 22, startFormation: "Tee", endFormation: "Chinese Tee" }
 ]
 
+const EIGHT_WAY_BLOCKS: Block[] = [
+
+]
+
+const EIGHT_WAY_RANDOMS: Random[] = [
+    { id: "A", name: "Caterpillar" },
+    { id: "B", name: "Stairstep" },
+    { id: "C", name: "Hourglass" },
+    { id: "D", name: "Hope Diamond" },
+    { id: "E", name: "Rubik" },
+    { id: "F", name: "Diamond Flake" },
+    { id: "G", name: "Arrowhead" },
+    { id: "H", name: "Irquois" },
+    { id: "J", name: "Springbok" },
+    { id: "K", name: "Double Meekers" },
+    { id: "L", name: "Open Facing Diamond" },
+    { id: "M", name: "Double Spiders" },
+    { id: "N", name: "Zipper Flake" },
+    { id: "O", name: "Compressed Accordian" },
+    { id: "P", name: "Venus" },
+    { id: "Q", name: "Compass" }
+]
+
 export type Random = { id: string, name: string}
 export type Block = { id: number, startFormation: string, endFormation: string }
 export type Formation = Random | Block
 export const FORMATIONS = [...RANDOMS, ...A_BLOCKS, ...AA_BLOCKS].reduce((acc, curr)  => ({
+  ...acc,
+  [curr.id]: curr
+}), {} as {[id: string]: Formation})
+export const EIGHT_WAY_FORMATIONS = [...EIGHT_WAY_RANDOMS, ...EIGHT_WAY_BLOCKS].reduce((acc, curr)  => ({
   ...acc,
   [curr.id]: curr
 }), {} as {[id: string]: Formation})
