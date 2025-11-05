@@ -114,6 +114,8 @@ export default function Sidebar(props: SidebarProps) {
                         <li>
                             <Link to={{pathname: '/quiz'}}
                                   onClick={clickCallback}>Quiz</Link>
+                            <Link to={{pathname: '/8-way-quiz'}}
+                                  onClick={clickCallback}>8 Way Quiz</Link>
                             {isLocal ? <Link to={{pathname: '/tag'}}
                                              onClick={clickCallback}>Tag</Link> : null}
                             {isLocal ? <Link to={{pathname: '/trim-pending'}}

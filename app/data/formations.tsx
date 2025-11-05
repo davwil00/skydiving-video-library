@@ -47,11 +47,32 @@ const AA_BLOCKS: Block[] = [
   { id: 22, startFormation: "Tee", endFormation: "Chinese Tee" }
 ]
 
-const EIGHT_WAY_BLOCKS: Block[] = [
-
+export const EIGHT_WAY_BLOCKS: Block[] = [
+    { id: 1, startFormation: "Donut Flake", endFormation: "Donut Flake" },
+    { id: 2, startFormation: "Swiss Bear", endFormation: "Swiss Bear" },
+    { id: 3, startFormation: "Double Chinese Tees", endFormation: "Double Donuts" },
+    { id: 4, startFormation: "Snowflake", endFormation: "In-Out" },
+    { id: 5, startFormation: "Opposed Crank", endFormation: "Opposed Crank" },
+    { id: 6, startFormation: "Star", endFormation: "Star" },
+    { id: 7, startFormation: "Nacho", endFormation: "Nacho" },
+    { id: 8, startFormation: "Frisbee", endFormation: "Frisbee" },
+    { id: 9, startFormation: "Taj", endFormation: "Mahal" },
+    { id: 10, startFormation: "Donut", endFormation: "Donut" },
+    { id: 11, startFormation: "Norwegian Box", endFormation: "Norwegian Donut" },
+    { id: 12, startFormation: "Stereo Bipoles", endFormation: "Stereo Bipoles" },
+    { id: 13, startFormation: "Double Satellite", endFormation: "Double Satellite" },
+    { id: 14, startFormation: "Zippered Opals", endFormation: "Zippered Opals" },
+    { id: 15, startFormation: "Zippers", endFormation: "Double Yuans" },
+    { id: 16, startFormation: "Canadian Tees", endFormation: "Monopods" },
+    { id: 17, startFormation: "Buzzard", endFormation: "Buzzard" },
+    { id: 18, startFormation: "Sidebody Donut", endFormation: "Sidebody Donut" },
+    { id: 19, startFormation: "Compressed Diamonds", endFormation: "Compressed Diamonds" },
+    { id: 20, startFormation: "Donut Cross", endFormation: "Donut Cross" },
+    { id: 21, startFormation: "Free Bear", endFormation: "Eye" },
+    { id: 22, startFormation: "Old Bone", endFormation: "Compressed Stairstep Diamonds" }
 ]
 
-const EIGHT_WAY_RANDOMS: Random[] = [
+export const EIGHT_WAY_RANDOMS: Random[] = [
     { id: "A", name: "Caterpillar" },
     { id: "B", name: "Stairstep" },
     { id: "C", name: "Hourglass" },
@@ -65,7 +86,7 @@ const EIGHT_WAY_RANDOMS: Random[] = [
     { id: "L", name: "Open Facing Diamond" },
     { id: "M", name: "Double Spiders" },
     { id: "N", name: "Zipper Flake" },
-    { id: "O", name: "Compressed Accordian" },
+    { id: "O", name: "Compressed Accordion" },
     { id: "P", name: "Venus" },
     { id: "Q", name: "Compass" }
 ]
