@@ -126,6 +126,8 @@ export default function Sidebar(props: SidebarProps) {
                                   onClick={clickCallback}>Customise Logo</Link>
                             <Link to={{pathname: '/8-way-nationals-2024'}}
                                   onClick={clickCallback}>8 Way (Nationals 2024) 🥈</Link>
+                            <Link to={{pathname: '/8-way/dive-builder'}}
+                                  onClick={clickCallback}>8 Way Dive Builder</Link>
                         </li>
                         <li>
                             <div className="divider"></div>
