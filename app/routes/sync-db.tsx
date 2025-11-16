@@ -123,12 +123,12 @@ export const loader = async () => {
 
 export default function SyncDb() {
     const {videoData} = useLoaderData<typeof loader>();
-    const actionData = useActionData<typeof action>()
+    const actionData = useActionData<typeof action | {title: string, message: string}>()
 
     if (actionData) {
         return (
             <>
-                <h1>{actionData.title}</h1>
+                <h1>{'title' in actionData ? actionData.title : ''}</h1>
                 <p>{actionData.message}</p>
             </>
         )
