@@ -1,19 +1,28 @@
 import { Link } from 'react-router';
 import { format } from 'date-fns';
 import { RefObject } from 'react';
-import { Session, SoloSession } from '@prisma/client';
+import { Session, SoloSession, Competition } from '@prisma/client';
 import { usePageStateContext } from '~/contexts/page-state'
 import { LibraryType, useLibraryStateContext, useLibraryStateDispatchContext } from '~/contexts/library-state'
 
 type SidebarProps = {
     sessions: Session[];
     soloSessions: SoloSession[];
+    competitions: Competition[];
     isLocal: boolean
     drawerRef: RefObject<HTMLInputElement | null>
 };
 
+function Divider() {
+    return (
+        <li>
+            <div className="divider"></div>
+        </li>
+    )
+}
+
 export default function Sidebar(props: SidebarProps) {
-    const {sessions, soloSessions, isLocal, drawerRef} = props;
+    const {sessions, soloSessions, competitions, isLocal, drawerRef} = props;
     const {libraryType, canSwitch} = useLibraryStateContext()
     const dispatch = useLibraryStateDispatchContext()
     let sessionsToShow: { id: string, date: Date, name?: string | null }[];
@@ -28,29 +37,34 @@ export default function Sidebar(props: SidebarProps) {
             sessionsToShow = []
             break
     }
-    const sessionsByYear = sessionsToShow
-        .reduce((groups, session) => {
-            const year = new Date(session.date).getFullYear().toString();
-            if (groups[year]) {
-                return {
-                    ...groups,
-                    [year]: [
-                        ...groups[year],
-                        session
-                    ]
-                };
-            } else {
-                return {
-                    ...groups,
-                    [year]: [session]
-                };
-            }
-        }, {} as { [year: string]: { id: string, date: Date, name?: string | null }[] });
+    const sessionsByYear = Object.groupBy(sessionsToShow, (session) => new Date(session.date).getFullYear().toString());
     const clickCallback = () => drawerRef.current && (drawerRef.current.checked = false);
     const {isFullScreen} = usePageStateContext()
 
     if (isFullScreen) {
         return null
+    }
+
+    enum FormationLinkType {
+        FOUR_WAY = '/formation',
+        EIGHT_WAY = '/8-way/formation'
+    }
+
+    function makeLink(letter: string, type: FormationLinkType) {
+        return <Link to={{pathname: `${type}/${letter}`}}
+                     onClick={clickCallback}
+                     key={letter}
+        >
+            <kbd className="kbd">{letter}</kbd>
+        </Link>;
+    }
+
+    function makeLinkBlock(formationIds: string[], type: FormationLinkType, key: string) {
+        return <li key={key}>
+            <div className="flex justify-around">
+                {formationIds.map((letter) => makeLink(letter, type))}
+            </div>
+        </li>;
     }
 
     return (
@@ -79,7 +93,7 @@ export default function Sidebar(props: SidebarProps) {
                                         {year}
                                     </div>
                                     <div className="collapse-content">
-                                        {sessions.map((session, idx) => (
+                                        {sessions?.map((session, idx) => (
                                             <li key={`session-${idx}`}>
                                                 <Link
                                                     to={{
@@ -97,8 +111,21 @@ export default function Sidebar(props: SidebarProps) {
                         </ul>
                     </li>
                     <li>
-                        <div className="divider"></div>
+                        <h2 className="menu-title">Competitions</h2>
+                        <ul>
+                            {competitions?.map((competition, idx) => (
+                                <li key={`competition-${idx}`}>
+                                    <Link
+                                        to={{pathname: `/competition/${competition.id}`}}
+                                        onClick={clickCallback}
+                                    >
+                                        {competition.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
                     </li>
+                    <Divider/>
                 </ul>
 
                 {libraryType === LibraryType.SOLO ? (
@@ -129,288 +156,71 @@ export default function Sidebar(props: SidebarProps) {
                             <Link to={{pathname: '/8-way/dive-builder'}}
                                   onClick={clickCallback}>8 Way Dive Builder</Link>
                         </li>
-                        <li>
-                            <div className="divider"></div>
-                        </li>
+                        <Divider/>
                         <li className="items-start">
                             <h2 className="menu-title">Randoms</h2>
                             <ul>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['A', 'B', 'C', 'D'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['E', 'F', 'G', 'H'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['J', 'K', 'L', 'M'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['N', 'O', 'P', 'Q'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
+                                {[
+                                    ['A', 'B', 'C', 'D'],
+                                    ['E', 'F', 'G', 'H'],
+                                    ['J', 'K', 'L', 'M'],
+                                    ['N', 'O', 'P', 'Q']
+                                ].map((formation, idx) => makeLinkBlock(formation, FormationLinkType.FOUR_WAY, `4rand${idx}`))}
                             </ul>
                         </li>
-                        <li>
-                            <div className="divider"></div>
-                        </li>
+                        <Divider/>
                         <li className="items-start">
                             <h2 className="menu-title">A Blocks</h2>
                             <ul>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['2', '4', '6', '7'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['8', '9', '19', '21'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
+                                {[
+                                    ['2','4','6','7'],
+                                    ['8','9','19','21']
+                                ].map((formation, idx) => makeLinkBlock(formation, FormationLinkType.FOUR_WAY, `4block${idx}`))}
                             </ul>
                         </li>
                         <li className="items-start">
                             <h2 className="menu-title">AA Blocks</h2>
                             <ul>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['1', '11', '13', '14'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['15', '18', '20', '22'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
+                                {[
+                                    ['1', '11', '13', '14'],
+                                    ['15', '18', '20', '22']
+                                ].map((formation, idx) => makeLinkBlock(formation, FormationLinkType.FOUR_WAY, `4block${idx}`))}
                             </ul>
                         </li>
                         <li className="items-start">
                             <h2 className="menu-title">AAA Blocks</h2>
                             <ul>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['3', '5', '10'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['12', '16', '17'].map((letter) => (
-                                            <Link to={{pathname: `/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
+                                {[
+                                    ['3', '5', '10'],
+                                    ['12','16', '17']
+                                ].map((formation, idx) => makeLinkBlock(formation, FormationLinkType.FOUR_WAY, `4block${idx}`))}
                             </ul>
-                        </li>
-                        <li>
-                            <div className="divider"></div>
                         </li>
                         <li className="items-start">
                             <h2 className="menu-title">8 Way Randoms</h2>
                             <ul>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['A', 'B', 'C', 'D'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['E', 'F', 'G', 'H'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['J', 'K', 'L', 'M'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['N', 'O', 'P', 'Q'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
+                                {[
+                                    ['A', 'B', 'C', 'D'],
+                                    ['E', 'F', 'G', 'H'],
+                                    ['J', 'K', 'L', 'M'],
+                                    ['N', 'O', 'P', 'Q']
+                                ].map((formation, idx) => makeLinkBlock(formation, FormationLinkType.EIGHT_WAY, `8rand${idx}`))}
                             </ul>
                         </li>
                         <li className="items-start">
                             <h2 className="menu-title">8 Way Blocks</h2>
                             <ul>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['1', '2', '3', '4'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['5', '6', '7', '8'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['9', '10', '11', '12'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['13', '14', '15', '16'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['17', '18', '19', '20'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="flex justify-around">
-                                        {['21', '22'].map((letter) => (
-                                            <Link to={{pathname: `/8-way/formation/${letter}`}}
-                                                  onClick={clickCallback}
-                                                  key={letter}
-                                            >
-                                                <kbd className="kbd">{letter}</kbd>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </li>
+                                {[
+                                    ['1','2','3','4'],
+                                    ['5','6','7','8'],
+                                    ['9','10','11','12'],
+                                    ['13', '14', '15', '16'],
+                                    ['17','18','19','20'],
+                                    ['21','22'],
+                                ].map((formation, idx) => makeLinkBlock(formation, FormationLinkType.EIGHT_WAY, `8block${idx}`))}
                             </ul>
                         </li>
-                        <li>
-                            <div className="divider"></div>
-                        </li>
+                        <Divider/>
                         <ul>
                             <form className="join" action="/search" method="GET">
                                 <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">

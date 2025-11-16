@@ -2,13 +2,13 @@ import Navbar from '~/components/navbar'
 import Sidebar from '~/components/sidebar'
 import { usePageStateContext } from '~/contexts/page-state'
 import { useRef } from 'react'
-import { Session, SoloSession } from '@prisma/client'
+import { Session, SoloSession, Competition } from '@prisma/client'
 import { type ReactNode } from 'react'
 import { LibraryStateProvider } from './contexts/library-state'
 
 export default function Main({children, data}: {
     children: ReactNode,
-    data?: { sessions: Session[], soloSessions: SoloSession[], isLocal: boolean, hostName: string }
+    data?: { sessions: Session[], soloSessions: SoloSession[], competitions: Competition[], isLocal: boolean, hostName: string }
 }) {
     const drawerRef = useRef<HTMLInputElement>(null);
 
@@ -27,8 +27,10 @@ export default function Main({children, data}: {
                 <LibraryStateProvider hostName={data?.hostName}>
                     <Sidebar sessions={data?.sessions || []}
                              soloSessions={data?.soloSessions || []}
+                             competitions={data?.competitions || []}
                              isLocal={data?.isLocal || false}
-                             drawerRef={drawerRef}/>
+                             drawerRef={drawerRef}
+                    />
                 </LibraryStateProvider>
             </div>
         </main>

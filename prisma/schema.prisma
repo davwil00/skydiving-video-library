@@ -8,10 +8,13 @@ generator client {
 }
 
 model Session {
-  id      String   @id @default(cuid())
-  date    DateTime
-  name    String?
-  flights Flight[]
+  id            String       @id @default(cuid())
+  date          DateTime
+  name          String?
+  flights       Flight[]
+  Competition   Competition? @relation(fields: [competitionId], references: [id])
+  competitionId String?
+  total_score   Int?
 }
 
 model Flight {
@@ -22,6 +25,7 @@ model Flight {
   formations   FlightFormation[]
   sideVideoUrl String?
   topVideoUrl  String?
+  scores       Json?
 }
 
 model Flyer {
@@ -52,4 +56,12 @@ model SoloFlight {
   solo_session    SoloSession @relation(fields: [solo_session_id], references: [id])
   solo_session_id String
   videoUrl        String
+}
+
+model Competition {
+  id       String    @id @default(cuid())
+  date     DateTime
+  name     String
+  location String
+  session  Session[]
 }

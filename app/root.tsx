@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import { getAllSessionDates } from '~/models/sessions.server'
 import { getAllSoloSessions } from '~/models/solo-sessions.server'
+import { getAllCompetitions} from "~/models/competitions.server";
 import stylesheet from '~/tailwind.css?url';
 import { isLocalRequest } from '~/utils/localGuardUtils'
 import type { Route } from './+types/root'
@@ -20,9 +21,10 @@ export const loader = async ({request}: Route.LoaderArgs) => {
 
     const sessions = await getAllSessionDates();
     const soloSessions = await getAllSoloSessions();
+    const competitions = await getAllCompetitions();
     const isLocal = isLocalRequest(request)
     const hostName = request.url
-    return {sessions, soloSessions, isLocal, hostName};
+    return {sessions, soloSessions, competitions, isLocal, hostName};
 };
 
 export const meta = () => {

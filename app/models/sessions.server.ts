@@ -55,3 +55,15 @@ export async function getOrCreateSession(date: Date) {
 
   return existingSession.id;
 }
+
+export async function updateSession(data: {id: string, name: string, date: Date}) {
+    await prisma.session.update({
+        where: {
+            id: data.id
+        },
+        data: {
+            name: data.name,
+            date: data.date
+        }
+    })
+}
