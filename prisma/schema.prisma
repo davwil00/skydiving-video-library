@@ -25,7 +25,16 @@ model Flight {
   formations   FlightFormation[]
   sideVideoUrl String?
   topVideoUrl  String?
-  scores       Json?
+  scores       Score[]
+}
+
+model Score {
+  id        String @id @default(cuid())
+  flight    Flight @relation(fields: [flightId], references: [id])
+  flightId  String
+  formation String
+  score     Int
+  order     Int
 }
 
 model Flyer {
@@ -59,9 +68,11 @@ model SoloFlight {
 }
 
 model Competition {
-  id       String    @id @default(cuid())
-  date     DateTime
-  name     String
-  location String
-  session  Session[]
+  id        String    @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime
+  name      String
+  location  String
+  sessions  Session[]
+  rank      Int?
 }

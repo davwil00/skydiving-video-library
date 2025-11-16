@@ -8,7 +8,7 @@ import { LibraryStateProvider } from './contexts/library-state'
 
 export default function Main({children, data}: {
     children: ReactNode,
-    data?: { sessions: Session[], soloSessions: SoloSession[], competitions: Competition[], isLocal: boolean, hostName: string }
+    data?: { sessions: Pick<Session, 'id' | 'name' | 'date'>[], soloSessions: SoloSession[], competitions: Competition[], isLocal: boolean, hostName: string }
 }) {
     const drawerRef = useRef<HTMLInputElement>(null);
 

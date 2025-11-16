@@ -37,6 +37,14 @@ export function capitalise(string: string): string {
   return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
 }
 
+export function isRandomFormation(formationId: string) {
+    return /[A-Q]/.test(formationId)
+}
+
+export function calculateScoresPerRound(formationIds: string[]): number {
+    return formationIds.reduce((acc, formationId) => isRandomFormation(formationId) ? acc + 1 : acc + 2, 0);
+}
+
 // From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542
 export function shuffle<T>(a: T[], b?: number, c?: number, d?: T) {
   c = a.length;

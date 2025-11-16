@@ -1,12 +1,21 @@
--- AlterTable
-ALTER TABLE "Flight" ADD COLUMN "scores" JSONB;
+-- CreateTable
+CREATE TABLE "Score" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "flightId" TEXT NOT NULL,
+    "formation" TEXT NOT NULL,
+    "score" INTEGER NOT NULL,
+    "order" INTEGER NOT NULL,
+    CONSTRAINT "Score_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "Flight" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
 
 -- CreateTable
 CREATE TABLE "Competition" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "date" DATETIME NOT NULL,
+    "startDate" DATETIME NOT NULL,
+    "endDate" DATETIME NOT NULL,
     "name" TEXT NOT NULL,
-    "location" TEXT NOT NULL
+    "location" TEXT NOT NULL,
+    "rank" INTEGER
 );
 
 -- RedefineTables

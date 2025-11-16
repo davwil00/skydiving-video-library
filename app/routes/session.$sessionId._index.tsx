@@ -5,6 +5,7 @@ import {format} from 'date-fns';
 import FlightCard from '~/components/flight-card';
 import {isLocalRequest} from '~/utils/localGuardUtils';
 import type {Route} from './+types/session.$sessionId._index';
+import { EditIcon } from '~/components/icons'
 
 export const loader = async ({params, request}: Route.LoaderArgs) => {
     invariant(params.sessionId, "session not found");
@@ -22,8 +23,9 @@ export default function SessionDetailsPage() {
 
     return (
         <div>
-            <h1 className="text-2xl text-black">
+            <h1 className="text-2xl text-black flex items-center gap-2">
                 {session.name ?? format(new Date(session.date), "do MMMM")}
+                {isLocal ? <a href={`/session/${session.id}/edit`}><EditIcon height={20}/></a> : null}
             </h1>
             <div className="flex flex-wrap justify-center">
                 {session.flights
