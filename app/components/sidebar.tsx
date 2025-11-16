@@ -6,7 +6,7 @@ import { usePageStateContext } from '~/contexts/page-state'
 import { LibraryType, useLibraryStateContext, useLibraryStateDispatchContext } from '~/contexts/library-state'
 
 type SidebarProps = {
-    sessions: Session[];
+    sessions: Pick<Session, 'id'|'date'|'name'>[];
     soloSessions: SoloSession[];
     competitions: Competition[];
     isLocal: boolean
@@ -67,6 +67,15 @@ export default function Sidebar(props: SidebarProps) {
         </li>;
     }
 
+    function getMedalFromRank(rank: number | null): string {
+        switch(rank) {
+            case 1: return ' 🥇';
+            case 2: return ' 🥈';
+            case 3: return ' 🥉';
+            default: return '';
+        }
+    }
+
     return (
         <div className="drawer-side overflow-x-hidden">
             <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
@@ -120,9 +129,11 @@ export default function Sidebar(props: SidebarProps) {
                                         onClick={clickCallback}
                                     >
                                         {competition.name}
+                                        {getMedalFromRank(competition.rank)}
                                     </Link>
                                 </li>
                             ))}
+                            {isLocal ? <li><a href="/competition/add">Add</a></li> : null}
                         </ul>
                     </li>
                     <Divider/>

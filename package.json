@@ -11,6 +11,7 @@
     "migrate-dev": "prisma generate && prisma migrate dev",
     "migrate-deploy": "prisma generate && prisma migrate deploy",
     "typecheck": "react-router typegen && tsc",
+    "typegen": "react-router typegen",
     "test": "dotenv -e .env.test -- npx prisma migrate deploy && vitest --run",
     "start": "react-router-serve ./build/server/index.js",
     "generate": "prisma generate"

@@ -1,7 +1,8 @@
-import type { FlightFormation, Flyer } from '@prisma/client';
+import type { FlightFormation, Flyer, Score } from '@prisma/client';
 import { format } from 'date-fns';
-import { CameraSwitchIcon, EditIcon } from '~/components/icons';
+import { CameraSwitchIcon, EditIcon, ScoresIcon } from '~/components/icons';
 import { ChangeEvent, MouseEvent, useState } from 'react';
+import { calculateScoresPerRound, isRandomFormation } from '~/utils/utils'
 
 type FlightCardProps = {
     flight: {
@@ -10,6 +11,7 @@ type FlightCardProps = {
         formations: Pick<FlightFormation, 'formationId'>[];
         sideVideoUrl: string | null;
         topVideoUrl: string | null;
+        scores: Score[]
     };
     session: { date: Date };
     showDate: boolean;
@@ -32,6 +34,7 @@ export default function FlightCard(props: FlightCardProps) {
         e.stopPropagation()
         e.preventDefault();
     }
+    const [showScores, setShowScores] = useState(false);
     return (
         <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
             <div className="card-actions justify-end">
@@ -40,6 +43,12 @@ export default function FlightCard(props: FlightCardProps) {
                         <EditIcon fill="#FFF" height="16px"/>
                     </a>
                     : null}
+                {flight.scores ?
+                    <button className="btn btn-sm" onClick={() => setShowScores(prev => !prev)}>
+                        <ScoresIcon fill="#FFF" height="16px"/>
+                    </button>
+                    : null
+                }
                 {allowSelection ?
                     <input type="checkbox" className="checkbox checkbox-sm mr-2 mt-2 border-white"
                            defaultChecked={isSelected}
@@ -82,6 +91,60 @@ export default function FlightCard(props: FlightCardProps) {
                     </div>
                 </div>
             </a>
+            {showScores ? <div>
+                <Scores scores={flight.scores}
+                        formationIds={flight.formations.map(formation => formation.formationId)}/>
+            </div> : null}
         </div>
     );
+}
+
+function Scores({scores, formationIds}: { scores: Score[], formationIds: string[] }) {
+    const scoresPerRound = calculateScoresPerRound(formationIds)
+    const rounds = Math.ceil(scores.length / scoresPerRound)
+    const rows = []
+
+    function scoreRow(round: number) {
+        const rowRows = []
+        for (let i = 0; i < scoresPerRound; i++) {
+            const idx = round * scoresPerRound + i
+            const score = scores[idx]?.score ?? '-'
+            rowRows.push(
+                <td key={`score-${idx}`} className="border-black border-1">{score}</td>
+            )
+        }
+        return rowRows
+    }
+
+    for (let round = 0; round < rounds; round++) {
+        rows.push(
+            <tr key={`round-${round}`} className="border-black">
+                <td>{round + 1}</td>
+                {scoreRow(round)}
+            </tr>
+        )
+
+    }
+
+    return (
+        <table className="table table-auto border-1 bg-white">
+            <thead>
+            <tr className="border-black">
+                <th className="border-black">Round</th>
+                {formationIds.map((formationId, idx) => (
+                        isRandomFormation(formationId) ?
+                            <th key={`formation-${idx}`} className="border-black border-1">{formationId}</th>
+                            : <>
+                                <th className="border-black border-1">{formationId}</th>
+                                <th className="border-black border-1">{formationId}</th>
+                            </>
+                    )
+                )}
+            </tr>
+            </thead>
+            <tbody>
+            {rows}
+            </tbody>
+        </table>
+    )
 }
