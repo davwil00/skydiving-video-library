@@ -25,7 +25,11 @@ export default function Competition() {
             <div className="mt-6">
                 {competition.sessions.map((session, sessionIdx) => (
                     <div key={`session-${sessionIdx}`}>
-                        <h2 className="text-xl">{session.name ?? ''} {formatDate(session.date)}</h2>
+                        <h2 className="text-xl flex items-center gap-2">
+                            <span>{session.name ?? ''}</span>
+                            <span>{formatDate(session.date)}</span>
+                            {isLocal ? <a href={`/session/${session.id}/edit`}><EditIcon height={20} /></a> : null}
+                        </h2>
                         <div className="flex flex-wrap gap-4">
                         {session.flights
                             .map((flight, idx) => (
