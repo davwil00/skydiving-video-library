@@ -1,8 +1,6 @@
-import invariant from 'tiny-invariant';
 import { useLoaderData } from 'react-router';
 import { get8WayFormationImageUrl } from '~/utils/utils';
 import { EIGHT_WAY_FORMATIONS, getDisplayName } from '~/data/formations';
-import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/formation.$formationId';
 
 export const loader = async ({request}: Route.LoaderArgs) => {
