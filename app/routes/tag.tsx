@@ -212,7 +212,7 @@ export default function TagDir() {
 
             {showModal &&
                 <dialog className="modal modal-open">
-                    <div className="modal-box">
+                    <div className="modal-box max-w-full">
                         <h3 className="font-bold text-lg">{videoPreviewPath}</h3>
                         <video src={videoPreviewPath} controls muted/>
                         <div className="modal-action">
