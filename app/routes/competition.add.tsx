@@ -2,14 +2,14 @@ import { isLocalRequest } from '~/utils/localGuardUtils';
 import { data, redirect, useLoaderData } from 'react-router';
 import { createCompetition } from '~/models/competitions.server';
 import { Route } from '../../.react-router/types/app/routes/+types/competition.add';
-import { getAllSessionDates } from '~/models/sessions.server';
+import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { formatDate } from '~/utils/utils';
 import { useRef, useState } from 'react'
 import { Session } from '@prisma/client'
 
 type SessionIdAndDate = Pick<Session, 'id' | 'date'>
 export const loader = async () => {
-    const sessions = await getAllSessionDates()
+    const sessions = await getAllNonCompetitionSessionDates()
     sessions.reverse()
     return data({ sessions });
 }
@@ -120,7 +120,7 @@ export default function AddCompetition() {
                     <button type="button" className="btn btn-outline join-item" onClick={addSession}>+</button>
                 </div>
             </label>
-            <button type="submit" className="btn mt-4 max-w-xs">Add</button>
+            <button type="submit" className="btn mt-4 max-w-xs" disabled={linkedSessions.size == 0}>Add</button>
         </form>
     </div>;
 }
