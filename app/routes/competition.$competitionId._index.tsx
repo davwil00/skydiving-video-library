@@ -25,7 +25,7 @@ export default function Competition() {
             <div className="mt-6">
                 {competition.sessions.map((session, sessionIdx) => (
                     <div key={`session-${sessionIdx}`}>
-                        <h2 className="text-xl">{session.name ?? ''}{formatDate(session.date)}</h2>
+                        <h2 className="text-xl">{session.name ?? ''} {formatDate(session.date)}</h2>
                         <div className="flex flex-wrap gap-4">
                         {session.flights
                             .map((flight, idx) => (

@@ -34,6 +34,7 @@ export default function FlightCard(props: FlightCardProps) {
         e.stopPropagation()
         e.preventDefault();
     }
+    const hasScores = flight.scores.length > 0
     const [showScores, setShowScores] = useState(false);
     return (
         <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
@@ -43,7 +44,7 @@ export default function FlightCard(props: FlightCardProps) {
                         <EditIcon fill="#FFF" height="16px"/>
                     </a>
                     : null}
-                {flight.scores ?
+                {hasScores ?
                     <button className="btn btn-sm" onClick={() => setShowScores(prev => !prev)}>
                         <ScoresIcon fill="#FFF" height="16px"/>
                     </button>
@@ -91,7 +92,7 @@ export default function FlightCard(props: FlightCardProps) {
                     </div>
                 </div>
             </a>
-            {showScores ? <div>
+            {(hasScores && showScores) ? <div>
                 <Scores scores={flight.scores}
                         formationIds={flight.formations.map(formation => formation.formationId)}/>
             </div> : null}
@@ -118,7 +119,7 @@ function Scores({scores, formationIds}: { scores: Score[], formationIds: string[
 
     for (let round = 0; round < rounds; round++) {
         rows.push(
-            <tr key={`round-${round}`} className="border-black">
+            <tr key={`round-${round}`} className="border-black border-1">
                 <td>{round + 1}</td>
                 {scoreRow(round)}
             </tr>
@@ -127,10 +128,10 @@ function Scores({scores, formationIds}: { scores: Score[], formationIds: string[
     }
 
     return (
-        <table className="table table-auto border-1 bg-white">
+        <table className="table table-auto bg-base-100 dark border-hidden">
             <thead>
             <tr className="border-black">
-                <th className="border-black">Round</th>
+                <th className="border-black border-1">Round</th>
                 {formationIds.map((formationId, idx) => (
                         isRandomFormation(formationId) ?
                             <th key={`formation-${idx}`} className="border-black border-1">{formationId}</th>
@@ -145,6 +146,12 @@ function Scores({scores, formationIds}: { scores: Score[], formationIds: string[
             <tbody>
             {rows}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td colSpan={scoresPerRound} className="text-right">{scores.reduce((total, score) => total + score.score, 0)}</td>
+                </tr>
+            </tfoot>
         </table>
     )
 }
