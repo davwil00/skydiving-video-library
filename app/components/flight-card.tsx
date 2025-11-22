@@ -37,7 +37,7 @@ export default function FlightCard(props: FlightCardProps) {
     const hasScores = flight.scores.length > 0
     const [showScores, setShowScores] = useState(false);
     return (
-        <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl">
+        <div className="card card-compact m-4 max-w-[480px] bg-base-100 shadow-xl h-full">
             <div className="card-actions justify-end">
                 {isLocal ?
                     <a href={`/flight/${flight.id}/edit`} className="btn btn-square btn-sm">
