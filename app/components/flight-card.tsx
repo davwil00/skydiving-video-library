@@ -148,8 +148,10 @@ function Scores({scores, formationIds}: { scores: Score[], formationIds: string[
             </tbody>
             <tfoot>
                 <tr>
-                    <td>Total</td>
-                    <td colSpan={scoresPerRound} className="text-right">{scores.reduce((total, score) => total + score.score, 0)}</td>
+                    <td colSpan={scoresPerRound}>Total</td>
+                    <td className="text-left">
+                        {scores.reduce((total, score) => total + score.score, 0)}
+                    </td>
                 </tr>
             </tfoot>
         </table>
