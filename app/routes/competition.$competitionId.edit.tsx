@@ -3,7 +3,7 @@ import { getCompetition, updateCompetition } from '~/models/competitions.server'
 import { Route } from '../../.react-router/types/app/routes/+types/competition.$competitionId.edit'
 import { data, redirect, useLoaderData } from 'react-router'
 import { formatDate } from '~/utils/utils'
-import { getAllSessionDates } from '~/models/sessions.server'
+import { getAllNonCompetitionSessionDates } from '~/models/sessions.server'
 import { format } from 'date-fns'
 import { useReducer, useRef } from 'react'
 import { isLocalRequest } from '~/utils/localGuardUtils'
@@ -12,7 +12,7 @@ import { competitionReducer } from '~/state/competition-reducer'
 export async function loader({params}: Route.LoaderArgs) {
     const competition = await getCompetition(params.competitionId);
     invariant(competition, 'Competition not found');
-    const sessions = await getAllSessionDates()
+    const sessions = await getAllNonCompetitionSessionDates()
     return {competition, sessions};
 }
 
