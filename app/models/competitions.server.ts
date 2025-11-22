@@ -1,4 +1,5 @@
 import { prisma } from '~/db.server';
+import { Prisma } from '@prisma/client'
 
 export function getAllCompetitions() {
     return prisma.competition.findMany({
@@ -16,7 +17,13 @@ export function getCompetition(id: string) {
                         id: true,
                         date: true,
                         name: true,
-                        flights: {include: {flyers: true, formations: true, scores: true}},
+                        flights: {
+                            include: {
+                                flyers: true,
+                                formations: {orderBy: {order: Prisma.SortOrder.asc}},
+                                scores: true
+                            }
+                        },
                     }
                 }
             },
