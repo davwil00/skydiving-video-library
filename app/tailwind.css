@@ -79,6 +79,10 @@
     table th {
         color: var(--color-base-100);
     }
+
+    table.dark th, table.dark td {
+        color: var(--color-base-content);
+    }
 }
 
 .btn-neutral {
