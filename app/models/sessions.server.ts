@@ -42,15 +42,16 @@ export function getLatestSession() {
     )
 }
 
-export async function getOrCreateSession(date: Date) {
+export async function getOrCreateSession(date: Date, name: string | null) {
     const existingSession = await prisma.session.findFirst({
-        where: {date: date},
+        where: {date, name},
     });
 
     if (!existingSession) {
         const session = await prisma.session.create({
             data: {
                 date: date,
+                name: name,
             },
         });
         return session.id;

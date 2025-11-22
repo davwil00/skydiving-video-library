@@ -44,8 +44,8 @@ async function groupAndLabelFiles(pendingDir: Dirent[]) {
     return labelledFileData
 }
 
-async function processFlightFiles(flight: LabelledDirEnt) {
-    const sessionId = await getOrCreateSession(flight.date);
+async function processFlightFiles(flight: LabelledDirEnt, sessionName: string | null) {
+    const sessionId = await getOrCreateSession(flight.date, sessionName);
     const dateStr = format(flight.date, 'yyyy-MM-dd');
     const path = `/video-data/library/${dateStr}`
     await createFlight({
@@ -68,7 +68,7 @@ async function processFlightFiles(flight: LabelledDirEnt) {
 
 export const action = async ({request}: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return data({message: 'Method not allowed', title: "", status: 405});
+        return data({message: 'Method not allowed', title: '', status: 405});
     }
 
     // search pending folder, read tags and move to library
@@ -79,11 +79,13 @@ export const action = async ({request}: ActionFunctionArgs) => {
         return data({message: 'Nothing to sync', status: 200});
     }
     const errors = [];
+    const formData = await request.formData()
+    const sessionName = formData.get('name') as string || null;
 
     try {
         const labelledFileData = await groupAndLabelFiles(pendingDir)
         for (const flight of labelledFileData.values()) {
-            await processFlightFiles(flight)
+            await processFlightFiles(flight, sessionName)
         }
     } catch (error) {
         console.error('Error processing file', error);
@@ -92,7 +94,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     if (errors.length > 0) {
         return data({title: 'Sync failed', message: errors.join(', '), status: 500});
     }
-    return data({title: 'Sync complete', message: "Don't forget to sync to AWS", status: 201});
+    return data({title: 'Sync complete', message: 'Don\'t forget to sync to AWS', status: 201});
 }
 
 export const loader = async () => {
@@ -123,7 +125,7 @@ export const loader = async () => {
 
 export default function SyncDb() {
     const {videoData} = useLoaderData<typeof loader>();
-    const actionData = useActionData<typeof action | {title: string, message: string}>()
+    const actionData = useActionData<typeof action | { title: string, message: string }>()
 
     if (actionData) {
         return (
@@ -159,7 +161,15 @@ export default function SyncDb() {
                 </tbody>
             </table>
 
-            <form method="POST">
+            <form method="POST" className="form-light">
+                <div className="flex flex-col mb-4">
+                    <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                            <span className="label-text">Session Name</span>
+                        </div>
+                        <input type="text" className="input input-bordered" name="name"/>
+                    </label>
+                </div>
                 <button className="btn" type="submit">Import</button>
             </form>
         </div>
