@@ -8,7 +8,7 @@ import {
     ScrollRestoration,
     useRouteError, useRouteLoaderData
 } from 'react-router';
-import { getAllSessionDates } from '~/models/sessions.server'
+import { getAllNonCompetitionSessionDates } from '~/models/sessions.server'
 import { getAllSoloSessions } from '~/models/solo-sessions.server'
 import { getAllCompetitions} from "~/models/competitions.server";
 import stylesheet from '~/tailwind.css?url';
@@ -19,7 +19,7 @@ import Main from '~/main'
 
 export const loader = async ({request}: Route.LoaderArgs) => {
 
-    const sessions = await getAllSessionDates();
+    const sessions = await getAllNonCompetitionSessionDates();
     const soloSessions = await getAllSoloSessions();
     const competitions = await getAllCompetitions();
     const isLocal = isLocalRequest(request)

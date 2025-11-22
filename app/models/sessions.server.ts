@@ -1,9 +1,11 @@
 import { prisma } from '~/db.server';
 import { Prisma } from '@prisma/client'
 
-export function getAllSessionDates() {
+export function getAllNonCompetitionSessionDates() {
     return prisma.session.findMany({
         select: {id: true, date: true, name: true},
+        where: {competitionId: null},
+        orderBy: {date: Prisma.SortOrder.asc}
     });
 }
 
