@@ -1,14 +1,15 @@
 import {
-    type Formation,
     A_BLOCKS,
-    RANDOMS,
-    isRandom,
     AA_BLOCKS,
     AAA_BLOCKS,
-    EIGHT_WAY_BLOCKS, EIGHT_WAY_RANDOMS, Level, allFormations
+    allFormations,
+    EIGHT_WAY_BLOCKS,
+    EIGHT_WAY_RANDOMS,
+    type Formation,
+    Level,
+    RANDOMS
 } from '~/data/formations';
 import { shuffle } from '~/utils/utils';
-import { format } from 'date-fns'
 
 export type QuizAction =
     | { type: 'startQuiz' }

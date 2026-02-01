@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react';
 import { CheckIcon, XIcon } from '~/components/icons';
 import { getFormationImageUrl } from '~/utils/utils';
-import { DivePool, initialState, type Question, QuestionSet, quizReducer, QuizType } from '~/state/quiz-reducer';
+import { initialState, type Question, quizReducer, QuizType } from '~/state/quiz-reducer';
 import { type Formation, isRandom } from '~/data/formations';
 import QuizConfig from '~/components/quiz-config'
 
