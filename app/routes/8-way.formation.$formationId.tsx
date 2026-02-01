@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 import { useLoaderData } from 'react-router';
-import { get8WayFormationImageUrl } from '~/utils/utils';
+import { getFormationImageUrl } from '~/utils/utils';
 import { EIGHT_WAY_FORMATIONS, getDisplayName } from '~/data/formations';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/formation.$formationId';
@@ -22,7 +22,7 @@ export default function EightWayFormation() {
                 {formation.id} - {getDisplayName(formation)}
             </h1>
             <div>
-                <img src={get8WayFormationImageUrl(formation)}
+                <img src={getFormationImageUrl(formation)}
                      alt={`${formation.id}`}
                      className="h-fit max-h-[80vh] mx-auto mt-2"
                 />

@@ -1,8 +1,9 @@
 import { useEffect, useReducer, useRef } from 'react';
 import { CheckIcon, XIcon } from '~/components/icons';
 import { getFormationImageUrl } from '~/utils/utils';
-import { initialState, type Question, QuestionSet, quizReducer, QuizType } from '~/state/quiz-reducer';
+import { DivePool, initialState, type Question, QuestionSet, quizReducer, QuizType } from '~/state/quiz-reducer';
 import { type Formation, isRandom } from '~/data/formations';
+import QuizConfig from '~/components/quiz-config'
 
 export default function QuizPage() {
     const [quizState, dispatch] = useReducer(quizReducer, initialState)
@@ -92,10 +93,6 @@ export default function QuizPage() {
         return `${formation.id}`
     }
 
-    function canStart() {
-        return quizState.questionSet.length > 0 && quizState.quizType !== undefined
-    }
-
     function identifyFormationFromPicture(currentQuestion: Question) {
         return (
             <div className="card text-black">
@@ -146,54 +143,6 @@ export default function QuizPage() {
         );
     }
 
-    function gameStart() {
-        return (
-            <div className="text-center max-w-[450px] mx-auto">
-                <span className="text-5xl text-black block">Formations Quiz</span>
-                <div className="form-control mt-4">
-                    <input type="checkbox"
-                           name="quiz-question-set"
-                           className="btn text-white"
-                           checked={quizState.questionSet?.includes(QuestionSet.RANDOMS)}
-                           aria-label="Include randoms"
-                           autoComplete="off"
-                           onChange={() => dispatch({type: 'setQuestionSet', value: QuestionSet.RANDOMS})}/>
-                </div>
-                <div className="form-control mt-2">
-                    <input type="checkbox"
-                           name="quiz-question-set"
-                           className="btn text-white"
-                           checked={quizState.questionSet?.includes(QuestionSet.BLOCKS_A)}
-                           aria-label="Include blocks"
-                           autoComplete="off"
-                           onChange={() => dispatch({type: 'setQuestionSet', value: QuestionSet.BLOCKS_A})}/>
-                </div>
-                <div className="divider"></div>
-                <div className="form-control mt-4">
-                    <input type="radio"
-                           name="quiz-type"
-                           className="btn text-white"
-                           checked={quizState.quizType === QuizType.PICTURE_TO_NAME}
-                           aria-label="Match the picture to the name"
-                           autoComplete="off"
-                           onChange={() => dispatch({type: 'setQuizType', value: QuizType.PICTURE_TO_NAME})}/>
-                </div>
-                <div className="form-control mt-2">
-                    <input type="radio"
-                           name="quiz-type"
-                           checked={quizState.quizType === QuizType.NAME_TO_PICTURE}
-                           className="btn text-white"
-                           aria-label="Match the name to the picture"
-                           autoComplete="off"
-                           onChange={() => dispatch({type: 'setQuizType', value: QuizType.NAME_TO_PICTURE})}/>
-                </div>
-                <button className="btn text-white mt-4" disabled={!canStart()}
-                        onClick={() => dispatch({type: 'startQuiz'})}>Start
-                </button>
-            </div>
-        );
-    }
-
     if (quizState.started && quizState.questionNo === quizState.questions.length) {
         return gameEnd();
     } else if (quizState.started) {
@@ -205,6 +154,6 @@ export default function QuizPage() {
                 return identifyFormationFromPicture(currentQuestion);
         }
     } else {
-        return gameStart();
+        return <QuizConfig quizState={quizState} dispatch={dispatch} />;
     }
 }

@@ -1,5 +1,5 @@
 import { useLoaderData } from 'react-router';
-import { get8WayFormationImageUrl } from '~/utils/utils';
+import { getFormationImageUrl } from '~/utils/utils';
 import { EIGHT_WAY_FORMATIONS, getDisplayName } from '~/data/formations';
 import type { Route } from './+types/formation.$formationId';
 
@@ -38,7 +38,7 @@ export default function EightWayFormation() {
             />
             {formations.map((formation, idx) =>
                 <div key={idx}>
-                    <img src={get8WayFormationImageUrl(formation)}
+                    <img src={getFormationImageUrl(formation)}
                          alt={`${formation.id}`}
                          className="h-fit max-h-[80vh] mx-auto mt-2"
                     />
