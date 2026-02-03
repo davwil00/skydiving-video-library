@@ -16,14 +16,16 @@ export default function Solo_index() {
   return (
     <div>
       <h1 className="text-2xl text-black">Solo</h1>
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         {sessions.map((session, idx) => (
           <div className="card bg-base-100 w-96 shadow-xl" key={idx}>
             <div className="card-body">
-              <h2 className="card-title">{format(session.date, "dd-MM-yy")}</h2>
-              {session.skills.split(",").map((skill, skidx) =>
-                <div className="badge badge-accent" key={skidx}>{skill}</div>
-              )}
+              <h2 className="card-title text-white">{format(session.date, "dd-MM-yy")}</h2>
+                <div className="flex flex-wrap gap-2">
+                  {session.skills.split(",").map((skill, skidx) =>
+                      <div className="badge badge-accent" key={skidx}>{skill}</div>
+                  )}
+                </div>
               <div className="card-actions justify-end">
                 <Link to={{ pathname: `/solo/${session.id}` }}><span className="btn btn-primary">View</span></Link>
               </div>

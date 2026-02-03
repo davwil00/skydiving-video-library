@@ -73,6 +73,14 @@ export const loader = async () => {
 
 export default function AddSoloSession() {
   const { files } = useLoaderData<typeof loader>();
+  if (files.length === 0) {
+    return (
+      <div>
+        <h1>Add Solo Session</h1>
+        <p>No pending solo session videos found. Please upload videos to the pending folder.</p>
+      </div>
+    );
+  }
   return (
     <div>
       <h1>Add Solo Session</h1>
