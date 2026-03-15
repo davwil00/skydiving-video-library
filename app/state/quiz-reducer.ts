@@ -133,6 +133,12 @@ export const quizReducer = (state: QuizState, action: QuizAction): QuizState => 
                 selectedAnswer: action.answer,
             }
 
+        case 'setNumberOfQuestions':
+            return {
+                ...state,
+                numberOfQuestions: action.value
+            }
+
 
         default:
             return state
