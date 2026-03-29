@@ -37,8 +37,8 @@ export async function processFile(file: Dirent, path: string): Promise<VideoData
   if (file.isFile() && (file.name.endsWith(".mp4") || file.name.endsWith(".av1"))) {
     console.log("processing file", file.name)
     const tags = await readTag(`${path}/${file.name}`)
-    const delimiter = tags.title?.includes(',') ? ',' : ''
-    const title: string[] = tags.title?.split(delimiter) || [];
+    const delimiter = (tags.title?.includes(',') ? ',' : '')
+    const title: string[] = tags.title?.split(delimiter).filter(formation => formation.length > 0) || [];
     return {
       formationIds: title,
       flyers: tags.artist?.split("/") || [],
