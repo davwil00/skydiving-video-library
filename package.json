@@ -14,7 +14,19 @@
     "typegen": "react-router typegen",
     "test": "dotenv -e .env.test -- npx prisma migrate deploy && vitest --run",
     "start": "react-router-serve ./build/server/index.js",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "icons": "rimraf app/components/formations/8-way/randoms && npx @svgr/cli --out-dir app/components/formations/8-way/randoms -- public/images/8-way/randoms",
+    "icons:watch": "npm-watch icons",
+    "dev:svg": "run-s icons icons:watch"
+  },
+  "watch": {
+    "icons": {
+      "patterns": [
+        "icons"
+      ]
+    },
+    "extensions": "svg",
+    "quiet": false
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
@@ -34,6 +46,10 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@react-router/dev": "^7.9.4",
+    "@svgr/cli": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@svgr/plugin-prettier": "^8.1.0",
+    "@svgr/plugin-svgo": "^8.1.0",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
@@ -48,12 +64,16 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^17.4.0",
+    "npm-run-all": "^4.1.5",
+    "npm-watch": "^0.13.0",
     "postcss": "^8.5.6",
     "prisma": "^6.17.1",
+    "rimraf": "^6.1.3",
     "tailwindcss": "^4.1.7",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
+    "vite-plugin-svgr": "^5.0.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   },

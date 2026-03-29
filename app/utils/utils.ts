@@ -26,7 +26,7 @@ export function getBlockImageUrl(blockId: string): string {
 }
 
 export function get8WayRandomImageUrl(random: Random) {
-    return `/images/8-way/randoms/${random.id}.png`;
+    return `/images/8-way/randoms/${random.id}.svg`;
 }
 
 export function get8WayBlockImageUrl(blockId: string): string {
