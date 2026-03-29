@@ -62,7 +62,7 @@ export function formatDate(date: Date | null): string {
     }
     try {
         return format(new Date(date), 'dd-MM-yyyy');
-    } catch (error) {
+    } catch {
         return '';
     }
 }
