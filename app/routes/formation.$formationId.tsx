@@ -3,11 +3,12 @@ import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import FlightCard from '~/components/flight-card';
 import { getByFormationId } from '~/models/flights.server';
 import { getFormationImageUrl } from '~/utils/utils';
-import { FORMATIONS, getDisplayName } from '~/data/formations';
+import { FORMATIONS, RANDOMS, A_BLOCKS, AA_BLOCKS, getDisplayName } from '~/data/formations';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import type { Route } from './+types/formation.$formationId';
 import { ViewSwitcher } from '~/components/view-switcher'
+import { useSwipe } from '~/hooks/useSwipe'
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   invariant(params.formationId, "formation not found");
@@ -20,6 +21,8 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
   return { flights, formation, isLocal };
 };
+
+const orderedFormations = [...RANDOMS, ...A_BLOCKS, ...AA_BLOCKS];
 
 export default function SessionDetailsPage() {
   const { flights, formation, isLocal } = useLoaderData<typeof loader>();
@@ -39,8 +42,22 @@ export default function SessionDetailsPage() {
     navigate(`/flights/compare?flight1Id=${selectedCards[0]}&flight2Id=${selectedCards[1]}`);
   }
 
+  const currentIndex = orderedFormations.findIndex(f => f.id === formation.id);
+  const prevFormation = currentIndex > 0 ? orderedFormations[currentIndex - 1] : null;
+  const nextFormation = currentIndex < orderedFormations.length - 1 ? orderedFormations[currentIndex + 1] : null;
+
+  const onSwipeLeft = useCallback(() => {
+    if (nextFormation) navigate(`/formation/${nextFormation.id}`);
+  }, [nextFormation, navigate]);
+
+  const onSwipeRight = useCallback(() => {
+    if (prevFormation) navigate(`/formation/${prevFormation.id}`);
+  }, [prevFormation, navigate]);
+
+  const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight);
+
   return (
-    <div className="relative">
+    <div className="relative" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <h1 className="text-2xl">
         {formation.id} - {getDisplayName(formation)}
       </h1>
