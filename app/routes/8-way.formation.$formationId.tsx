@@ -38,8 +38,8 @@ export default function EightWayFormation() {
     const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight);
 
     return (
-        <div className={`relative ${martinColours ? 'martin' : ''}`}>
-            <div className="flex gap-4 items-center" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <div className={`relative ${martinColours ? 'martin' : ''}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+            <div className="flex gap-4 items-center">
                 <h1 className="text-2xl">
                 {formation.id} - {getDisplayName(formation)}
                 </h1>
