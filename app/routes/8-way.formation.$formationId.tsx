@@ -39,14 +39,14 @@ export default function EightWayFormation() {
 
     return (
         <div className={`relative ${martinColours ? 'martin' : ''}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center justify-between">
                 <h1 className="text-2xl">
                 {formation.id} - {getDisplayName(formation)}
                 </h1>
                 <button type="button" className="btn btn-neutral" onClick={() => setMartinColours(prev => !prev)}>Toggle colours</button>
             </div>
-            <div>
-                <FormationImage formation={formation} className="h-[414px]" />
+            <div className="">
+                <FormationImage formation={formation} className="mx-auto mt-8 pb-50" />
             </div>
         </div>
     )
