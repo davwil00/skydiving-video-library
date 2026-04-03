@@ -100,39 +100,7 @@
     }
 }
 
-.P {
-    fill: #FFFFFF !important;
-}
-
-.IF {
-    fill: #ff00ff !important;
-}
-
-.OF {
-    fill: #808080 !important;
-}
-
-.IC {
-    fill: #0000ff !important;
-}
-
-.OC {
-    fill: #ff0000 !important;
-}
-
-.IR {
-    fill: #00ff00 !important;
-}
-
-.OR {
-    fill: #ff6600 !important;
-}
-
-.T {
-    fill: #ffff00 !important;
-}
-
-.martin {
+.alt {
     .P {
         fill: #00b050 !important;
     }

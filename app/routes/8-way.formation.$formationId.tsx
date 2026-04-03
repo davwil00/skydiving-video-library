@@ -3,10 +3,21 @@ import { useLoaderData, useNavigate } from 'react-router';
 import { EIGHT_WAY_FORMATIONS, EIGHT_WAY_RANDOMS, EIGHT_WAY_BLOCKS, getDisplayName } from '~/data/formations';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/formation.$formationId';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useSwipe } from '~/hooks/useSwipe';
 import FormationImage from '~/components/formations/formation-images'
 import { useState } from 'react'
+
+const ROLE_TOOLTIPS: Record<string, string> = {
+    P: 'Point',
+    T: 'Tail',
+    OF: 'Outside Front',
+    IC: 'Inside Centre',
+    OC: 'Outside Centre',
+    IF: 'Inside Front',
+    IR: 'Inside Rear',
+    OR: 'Outside Rear',
+};
 
 export const loader = async ({params, request}: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
@@ -21,7 +32,8 @@ const orderedFormations = [...EIGHT_WAY_RANDOMS, ...EIGHT_WAY_BLOCKS];
 export default function EightWayFormation() {
     const {formation} = useLoaderData<typeof loader>();
     const navigate = useNavigate();
-    const [martinColours, setMartinColours] = useState<boolean>(false);
+    const [altColours, setAltColours] = useState<boolean>(false);
+    const [tooltip, setTooltip] = useState<string>();
 
     const currentIndex = orderedFormations.findIndex(f => f.id === formation.id);
     const prevFormation = currentIndex > 0 ? orderedFormations[currentIndex - 1] : null;
@@ -37,15 +49,28 @@ export default function EightWayFormation() {
 
     const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight);
 
+    const showTooltip = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!(e.target instanceof SVGPathElement)) {
+            setTooltip(undefined);
+            return;
+        }
+
+        const className = e.target.getAttribute('class')?.trim();
+        const role = className?.split(/\s+/).find(token => token in ROLE_TOOLTIPS);
+
+        setTooltip(role ? ROLE_TOOLTIPS[role] : undefined);
+    }
+
     return (
-        <div className={`relative ${martinColours ? 'martin' : ''}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <div className={`relative ${altColours ? 'alt' : ''}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
             <div className="flex gap-4 items-center justify-between">
                 <h1 className="text-2xl">
                 {formation.id} - {getDisplayName(formation)}
                 </h1>
-                <button type="button" className="btn btn-neutral" onClick={() => setMartinColours(prev => !prev)}>Toggle colours</button>
+                <button type="button" className="btn btn-neutral" onClick={() => setAltColours(prev => !prev)}>Toggle colours</button>
             </div>
-            <div className="">
+            <div className="h-1">{tooltip}</div>
+            <div onClick={(e) => showTooltip(e)}>
                 <FormationImage formation={formation} className="max-h-[100vh] mx-auto mt-8 pb-50" />
             </div>
         </div>
