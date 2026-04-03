@@ -15,6 +15,28 @@ import N from '~/components/formations/8-way/randoms/N'
 import O from '~/components/formations/8-way/randoms/O'
 import P from '~/components/formations/8-way/randoms/P'
 import Q from '~/components/formations/8-way/randoms/Q'
+import Svg1 from '~/components/formations/8-way/blocks/1'
+import Svg2 from '~/components/formations/8-way/blocks/2'
+import Svg3 from '~/components/formations/8-way/blocks/3'
+import Svg4 from '~/components/formations/8-way/blocks/4'
+import Svg5 from '~/components/formations/8-way/blocks/5'
+import Svg6 from '~/components/formations/8-way/blocks/6'
+import Svg7 from '~/components/formations/8-way/blocks/7'
+import Svg8 from '~/components/formations/8-way/blocks/8'
+import Svg9 from '~/components/formations/8-way/blocks/9'
+import Svg10 from '~/components/formations/8-way/blocks/10'
+import Svg11 from '~/components/formations/8-way/blocks/11'
+import Svg12 from '~/components/formations/8-way/blocks/12'
+import Svg13 from '~/components/formations/8-way/blocks/13'
+import Svg14 from '~/components/formations/8-way/blocks/14'
+import Svg15 from '~/components/formations/8-way/blocks/15'
+import Svg16 from '~/components/formations/8-way/blocks/16'
+import Svg17 from '~/components/formations/8-way/blocks/17'
+import Svg18 from '~/components/formations/8-way/blocks/18'
+import Svg19 from '~/components/formations/8-way/blocks/19'
+import Svg20 from '~/components/formations/8-way/blocks/20'
+import Svg21 from '~/components/formations/8-way/blocks/21'
+import Svg22 from '~/components/formations/8-way/blocks/22'
 import { SVGProps } from 'react'
 
 interface Props extends SVGProps<SVGSVGElement> {
@@ -55,6 +77,50 @@ export default function FormationImage (props: Props) {
                 return <P {...props} />
             case 'Q':
                 return <Q {...props} />
+            case '1':
+                return <Svg1 {...props} />
+            case '2':
+                return <Svg2 {...props} />
+            case '3':
+                return <Svg3 {...props} />
+            case '4':
+                return <Svg4 {...props} />
+            case '5':
+                return <Svg5 {...props} />
+            case '6':
+                return <Svg6 {...props} />
+            case '7':
+                return <Svg7 {...props} />
+            case '8':
+                return <Svg8 {...props} />
+            case '9':
+                return <Svg9 {...props} />
+            case '10':
+                return <Svg10 {...props} />
+            case '11':
+                return <Svg11 {...props} />
+            case '12':
+                return <Svg12 {...props} />
+            case '13':
+                return <Svg13 {...props} />
+            case '14':
+                return <Svg14 {...props} />
+            case '15':
+                return <Svg15 {...props} />
+            case '16':
+                return <Svg16 {...props} />
+            case '17':
+                return <Svg17 {...props} />
+            case '18':
+                return <Svg18 {...props} />
+            case '19':
+                return <Svg19 {...props} />
+            case '20':
+                return <Svg20 {...props} />
+            case '21':
+                return <Svg21 {...props} />
+            case '22':
+                return <Svg22 {...props} />
         }
     }
     return null

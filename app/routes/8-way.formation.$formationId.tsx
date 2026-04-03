@@ -46,7 +46,7 @@ export default function EightWayFormation() {
                 <button type="button" className="btn btn-neutral" onClick={() => setMartinColours(prev => !prev)}>Toggle colours</button>
             </div>
             <div className="">
-                <FormationImage formation={formation} className="mx-auto mt-8 pb-50" />
+                <FormationImage formation={formation} className="max-h-[100vh] mx-auto mt-8 pb-50" />
             </div>
         </div>
     )

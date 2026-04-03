@@ -15,7 +15,7 @@
     "test": "dotenv -e .env.test -- npx prisma migrate deploy && vitest --run",
     "start": "react-router-serve ./build/server/index.js",
     "generate": "prisma generate",
-    "icons": "rimraf app/components/formations/8-way/randoms && npx @svgr/cli --out-dir app/components/formations/8-way/randoms -- public/images/8-way/randoms",
+    "icons": "rimraf app/components/formations/8-way && npx @svgr/cli --out-dir app/components/formations/8-way -- public/images/8-way",
     "icons:watch": "npm-watch icons",
     "dev:svg": "run-s icons icons:watch"
   },
