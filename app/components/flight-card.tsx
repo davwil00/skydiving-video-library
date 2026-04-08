@@ -62,14 +62,14 @@ export default function FlightCard(props: FlightCardProps) {
                     : null
                 }
             </div>
+            <figure>
+                {view === 'SIDE' ?
+                    <video controls width="480" height="270" muted={true} preload="none" src={`${sideVideoUrl}`}/>
+                    :
+                    <video controls width="480" height="270" muted={true} preload="none" src={`${topVideoUrl}`}/>
+                }
+            </figure>
             <a href={`/flight/${flight.id}/view`}>
-                <figure>
-                    {view === 'SIDE' ?
-                        <video controls width="480" height="270" muted={true} preload="none" src={`${sideVideoUrl}`}/>
-                        :
-                        <video controls width="480" height="270" muted={true} preload="none" src={`${topVideoUrl}`}/>
-                    }
-                </figure>
                 <div className="card-body">
                     {showDate ? <span className="card-title text-base-content">
           {format(new Date(session.date), 'do MMMM yyyy')}
@@ -147,12 +147,12 @@ function Scores({scores, formationIds}: { scores: Score[], formationIds: string[
             {rows}
             </tbody>
             <tfoot>
-                <tr>
-                    <td colSpan={scoresPerRound}>Total</td>
-                    <td className="text-left">
-                        {scores.reduce((total, score) => total + score.score, 0)}
-                    </td>
-                </tr>
+            <tr>
+                <td colSpan={scoresPerRound}>Total</td>
+                <td className="text-left">
+                    {scores.reduce((total, score) => total + score.score, 0)}
+                </td>
+            </tr>
             </tfoot>
         </table>
     )
