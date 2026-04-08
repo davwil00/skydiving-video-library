@@ -2,19 +2,22 @@ import type { Route } from '../../.react-router/types/app/routes/+types/flight.$
 import invariant from 'tiny-invariant';
 import { getFlight } from '~/models/flights.server';
 import { useLoaderData } from 'react-router';
-import { formatDate } from '~/utils/utils';
+import { formatDate, getVideoUrl } from '~/utils/utils';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { CameraSwitchIcon, FullScreenIcon, PauseIcon, PlayIcon, PlaySpeedIcon } from '~/components/icons'
 import { usePageStateDispatchContext } from '~/contexts/page-state'
+import { isLocalRequest } from '~/utils/localGuardUtils'
 
-export const loader = async ({params}: Route.LoaderArgs) => {
+export const loader = async ({request, params}: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');
     const flight = await getFlight(params.flightId);
     invariant(flight, 'Flight not found');
+    const isLocal = isLocalRequest(request);
+
     return {
         date: flight.session.date,
-        topVideoUrl: flight.topVideoUrl,
-        sideVideoUrl: flight.sideVideoUrl,
+        topVideoUrl: getVideoUrl(flight.topVideoUrl, isLocal),
+        sideVideoUrl: getVideoUrl(flight.sideVideoUrl, isLocal),
         formations: flight.formations.map(formation => formation.formationId).join(','),
         canToggle: !!flight.sideVideoUrl && !!flight.topVideoUrl
     };

@@ -66,3 +66,14 @@ export function formatDate(date: Date | null): string {
         return '';
     }
 }
+
+export function getVideoUrl(url: string | null, isLocal: boolean): string | null {
+    if (!url) {
+        return null
+    }
+    if (isLocal) {
+        return url
+    }
+
+    return  `https://d3sblpf3xfzlw7.cloudfront.net/${url.substring(20)}`
+}

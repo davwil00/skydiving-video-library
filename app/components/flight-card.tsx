@@ -2,7 +2,7 @@ import type { FlightFormation, Flyer, Score } from '@prisma/client';
 import { format } from 'date-fns';
 import { CameraSwitchIcon, EditIcon, ScoresIcon } from '~/components/icons';
 import { ChangeEvent, MouseEvent, useState } from 'react';
-import { calculateScoresPerRound, isRandomFormation } from '~/utils/utils'
+import { calculateScoresPerRound, getVideoUrl, isRandomFormation } from '~/utils/utils'
 
 type FlightCardProps = {
     flight: {
@@ -27,8 +27,8 @@ export default function FlightCard(props: FlightCardProps) {
         }, isSelected = false
     } = props;
     const [view, setView] = useState<'SIDE' | 'TOP'>('TOP');
-    const sideVideoUrl = isLocal ? flight.sideVideoUrl : `https://d3sblpf3xfzlw7.cloudfront.net/${flight.sideVideoUrl?.substring(20)}`
-    const topVideoUrl = isLocal ? flight.topVideoUrl : `https://d3sblpf3xfzlw7.cloudfront.net/${flight.topVideoUrl?.substring(20)}`
+    const sideVideoUrl = getVideoUrl(flight.sideVideoUrl, isLocal)
+    const topVideoUrl = getVideoUrl(flight.topVideoUrl, isLocal)
     const switchCamera = (e: MouseEvent<HTMLButtonElement>) => {
         setView(prevView => prevView === 'SIDE' ? 'TOP' : 'SIDE')
         e.stopPropagation()
