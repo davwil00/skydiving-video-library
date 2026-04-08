@@ -1,5 +1,4 @@
 import type { Route } from '../../.react-router/types/app/routes/+types/flight.$flightId._index';
-import { isLocalRequest } from '~/utils/localGuardUtils';
 import invariant from 'tiny-invariant';
 import { getFlight } from '~/models/flights.server';
 import { useLoaderData } from 'react-router';
@@ -8,11 +7,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { CameraSwitchIcon, FullScreenIcon, PauseIcon, PlayIcon, PlaySpeedIcon } from '~/components/icons'
 import { usePageStateDispatchContext } from '~/contexts/page-state'
 
-export const loader = async ({request, params}: Route.LoaderArgs) => {
-    if (!isLocalRequest(request)) {
-        throw new Response('Forbidden', {status: 403});
-    }
-
+export const loader = async ({params}: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');
     const flight = await getFlight(params.flightId);
     invariant(flight, 'Flight not found');
