@@ -26,9 +26,9 @@ export default function FlightCard(props: FlightCardProps) {
         flight, session, showDate, isLocal = false, allowSelection = false, onSelect = () => {
         }, isSelected = false
     } = props;
-    const [view, setView] = useState<'SIDE' | 'TOP'>('TOP');
     const sideVideoUrl = getVideoUrl(flight.sideVideoUrl, isLocal)
     const topVideoUrl = getVideoUrl(flight.topVideoUrl, isLocal)
+    const [view, setView] = useState<'SIDE' | 'TOP'>(topVideoUrl ? 'TOP' : 'SIDE');
     const switchCamera = (e: MouseEvent<HTMLButtonElement>) => {
         setView(prevView => prevView === 'SIDE' ? 'TOP' : 'SIDE')
         e.stopPropagation()
