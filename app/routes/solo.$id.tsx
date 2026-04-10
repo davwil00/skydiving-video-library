@@ -1,26 +1,36 @@
-import { getSoloSession } from '~/models/solo-sessions.server';
-import invariant from 'tiny-invariant';
 import { useLoaderData } from 'react-router';
-import type { Route } from './+types/solo.$id';
-import { formatDate } from '~/utils/utils';
+import invariant from 'tiny-invariant';
+import { getSoloSession } from '~/models/solo-sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { formatDate } from '~/utils/utils';
+import type { Route } from './+types/solo.$id';
 
-export const loader = async ({request, params}: Route.LoaderArgs) => {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
     invariant(params.id, 'id not found');
     const session = await getSoloSession(params.id);
-    const isLocal = isLocalRequest(request)
+    const isLocal = isLocalRequest(request);
     if (!session) {
-        throw new Response('Not Found', {status: 404});
+        throw new Response('Not Found', { status: 404 });
     }
-    return {session, isLocal};
+    return { session, isLocal };
 };
 
 export default function SoloView() {
-    const {session, isLocal} = useLoaderData<typeof loader>();
+    const { session, isLocal } = useLoaderData<typeof loader>();
 
-    function video(flight: {id: string, videoUrl: string}) {
-        const videoUrl = isLocal ? flight.videoUrl : `https://d2npnhjbm12f3a.cloudfront.net/${flight.videoUrl?.substring(25)}`
-        return (<video key={flight.id} src={videoUrl} controls muted className="w-[calc(50%-10px)]"/>)
+    function video(flight: { id: string; videoUrl: string }) {
+        const videoUrl = isLocal
+            ? flight.videoUrl
+            : `https://d2npnhjbm12f3a.cloudfront.net/${flight.videoUrl?.substring(25)}`;
+        return (
+            <video
+                key={flight.id}
+                src={videoUrl}
+                controls
+                muted
+                className="w-[calc(50%-10px)]"
+            />
+        );
     }
 
     return (
@@ -34,5 +44,5 @@ export default function SoloView() {
                 {session.flights.map((flight) => video(flight))}
             </div>
         </div>
-    )
+    );
 }

@@ -1,61 +1,90 @@
 import { useEffect, useReducer, useRef } from 'react';
 import { CheckIcon, XIcon } from '~/components/icons';
-import { getFormationImageUrl } from '~/utils/utils';
-import { initialState, type Question, quizReducer, QuizType } from '~/state/quiz-reducer';
+import QuizConfig from '~/components/quiz-config';
 import { type Formation, isRandom } from '~/data/formations';
-import QuizConfig from '~/components/quiz-config'
+import {
+    initialState,
+    type Question,
+    QuizType,
+    quizReducer,
+} from '~/state/quiz-reducer';
+import { getFormationImageUrl } from '~/utils/utils';
 
 export default function QuizPage() {
-    const [quizState, dispatch] = useReducer(quizReducer, initialState)
-    const questionNoRef = useRef<HTMLDivElement>(null)
+    const [quizState, dispatch] = useReducer(quizReducer, initialState);
+    const questionNoRef = useRef<HTMLDivElement>(null);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to top after answer selected
     useEffect(() => {
-        window.scrollTo(0, document.body.scrollHeight)
-    }, [quizState.selectedAnswer])
+        window.scrollTo(0, document.body.scrollHeight);
+    }, [quizState.selectedAnswer]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to question when it changes
     useEffect(() => {
-        questionNoRef?.current?.scrollIntoView()
-    }, [quizState.questionNo])
+        questionNoRef?.current?.scrollIntoView();
+    }, [quizState.questionNo]);
 
-    const checkAnswer = (selectedAnswer: Formation, actualAnswer: Formation) => {
+    const checkAnswer = (
+        selectedAnswer: Formation,
+        actualAnswer: Formation,
+    ) => {
         const isCorrect = selectedAnswer === actualAnswer;
-        dispatch({type: 'answerQuestion', answer: selectedAnswer, isCorrect})
+        dispatch({ type: 'answerQuestion', answer: selectedAnswer, isCorrect });
     };
 
     function gameEnd() {
         return (
             <div className="">
-                <p className="text-center text-5xl text-black">You
-                    scored {quizState.score}/{quizState.questions.length}</p>
+                <p className="text-center text-5xl text-black">
+                    You scored {quizState.score}/{quizState.questions.length}
+                </p>
                 <div className="text-center mt-8">
-                    <button className="btn text-white" onClick={() => dispatch({type: 'reset'})}>Play again</button>
+                    <button
+                        className="btn text-white"
+                        onClick={() => dispatch({ type: 'reset' })}
+                        type="button"
+                    >
+                        Play again
+                    </button>
                 </div>
             </div>
         );
     }
 
     function imageRow(choices: Formation[], answer: Formation) {
-        const disabled = !!quizState.selectedAnswer
+        const disabled = !!quizState.selectedAnswer;
         return (
             <div className="flex justify-center gap-3 mb-3">
-                {choices.map((choice, idx) =>
-                    <button type="button" key={idx} className={quizState.selectedAnswer ?
-                        quizState.selectedAnswer === choice ? 'ring-primary ring-offset-1 ring-4' :
-                            answer === choice ? 'ring-success ring-offset-1 ring-4' : ''
-                        : ''}
-                            onClick={() => !disabled && checkAnswer(choice, answer)}
-                            onKeyUp={(e) => !disabled && e.key === 'Enter' ? checkAnswer(choice, answer) : {}}
+                {choices.map((choice) => (
+                    <button
+                        type="button"
+                        key={`button-${choice.id}`}
+                        className={
+                            quizState.selectedAnswer
+                                ? quizState.selectedAnswer === choice
+                                    ? 'ring-primary ring-offset-1 ring-4'
+                                    : answer === choice
+                                      ? 'ring-success ring-offset-1 ring-4'
+                                      : ''
+                                : ''
+                        }
+                        onClick={() => !disabled && checkAnswer(choice, answer)}
+                        onKeyUp={(e) =>
+                            !disabled && e.key === 'Enter'
+                                ? checkAnswer(choice, answer)
+                                : {}
+                        }
                     >
                         <img
-                            key={idx}
+                            key={`img-${choice.id}`}
                             className={`w-max max-h-[calc(50vh-35px)] mx-auto`}
                             alt="skydiving formation"
                             src={getFormationImageUrl(choice)}
                         />
                     </button>
-                )}
+                ))}
             </div>
-        )
+        );
     }
 
     function identifyPictureFromFormation(currentQuestion: Question) {
@@ -66,31 +95,46 @@ export default function QuizPage() {
                     <div>Score: {quizState.score}</div>
                 </div>
                 <div className="card-body items-center">
-                    <h2 className="card-title text-center"
-                        ref={questionNoRef}>{getFormationDisplayName(currentQuestion.answer)}</h2>
+                    <h2 className="card-title text-center" ref={questionNoRef}>
+                        {getFormationDisplayName(currentQuestion.answer)}
+                    </h2>
                     <div className="w-full">
-                        {imageRow(currentQuestion.choices.slice(0, 2), currentQuestion.answer)}
-                        {imageRow(currentQuestion.choices.slice(2), currentQuestion.answer)}
+                        {imageRow(
+                            currentQuestion.choices.slice(0, 2),
+                            currentQuestion.answer,
+                        )}
+                        {imageRow(
+                            currentQuestion.choices.slice(2),
+                            currentQuestion.answer,
+                        )}
                     </div>
                 </div>
-                {quizState.selectedAnswer &&
+                {quizState.selectedAnswer && (
                     <div className="card-actions justify-center">
-            <span
-                className="leading-[3rem] text-2xl mr-4">{quizState.selectedAnswer === currentQuestion.answer ? 'Correct' : 'Incorrect'}</span>
-                        <button className="btn text-white" onClick={() => dispatch({type: 'nextQuestion'})}>Next
+                        <span className="leading-[3rem] text-2xl mr-4">
+                            {quizState.selectedAnswer === currentQuestion.answer
+                                ? 'Correct'
+                                : 'Incorrect'}
+                        </span>
+                        <button
+                            className="btn text-white"
+                            onClick={() => dispatch({ type: 'nextQuestion' })}
+                            type="button"
+                        >
+                            Next
                         </button>
                     </div>
-                }
+                )}
             </div>
-        )
+        );
     }
 
     function getFormationDisplayName(formation: Formation) {
         if (isRandom(formation)) {
-            return `${formation.id} - ${formation.name}`
+            return `${formation.id} - ${formation.name}`;
         }
 
-        return `${formation.id}`
+        return `${formation.id}`;
     }
 
     function identifyFormationFromPicture(currentQuestion: Question) {
@@ -104,46 +148,85 @@ export default function QuizPage() {
                     <img
                         alt="skydiving formation"
                         className="max-h-[50vh]"
-                        src={getFormationImageUrl(currentQuestion.answer)}/>
+                        src={getFormationImageUrl(currentQuestion.answer)}
+                    />
                 </figure>
                 <div className="card-body">
-                    {currentQuestion.choices.map((choice, idx) =>
-                        <div className="flex flex-row gap-2" key={idx}>
-                            {quizState.selectedAnswer ?
-                                <button className={`btn grow no-animation ${quizState.selectedAnswer === choice ?
-                                    'btn-primary' :
-                                    currentQuestion.answer === choice ? 'btn-success' : 'btn-disabled darker'}`}>{getFormationDisplayName(choice)}</button>
-                                :
-                                <input key={`input-${idx}`}
-                                       type="radio"
-                                       name={`answer-${idx}`}
-                                       className={`btn grow text-white ${choice === currentQuestion.answer ? 'radio-success' : ''}`}
-                                       disabled={!!quizState.selectedAnswer}
-                                       checked={choice === quizState.selectedAnswer}
-                                       aria-label={getFormationDisplayName(choice)}
-                                       onChange={() => checkAnswer(choice, currentQuestion.answer)}/>
-                            }
-                            {quizState.selectedAnswer &&
-                                <span key={`ans-${idx}`}
-                                      className="btn btn-square btn-outline text-black">{choice === currentQuestion.answer ?
-                                    <CheckIcon/> : <XIcon/>}</span>
-                            }
+                    {currentQuestion.choices.map((choice, idx) => (
+                        <div
+                            className="flex flex-row gap-2"
+                            key={`answer-${choice.id}`}
+                        >
+                            {quizState.selectedAnswer ? (
+                                <button
+                                    type="button"
+                                    className={`btn grow no-animation ${
+                                        quizState.selectedAnswer === choice
+                                            ? 'btn-primary'
+                                            : currentQuestion.answer === choice
+                                              ? 'btn-success'
+                                              : 'btn-disabled darker'
+                                    }`}
+                                >
+                                    {getFormationDisplayName(choice)}
+                                </button>
+                            ) : (
+                                <input
+                                    type="radio"
+                                    name={`answer-${idx}`}
+                                    className={`btn grow text-white ${choice === currentQuestion.answer ? 'radio-success' : ''}`}
+                                    disabled={!!quizState.selectedAnswer}
+                                    checked={
+                                        choice === quizState.selectedAnswer
+                                    }
+                                    aria-label={getFormationDisplayName(choice)}
+                                    onChange={() =>
+                                        checkAnswer(
+                                            choice,
+                                            currentQuestion.answer,
+                                        )
+                                    }
+                                />
+                            )}
+                            {quizState.selectedAnswer && (
+                                <span className="btn btn-square btn-outline text-black">
+                                    {choice === currentQuestion.answer ? (
+                                        <CheckIcon />
+                                    ) : (
+                                        <XIcon />
+                                    )}
+                                </span>
+                            )}
                         </div>
-                    )}
-                    {quizState.selectedAnswer &&
+                    ))}
+                    {quizState.selectedAnswer && (
                         <div className="card-actions justify-end">
-              <span
-                  className="leading-[3rem] text-2xl mr-4">{quizState.selectedAnswer === currentQuestion.answer ? 'Correct' : 'Incorrect'}</span>
-                            <button className="btn text-white" onClick={() => dispatch(({type: 'nextQuestion'}))}>Next
+                            <span className="leading-[3rem] text-2xl mr-4">
+                                {quizState.selectedAnswer ===
+                                currentQuestion.answer
+                                    ? 'Correct'
+                                    : 'Incorrect'}
+                            </span>
+                            <button
+                                type="button"
+                                className="btn text-white"
+                                onClick={() =>
+                                    dispatch({ type: 'nextQuestion' })
+                                }
+                            >
+                                Next
                             </button>
                         </div>
-                    }
+                    )}
                 </div>
             </div>
         );
     }
 
-    if (quizState.started && quizState.questionNo === quizState.questions.length) {
+    if (
+        quizState.started &&
+        quizState.questionNo === quizState.questions.length
+    ) {
         return gameEnd();
     } else if (quizState.started) {
         const currentQuestion = quizState.questions[quizState.questionNo];

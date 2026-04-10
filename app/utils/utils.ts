@@ -1,5 +1,10 @@
-import { Discipline, type Formation, isRandom, type Random } from '~/data/formations';
 import { format } from 'date-fns';
+import {
+    Discipline,
+    type Formation,
+    isRandom,
+    type Random,
+} from '~/data/formations';
 
 export function getFormationImageUrl(formation: Formation): string {
     if (formation.discipline === Discipline.FOUR_WAY) {
@@ -34,22 +39,28 @@ export function get8WayBlockImageUrl(blockId: string): string {
 }
 
 export function capitalise(string: string): string {
-    return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    return (
+        string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase()
+    );
 }
 
 export function isRandomFormation(formationId: string) {
-    return /[A-Q]/.test(formationId)
+    return /[A-Q]/.test(formationId);
 }
 
 export function calculateScoresPerRound(formationIds: string[]): number {
-    return formationIds.reduce((acc, formationId) => isRandomFormation(formationId) ? acc + 1 : acc + 2, 0);
+    return formationIds.reduce(
+        (acc, formationId) =>
+            isRandomFormation(formationId) ? acc + 1 : acc + 2,
+        0,
+    );
 }
 
 // From https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-25984542
 export function shuffle<T>(a: T[], b?: number, c?: number, d?: T) {
     c = a.length;
     while (c) {
-        b = Math.random() * (--c + 1) | 0;
+        b = (Math.random() * (--c + 1)) | 0;
         d = a[c];
         a[c] = a[b];
         a[b] = d;
@@ -67,13 +78,16 @@ export function formatDate(date: Date | null): string {
     }
 }
 
-export function getVideoUrl(url: string | null, isLocal: boolean): string | null {
+export function getVideoUrl(
+    url: string | null,
+    isLocal: boolean,
+): string | null {
     if (!url) {
-        return null
+        return null;
     }
     if (isLocal) {
-        return url
+        return url;
     }
 
-    return  `https://d3sblpf3xfzlw7.cloudfront.net/${url.substring(20)}`
+    return `https://d3sblpf3xfzlw7.cloudfront.net/${url.substring(20)}`;
 }

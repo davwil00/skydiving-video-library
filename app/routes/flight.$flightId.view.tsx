@@ -1,14 +1,20 @@
-import type { Route } from '../../.react-router/types/app/routes/+types/flight.$flightId._index';
-import invariant from 'tiny-invariant';
-import { getFlight } from '~/models/flights.server';
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useLoaderData } from 'react-router';
+import invariant from 'tiny-invariant';
+import {
+    CameraSwitchIcon,
+    FullScreenIcon,
+    PauseIcon,
+    PlayIcon,
+    PlaySpeedIcon,
+} from '~/components/icons';
+import { usePageStateDispatchContext } from '~/contexts/page-state';
+import { getFlight } from '~/models/flights.server';
+import { isLocalRequest } from '~/utils/localGuardUtils';
 import { formatDate, getVideoUrl } from '~/utils/utils';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { CameraSwitchIcon, FullScreenIcon, PauseIcon, PlayIcon, PlaySpeedIcon } from '~/components/icons'
-import { usePageStateDispatchContext } from '~/contexts/page-state'
-import { isLocalRequest } from '~/utils/localGuardUtils'
+import type { Route } from '../../.react-router/types/app/routes/+types/flight.$flightId._index';
 
-export const loader = async ({request, params}: Route.LoaderArgs) => {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');
     const flight = await getFlight(params.flightId);
     invariant(flight, 'Flight not found');
@@ -18,13 +24,16 @@ export const loader = async ({request, params}: Route.LoaderArgs) => {
         date: flight.session.date,
         topVideoUrl: getVideoUrl(flight.topVideoUrl, isLocal),
         sideVideoUrl: getVideoUrl(flight.sideVideoUrl, isLocal),
-        formations: flight.formations.map(formation => formation.formationId).join(','),
-        canToggle: !!flight.sideVideoUrl && !!flight.topVideoUrl
+        formations: flight.formations
+            .map((formation) => formation.formationId)
+            .join(','),
+        canToggle: !!flight.sideVideoUrl && !!flight.topVideoUrl,
     };
 };
 
 export default function ViewFlight() {
-    const {date, topVideoUrl, sideVideoUrl, formations, canToggle} = useLoaderData<typeof loader>();
+    const { date, topVideoUrl, sideVideoUrl, formations, canToggle } =
+        useLoaderData<typeof loader>();
     const topVideo = useRef<HTMLVideoElement>(null);
     const sideVideo = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -46,21 +55,24 @@ export default function ViewFlight() {
             sideVideo.current?.pause();
         } else {
             setIsPlaying(true);
-            await Promise.all([topVideo.current?.play(), sideVideo.current?.play()]).catch()
+            await Promise.all([
+                topVideo.current?.play(),
+                sideVideo.current?.play(),
+            ]).catch();
         }
-    }
+    };
 
-    const dispatch = usePageStateDispatchContext()
+    const dispatch = usePageStateDispatchContext();
 
     const toggleFullScreen = () => {
         if (isFullScreen) {
-            dispatch({type: 'setFullScreen', value: false})
-            setIsFullScreen(false)
+            dispatch({ type: 'setFullScreen', value: false });
+            setIsFullScreen(false);
         } else {
-            dispatch({type: 'setFullScreen', value: true})
-            setIsFullScreen(true)
+            dispatch({ type: 'setFullScreen', value: true });
+            setIsFullScreen(true);
         }
-    }
+    };
 
     const changeSpeed = (e: ChangeEvent<HTMLInputElement>) => {
         const speed = parseFloat(e.target.value);
@@ -72,55 +84,96 @@ export default function ViewFlight() {
     };
 
     const changeTime = (e: ChangeEvent<HTMLInputElement>) => {
-        const timePercent = parseFloat(e.target.value)
-        const newTime = (timePercent / 100) * topVideo.current!.duration;
+        const timePercent = parseFloat(e.target.value);
         if (topVideo.current && sideVideo.current) {
+            const newTime = (timePercent / 100) * topVideo.current.duration;
             topVideo.current.currentTime = newTime;
             sideVideo.current.currentTime = newTime;
             setTime(timePercent);
         }
-    }
+    };
 
     useEffect(() => {
         topVideo.current?.addEventListener('timeupdate', () => {
-            const newTime = (topVideo.current!.currentTime / topVideo.current!.duration) * 100
-            setTime(newTime);
-        })
+            if (topVideo.current) {
+                const newTime =
+                    (topVideo.current.currentTime / topVideo.current.duration) *
+                    100;
+                setTime(newTime);
+            }
+        });
         topVideo.current?.addEventListener('ended', () => {
-            setIsPlaying(false)
-        })
-    }, [topVideo]);
+            setIsPlaying(false);
+        });
+    }, []);
 
     return (
         <div>
-            {!isFullScreen ? <h1>{formatDate(date)} - {formations}</h1> : null}
+            {!isFullScreen ? (
+                <h1>
+                    {formatDate(date)} - {formations}
+                </h1>
+            ) : null}
             <figure className="flex">
                 <video muted={true} preload="auto" ref={topVideo}>
-                    <source src={`${topVideoUrl}`}/>
+                    <source src={`${topVideoUrl}`} />
                 </video>
-                <video muted={true} preload="auto" className="hidden" ref={sideVideo}>
-                    <source src={`${sideVideoUrl}`}/>
+                <video
+                    muted={true}
+                    preload="auto"
+                    className="hidden"
+                    ref={sideVideo}
+                >
+                    <source src={`${sideVideoUrl}`} />
                 </video>
                 <div className="w-[50px] flex flex-col pt-4 relative right-[50px]">
-                    <PlaySpeedIcon height="30" fill="#f9ffff"/>
-                    <input type="range"
-                           min={0}
-                           max="2"
-                           value={speed}
-                           step="0.1"
-                           className="w-40 -rotate-90 origin-left relative top-[160px] right-[-25px] range
+                    <PlaySpeedIcon height="30" fill="#f9ffff" />
+                    <input
+                        type="range"
+                        min={0}
+                        max="2"
+                        value={speed}
+                        step="0.1"
+                        className="w-40 -rotate-90 origin-left relative top-[160px] right-[-25px] range
                            [--range-fill:0] text-base-content [--range-bg:var(--color-primary)] [--size-selector:3px]"
-                           onChange={changeSpeed}/>
+                        onChange={changeSpeed}
+                    />
                 </div>
             </figure>
             <div className="mt-2 flex items-center gap-2">
-                <button onClick={playPause} className="btn btn-primary">
-                    {isPlaying ? <PauseIcon/> : <PlayIcon/>}
+                <button
+                    onClick={playPause}
+                    className="btn btn-primary"
+                    type="button"
+                >
+                    {isPlaying ? <PauseIcon /> : <PlayIcon />}
                 </button>
-                {canToggle ? <button onClick={toggleView} className="btn btn-primary"><CameraSwitchIcon/></button> : null}
-                <input type="range" min={0} max={100} value={time} step="any" onChange={changeTime} className="grow range [--range-bg:var(--color-primary)] [--range-fill:0] text-base-content" />
-                <button onClick={toggleFullScreen} className="btn btn-primary"><FullScreenIcon/></button>
+                {canToggle ? (
+                    <button
+                        onClick={toggleView}
+                        className="btn btn-primary"
+                        type="button"
+                    >
+                        <CameraSwitchIcon />
+                    </button>
+                ) : null}
+                <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={time}
+                    step="any"
+                    onChange={changeTime}
+                    className="grow range [--range-bg:var(--color-primary)] [--range-fill:0] text-base-content"
+                />
+                <button
+                    onClick={toggleFullScreen}
+                    className="btn btn-primary"
+                    type="button"
+                >
+                    <FullScreenIcon />
+                </button>
             </div>
         </div>
-    )
+    );
 }

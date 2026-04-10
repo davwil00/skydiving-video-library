@@ -1,21 +1,26 @@
-import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'react'
+import {
+    createContext,
+    type Dispatch,
+    type ReactNode,
+    useContext,
+    useReducer,
+} from 'react';
 
 type PageState = {
     isFullScreen: boolean;
-}
+};
 
 export const initialState: PageState = {
     isFullScreen: false,
 };
 
 const PageStateContext = createContext<PageState>(initialState);
-const PageStateDispatchContext = createContext<Dispatch<PageStateAction>>(() => {});
+const PageStateDispatchContext = createContext<Dispatch<PageStateAction>>(
+    () => {},
+);
 
-export function PageStateProvider({ children }: {children: ReactNode}) {
-    const [pageState, dispatch] = useReducer(
-        pageStateReducer,
-        initialState
-    );
+export function PageStateProvider({ children }: { children: ReactNode }) {
+    const [pageState, dispatch] = useReducer(pageStateReducer, initialState);
 
     return (
         <PageStateContext.Provider value={pageState}>
@@ -26,20 +31,23 @@ export function PageStateProvider({ children }: {children: ReactNode}) {
     );
 }
 
-const pageStateReducer = (state: PageState, action: PageStateAction): PageState => {
+const pageStateReducer = (
+    state: PageState,
+    action: PageStateAction,
+): PageState => {
     switch (action.type) {
         case 'setFullScreen':
             return {
                 ...state,
-                isFullScreen: action.value
+                isFullScreen: action.value,
             };
         default:
             return state;
     }
-}
+};
 
-type PageStateAction =
-    | { type: 'setFullScreen', value: boolean }
+type PageStateAction = { type: 'setFullScreen'; value: boolean };
 
 export const usePageStateContext = () => useContext(PageStateContext);
-export const usePageStateDispatchContext = () => useContext(PageStateDispatchContext);
+export const usePageStateDispatchContext = () =>
+    useContext(PageStateDispatchContext);

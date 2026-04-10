@@ -1,28 +1,28 @@
-import { prisma } from "~/db.server";
-import { Prisma } from "prisma/generated/client";
+import type { Prisma } from 'prisma/generated/client';
+import { prisma } from '~/db.server';
 
 export function getAllSoloSessions() {
-  return prisma.soloSession.findMany({
-    orderBy: {
-      date: "asc"
-    }
-  });
+    return prisma.soloSession.findMany({
+        orderBy: {
+            date: 'asc',
+        },
+    });
 }
 
 export function getSoloSession(id: string) {
-  return prisma.soloSession.findUnique({
-    include: {
-      flights: {
-        select: {
-          id: true,
-          videoUrl: true
-        }
-      }
-    },
-    where: { id } }
-  );
+    return prisma.soloSession.findUnique({
+        include: {
+            flights: {
+                select: {
+                    id: true,
+                    videoUrl: true,
+                },
+            },
+        },
+        where: { id },
+    });
 }
 
 export function createSoloSession(data: Prisma.SoloSessionCreateInput) {
-  return prisma.soloSession.create({ data });
+    return prisma.soloSession.create({ data });
 }

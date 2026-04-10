@@ -1,26 +1,26 @@
+import type { Prisma } from 'prisma/generated/client';
 import { prisma } from '~/db.server';
-import { Prisma } from 'prisma/generated/client';
 
 export function getByFormationId(formationId: string) {
     return prisma.flight.findMany({
         where: {
             formations: {
                 some: {
-                    formationId: formationId
-                }
-            }
+                    formationId: formationId,
+                },
+            },
         },
         include: {
             session: true,
             flyers: true,
-            formations: {orderBy: {order: 'asc'}},
-            scores: true
+            formations: { orderBy: { order: 'asc' } },
+            scores: true,
         },
         orderBy: {
             session: {
-                date: 'desc'
-            }
-        }
+                date: 'desc',
+            },
+        },
     });
 }
 
@@ -29,93 +29,95 @@ export function createFlight(flight: FlightCreateInput) {
         data: {
             sessionId: flight.sessionId,
             formations: {
-                create: flight.formationIds.map((formationId, idx) => (
-                    {
-                        order: idx,
-                        formationId: formationId
-                    }
-                ))
+                create: flight.formationIds.map((formationId, idx) => ({
+                    order: idx,
+                    formationId: formationId,
+                })),
             },
             flyers: {
-                connect: flight.flyers.map((flyer) => ({name: flyer}))
+                connect: flight.flyers.map((flyer) => ({ name: flyer })),
             },
             sideVideoUrl: flight.sideVideoUrl,
             topVideoUrl: flight.topVideoUrl,
-        }
+        },
     });
 }
 
 export type Score = {
-    formation: string
-    score: number,
-    order: number,
-}
-export async function updateFlight(flightId: string, formationIds: string[], flyers: string[]) {
+    formation: string;
+    score: number;
+    order: number;
+};
+export async function updateFlight(
+    flightId: string,
+    formationIds: string[],
+    flyers: string[],
+) {
     await prisma.flight.update({
         where: {
-            id: flightId
+            id: flightId,
         },
         data: {
             formations: {
                 deleteMany: {
-                    formationId: {notIn: formationIds}
+                    formationId: { notIn: formationIds },
                 },
                 upsert: formationIds.map((formationId, idx) => ({
                     where: {
                         flightId_formationId_order: {
                             flightId: flightId,
                             formationId: formationId,
-                            order: idx
-                        }
+                            order: idx,
+                        },
                     },
                     update: {
-                        order: idx
+                        order: idx,
                     },
                     create: {
                         order: idx,
-                        formationId: formationId
-                    }
-                }))
+                        formationId: formationId,
+                    },
+                })),
             },
             flyers: {
                 set: [],
-                connect: flyers.map((flyer) => ({name: flyer}))
+                connect: flyers.map((flyer) => ({ name: flyer })),
             },
-        }
+        },
     });
 }
 
 export async function updateFlightScores(flightId: string, scores: Score[]) {
     await prisma.flight.update({
         where: {
-            id: flightId
+            id: flightId,
         },
         data: {
             scores: {
                 deleteMany: {
-                    flightId: flightId
+                    flightId: flightId,
                 },
                 createMany: {
                     data: scores.map((score) => ({
                         formation: score.formation,
                         score: score.score,
-                        order: score.order
-                    }))
-                }
-            }
-        }
-    })
+                        order: score.order,
+                    })),
+                },
+            },
+        },
+    });
 }
 
 export function getFlight(flightId: string) {
     return prisma.flight.findUnique({
-        where: {id: flightId},
+        where: { id: flightId },
         include: {
             session: true,
             flyers: true,
-            formations: {orderBy: {order: 'asc'}},
-            scores: true
-        }
+            formations: { orderBy: { order: 'asc' } },
+            scores: true,
+        },
     });
 }
 
@@ -130,26 +132,26 @@ export type FlightCreateInput = {
 export function findFlightsWithFormations(formations: string[]) {
     return prisma.flight.findMany({
         where: {
-            AND: formations.map(formationId => ({
+            AND: formations.map((formationId) => ({
                 formations: {
                     some: {
                         formationId: {
-                            equals: formationId.toUpperCase()
-                        }
-                    }
-                }
-            })) as Prisma.FlightWhereInput[]
+                            equals: formationId.toUpperCase(),
+                        },
+                    },
+                },
+            })) as Prisma.FlightWhereInput[],
         },
         include: {
             session: true,
             flyers: true,
-            formations: {orderBy: {order: 'asc'}},
-            scores: true
+            formations: { orderBy: { order: 'asc' } },
+            scores: true,
         },
         orderBy: {
             session: {
-                date: 'desc'
-            }
-        }
+                date: 'desc',
+            },
+        },
     });
 }

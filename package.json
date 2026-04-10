@@ -6,7 +6,8 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "lint": "react-router typegen && eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "react-router typegen && npx @biomejs/biome check .",
+    "format:fix": "npx @biomejs/biome format . --write",
     "setup": "prisma generate && prisma migrate deploy && tsx prisma/seed.ts",
     "migrate-dev": "prisma generate && prisma migrate dev",
     "migrate-deploy": "prisma generate && prisma migrate deploy",
@@ -45,7 +46,6 @@
     "tiny-invariant": "^1.3.3"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
     "@react-router/dev": "^7.14.0",
     "@svgr/cli": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
@@ -54,15 +54,7 @@
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.57.2",
-    "@typescript-eslint/parser": "^8.57.2",
     "daisyui": "^5.5.19",
-    "eslint": "^10.1.0",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^17.4.0",
     "npm-run-all": "^4.1.5",
     "npm-watch": "^0.13.0",

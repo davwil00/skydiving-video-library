@@ -1,12 +1,17 @@
-import invariant from 'tiny-invariant';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router';
-import { EIGHT_WAY_FORMATIONS, EIGHT_WAY_RANDOMS, EIGHT_WAY_BLOCKS, getDisplayName } from '~/data/formations';
+import invariant from 'tiny-invariant';
+import FormationImage from '~/components/formations/formation-images';
+import {
+    EIGHT_WAY_BLOCKS,
+    EIGHT_WAY_FORMATIONS,
+    EIGHT_WAY_RANDOMS,
+    getDisplayName,
+} from '~/data/formations';
+import { useSwipe } from '~/hooks/useSwipe';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/formation.$formationId';
-import React, { useCallback } from 'react';
-import { useSwipe } from '~/hooks/useSwipe';
-import FormationImage from '~/components/formations/formation-images'
-import { useState } from 'react'
 
 const ROLE_TOOLTIPS: Record<string, string> = {
     P: 'Point',
@@ -19,25 +24,31 @@ const ROLE_TOOLTIPS: Record<string, string> = {
     OR: 'Outside Rear',
 };
 
-export const loader = async ({params, request}: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
     const isLocal = isLocalRequest(request);
     const formation = EIGHT_WAY_FORMATIONS[params.formationId];
 
-    return {formation, isLocal};
+    return { formation, isLocal };
 };
 
 const orderedFormations = [...EIGHT_WAY_RANDOMS, ...EIGHT_WAY_BLOCKS];
 
 export default function EightWayFormation() {
-    const {formation} = useLoaderData<typeof loader>();
+    const { formation } = useLoaderData<typeof loader>();
     const navigate = useNavigate();
     const [altColours, setAltColours] = useState<boolean>(false);
     const [tooltip, setTooltip] = useState<string>();
 
-    const currentIndex = orderedFormations.findIndex(f => f.id === formation.id);
-    const prevFormation = currentIndex > 0 ? orderedFormations[currentIndex - 1] : null;
-    const nextFormation = currentIndex < orderedFormations.length - 1 ? orderedFormations[currentIndex + 1] : null;
+    const currentIndex = orderedFormations.findIndex(
+        (f) => f.id === formation.id,
+    );
+    const prevFormation =
+        currentIndex > 0 ? orderedFormations[currentIndex - 1] : null;
+    const nextFormation =
+        currentIndex < orderedFormations.length - 1
+            ? orderedFormations[currentIndex + 1]
+            : null;
 
     const onSwipeLeft = useCallback(() => {
         if (nextFormation) navigate(`/8-way/formation/${nextFormation.id}`);
@@ -56,23 +67,38 @@ export default function EightWayFormation() {
         }
 
         const className = e.target.getAttribute('class')?.trim();
-        const role = className?.split(/\s+/).find(token => token in ROLE_TOOLTIPS);
+        const role = className
+            ?.split(/\s+/)
+            .find((token) => token in ROLE_TOOLTIPS);
 
         setTooltip(role ? ROLE_TOOLTIPS[role] : undefined);
-    }
+    };
 
     return (
-        <div className={`relative ${altColours ? 'alt' : ''}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <div
+            className={`relative ${altColours ? 'alt' : ''}`}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+        >
             <div className="flex gap-4 items-center justify-between">
                 <h1 className="text-2xl">
-                {formation.id} - {getDisplayName(formation)}
+                    {formation.id} - {getDisplayName(formation)}
                 </h1>
-                <button type="button" className="btn btn-neutral" onClick={() => setAltColours(prev => !prev)}>Toggle colours</button>
+                <button
+                    type="button"
+                    className="btn btn-neutral"
+                    onClick={() => setAltColours((prev) => !prev)}
+                >
+                    Toggle colours
+                </button>
             </div>
             <div className="h-1">{tooltip}</div>
             <div onClick={(e) => showTooltip(e)}>
-                <FormationImage formation={formation} className="max-h-[100vh] mx-auto mt-8 pb-50" />
+                <FormationImage
+                    formation={formation}
+                    className="max-h-[100vh] mx-auto mt-8 pb-50"
+                />
             </div>
         </div>
-    )
+    );
 }

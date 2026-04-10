@@ -1,8 +1,8 @@
 import { reactRouter } from '@react-router/dev/vite';
-import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
-import vitePluginSvgr from 'vite-plugin-svgr'
+import { defineConfig } from 'vite';
+import vitePluginSvgr from 'vite-plugin-svgr';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
     plugins: [
@@ -10,13 +10,13 @@ export default defineConfig({
         tsconfigPaths(),
         tailwindcss(),
         vitePluginSvgr({
-            include: "**/*.svg/?react"
+            include: '**/*.svg/?react',
         }),
     ],
     build: {
-        copyPublicDir: false
+        copyPublicDir: false,
     },
     server: {
-        allowedHosts: ['localhost', 'skydiving-solo']
-    }
+        allowedHosts: ['localhost', 'skydiving-solo'],
+    },
 });

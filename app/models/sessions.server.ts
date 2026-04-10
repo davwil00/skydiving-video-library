@@ -1,11 +1,11 @@
+import { Prisma } from 'prisma/generated/client';
 import { prisma } from '~/db.server';
-import { Prisma } from 'prisma/generated/client'
 
 export function getAllNonCompetitionSessionDates() {
     return prisma.session.findMany({
-        select: {id: true, date: true, name: true},
-        where: {competitionId: null},
-        orderBy: {date: Prisma.SortOrder.asc}
+        select: { id: true, date: true, name: true },
+        where: { competitionId: null },
+        orderBy: { date: Prisma.SortOrder.asc },
     });
 }
 
@@ -13,11 +13,11 @@ const flightsInclude = {
     select: {
         id: true,
         flyers: true,
-        formations: {orderBy: {order: Prisma.SortOrder.asc}},
+        formations: { orderBy: { order: Prisma.SortOrder.asc } },
         sideVideoUrl: true,
         topVideoUrl: true,
-        scores: true
-    }
+        scores: true,
+    },
 };
 
 export function getSession(sessionId: string) {
@@ -25,26 +25,26 @@ export function getSession(sessionId: string) {
         include: {
             flights: flightsInclude,
         },
-        where: {id: sessionId},
+        where: { id: sessionId },
     });
 }
 
 export function getLatestSession() {
-    return prisma.session.findFirst(
-        {
-            orderBy: [{
-                date: 'desc'
-            }],
-            include: {
-                flights: flightsInclude
-            }
-        }
-    )
+    return prisma.session.findFirst({
+        orderBy: [
+            {
+                date: 'desc',
+            },
+        ],
+        include: {
+            flights: flightsInclude,
+        },
+    });
 }
 
 export async function getOrCreateSession(date: Date, name: string | null) {
     const existingSession = await prisma.session.findFirst({
-        where: {date, name},
+        where: { date, name },
     });
 
     if (!existingSession) {
@@ -60,14 +60,18 @@ export async function getOrCreateSession(date: Date, name: string | null) {
     return existingSession.id;
 }
 
-export async function updateSession(data: { id: string, name: string, date: Date }) {
+export async function updateSession(data: {
+    id: string;
+    name: string;
+    date: Date;
+}) {
     await prisma.session.update({
         where: {
-            id: data.id
+            id: data.id,
         },
         data: {
             name: data.name,
-            date: data.date
-        }
-    })
+            date: data.date,
+        },
+    });
 }

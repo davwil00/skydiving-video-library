@@ -1,43 +1,46 @@
+import { format } from 'date-fns';
+import { useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
-import {getSession} from '~/models/sessions.server';
-import {useLoaderData} from 'react-router';
-import {format} from 'date-fns';
 import FlightCard from '~/components/flight-card';
-import {isLocalRequest} from '~/utils/localGuardUtils';
-import type {Route} from './+types/session.$sessionId._index';
-import { EditIcon } from '~/components/icons'
+import { EditIcon } from '~/components/icons';
+import { getSession } from '~/models/sessions.server';
+import { isLocalRequest } from '~/utils/localGuardUtils';
+import type { Route } from './+types/session.$sessionId._index';
 
-export const loader = async ({params, request}: Route.LoaderArgs) => {
-    invariant(params.sessionId, "session not found");
-    const isLocal = isLocalRequest(request)
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+    invariant(params.sessionId, 'session not found');
+    const isLocal = isLocalRequest(request);
 
     const session = await getSession(params.sessionId);
     if (!session) {
-        throw new Response("Not Found", {status: 404});
+        throw new Response('Not Found', { status: 404 });
     }
-    return {session, isLocal};
+    return { session, isLocal };
 };
 
 export default function SessionDetailsPage() {
-    const {session, isLocal} = useLoaderData<typeof loader>();
+    const { session, isLocal } = useLoaderData<typeof loader>();
 
     return (
         <div>
             <h1 className="text-2xl text-black flex items-center gap-2">
-                {session.name ?? format(new Date(session.date), "do MMMM")}
-                {isLocal ? <a href={`/session/${session.id}/edit`}><EditIcon height={20}/></a> : null}
+                {session.name ?? format(new Date(session.date), 'do MMMM')}
+                {isLocal ? (
+                    <a href={`/session/${session.id}/edit`}>
+                        <EditIcon height={20} />
+                    </a>
+                ) : null}
             </h1>
             <div className="flex flex-wrap justify-center">
-                {session.flights
-                    .map((flight, idx) => (
-                        <FlightCard
-                            key={idx}
-                            flight={flight}
-                            session={session}
-                            showDate={false}
-                            isLocal={isLocal}
-                        />
-                    ))}
+                {session.flights.map((flight) => (
+                    <FlightCard
+                        key={flight.id}
+                        flight={flight}
+                        session={session}
+                        showDate={false}
+                        isLocal={isLocal}
+                    />
+                ))}
             </div>
         </div>
     );

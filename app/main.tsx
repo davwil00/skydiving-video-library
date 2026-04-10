@@ -1,38 +1,55 @@
-import Navbar from '~/components/navbar'
-import Sidebar from '~/components/sidebar'
-import { usePageStateContext } from '~/contexts/page-state'
-import { useRef } from 'react'
-import { Session, SoloSession, Competition } from 'prisma/generated/client'
-import { type ReactNode } from 'react'
-import { LibraryStateProvider } from './contexts/library-state'
+import type {
+    Competition,
+    Session,
+    SoloSession,
+} from 'prisma/generated/client';
+import { type ReactNode, useRef } from 'react';
+import Navbar from '~/components/navbar';
+import Sidebar from '~/components/sidebar';
+import { usePageStateContext } from '~/contexts/page-state';
+import { LibraryStateProvider } from './contexts/library-state';
 
-export default function Main({children, data}: {
-    children: ReactNode,
-    data?: { sessions: Pick<Session, 'id' | 'name' | 'date'>[], soloSessions: SoloSession[], competitions: Competition[], isLocal: boolean, hostName: string }
+export default function Main({
+    children,
+    data,
+}: {
+    children: ReactNode;
+    data?: {
+        sessions: Pick<Session, 'id' | 'name' | 'date'>[];
+        soloSessions: SoloSession[];
+        competitions: Competition[];
+        isLocal: boolean;
+        hostName: string;
+    };
 }) {
     const drawerRef = useRef<HTMLInputElement>(null);
 
-    const {isFullScreen} = usePageStateContext()
+    const { isFullScreen } = usePageStateContext();
     return (
         <main
-            className={`relative min-h-screen bg-white sm:flex sm:justify-center ${isFullScreen ? 'fullscreen' : ''}`}>
+            className={`relative min-h-screen bg-white sm:flex sm:justify-center ${isFullScreen ? 'fullscreen' : ''}`}
+        >
             <div className="drawer md:drawer-open">
-                <input id="drawer-toggle" type="checkbox" className="drawer-toggle" ref={drawerRef}/>
+                <input
+                    id="drawer-toggle"
+                    type="checkbox"
+                    className="drawer-toggle"
+                    ref={drawerRef}
+                />
                 <div className="drawer-content">
-                    <Navbar/>
-                    <div className={`p-4`}>
-                        {children}
-                    </div>
+                    <Navbar />
+                    <div className={`p-4`}>{children}</div>
                 </div>
                 <LibraryStateProvider hostName={data?.hostName}>
-                    <Sidebar sessions={data?.sessions || []}
-                             soloSessions={data?.soloSessions || []}
-                             competitions={data?.competitions || []}
-                             isLocal={data?.isLocal || false}
-                             drawerRef={drawerRef}
+                    <Sidebar
+                        sessions={data?.sessions || []}
+                        soloSessions={data?.soloSessions || []}
+                        competitions={data?.competitions || []}
+                        isLocal={data?.isLocal || false}
+                        drawerRef={drawerRef}
                     />
                 </LibraryStateProvider>
             </div>
         </main>
-    )
+    );
 }

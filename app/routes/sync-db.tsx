@@ -1,12 +1,16 @@
-import { mkdir, readdir, rename } from 'fs/promises';
-import { getOrCreateSession } from '~/models/sessions.server';
-import { createFlight } from '~/models/flights.server';
+import type { Dirent } from 'node:fs';
+import { mkdir, readdir, rename } from 'node:fs/promises';
 import { format } from 'date-fns';
-import { data, useActionData, useLoaderData } from 'react-router';
+import {
+    type ActionFunctionArgs,
+    data,
+    useActionData,
+    useLoaderData,
+} from 'react-router';
+import { createFlight } from '~/models/flights.server';
+import { getOrCreateSession } from '~/models/sessions.server';
 import { extractIdFromFileName, processFile } from '~/utils/tagUtils';
-import { type ActionFunctionArgs } from 'react-router';
 import { formatDate } from '~/utils/utils';
-import { Dirent } from 'fs'
 
 export const VIDEO_DATA_PATH = './public/video-data';
 
@@ -14,104 +18,135 @@ type LabelledDirEnt = {
     formationIds: string[];
     flyers: string[];
     date: Date;
-    sideFileName?: string
-    topFileName?: string
-}
+    sideFileName?: string;
+    topFileName?: string;
+};
 
 async function groupAndLabelFiles(pendingDir: Dirent[]) {
-    const labelledFileData = new Map<string, LabelledDirEnt>
+    const labelledFileData = new Map<string, LabelledDirEnt>();
     for (const file of pendingDir) {
         if (file.name.endsWith('.mp4')) {
             console.log(`Found pending video file: ${file.name}`);
             const id = extractIdFromFileName(file.name);
-            const videoData = await processFile(file, `${VIDEO_DATA_PATH}/pending`);
-            if (videoData && videoData.date) {
-                const viewProp = videoData.view === 'SIDE' ? 'sideFileName' : 'topFileName'
+            const videoData = await processFile(
+                file,
+                `${VIDEO_DATA_PATH}/pending`,
+            );
+            if (videoData?.date) {
+                const viewProp =
+                    videoData.view === 'SIDE' ? 'sideFileName' : 'topFileName';
                 if (labelledFileData.has(id)) {
-                    labelledFileData.get(id)![viewProp] = file.name
+                    // biome-ignore lint/style/noNonNullAssertion: just did a has check
+                    labelledFileData.get(id)![viewProp] = file.name;
                 } else {
                     labelledFileData.set(id, {
                         ...videoData,
                         date: videoData.date,
-                        [viewProp]: file.name
-                    })
+                        [viewProp]: file.name,
+                    });
                 }
             } else {
-                console.error(`${file.name} is missing a date attribute`)
+                console.error(`${file.name} is missing a date attribute`);
             }
         }
     }
-    return labelledFileData
+    return labelledFileData;
 }
 
-async function processFlightFiles(flight: LabelledDirEnt, sessionName: string | null) {
+async function processFlightFiles(
+    flight: LabelledDirEnt,
+    sessionName: string | null,
+) {
     const sessionId = await getOrCreateSession(flight.date, sessionName);
     const dateStr = format(flight.date, 'yyyy-MM-dd');
-    const path = `/video-data/library/${dateStr}`
+    const path = `/video-data/library/${dateStr}`;
     await createFlight({
         sessionId,
         ...flight,
-        sideVideoUrl: flight.sideFileName ? `${path}/${flight.sideFileName}` : undefined,
-        topVideoUrl: flight.topFileName ? `${path}/${flight.topFileName}` : undefined,
+        sideVideoUrl: flight.sideFileName
+            ? `${path}/${flight.sideFileName}`
+            : undefined,
+        topVideoUrl: flight.topFileName
+            ? `${path}/${flight.topFileName}`
+            : undefined,
     });
-    const newPath = `${VIDEO_DATA_PATH}/library/${dateStr}`
-    await mkdir(newPath, {recursive: true});
+    const newPath = `${VIDEO_DATA_PATH}/library/${dateStr}`;
+    await mkdir(newPath, { recursive: true });
     if (flight.sideFileName) {
-        await rename(`${VIDEO_DATA_PATH}/pending/${flight.sideFileName}`, `${newPath}/${flight.sideFileName}`);
+        await rename(
+            `${VIDEO_DATA_PATH}/pending/${flight.sideFileName}`,
+            `${newPath}/${flight.sideFileName}`,
+        );
         console.log(`Processed ${flight.sideFileName})`);
     }
     if (flight.topFileName) {
-        await rename(`${VIDEO_DATA_PATH}/pending/${flight.topFileName}`, `${newPath}/${flight.topFileName}`);
+        await rename(
+            `${VIDEO_DATA_PATH}/pending/${flight.topFileName}`,
+            `${newPath}/${flight.topFileName}`,
+        );
         console.log(`Processed ${flight.topFileName})`);
     }
 }
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return data({message: 'Method not allowed', title: '', status: 405});
+        return data({ message: 'Method not allowed', title: '', status: 405 });
     }
 
     // search pending folder, read tags and move to library
     const pendingDir = await readdir(`${VIDEO_DATA_PATH}/pending`, {
-        withFileTypes: true
+        withFileTypes: true,
     });
-    if (pendingDir.length == 0) {
-        return data({message: 'Nothing to sync', status: 200});
+    if (pendingDir.length === 0) {
+        return data({ message: 'Nothing to sync', status: 200 });
     }
     const errors = [];
-    const formData = await request.formData()
-    const sessionName = formData.get('name') as string || null;
+    const formData = await request.formData();
+    const sessionName = (formData.get('name') as string) || null;
 
     try {
-        const labelledFileData = await groupAndLabelFiles(pendingDir)
+        const labelledFileData = await groupAndLabelFiles(pendingDir);
         for (const flight of labelledFileData.values()) {
-            await processFlightFiles(flight, sessionName)
+            await processFlightFiles(flight, sessionName);
         }
     } catch (error) {
         console.error('Error processing file', error);
         errors.push(`Error processing file ${error}`);
     }
     if (errors.length > 0) {
-        return data({title: 'Sync failed', message: errors.join(', '), status: 500});
+        return data({
+            title: 'Sync failed',
+            message: errors.join(', '),
+            status: 500,
+        });
     }
-    return data({title: 'Sync complete', message: 'Don\'t forget to sync to AWS', status: 201});
-}
+    return data({
+        title: 'Sync complete',
+        message: "Don't forget to sync to AWS",
+        status: 201,
+    });
+};
 
 export const loader = async () => {
     const pendingDir = await readdir(`${VIDEO_DATA_PATH}/pending`, {
-        withFileTypes: true
+        withFileTypes: true,
     });
 
     const videoDataPromises = pendingDir
-        .filter(file => file.name.endsWith('.mp4') || file.name.endsWith('.av1'))
-        .map(async file => {
-            const videoData = await processFile(file, `${VIDEO_DATA_PATH}/pending`);
+        .filter(
+            (file) => file.name.endsWith('.mp4') || file.name.endsWith('.av1'),
+        )
+        .map(async (file) => {
+            const videoData = await processFile(
+                file,
+                `${VIDEO_DATA_PATH}/pending`,
+            );
             if (videoData === undefined) {
                 return null;
             } else {
                 return {
                     fileName: file.name,
-                    ...videoData
+                    ...videoData,
                 };
             }
         });
@@ -120,12 +155,14 @@ export const loader = async () => {
         const resolved = await promise;
         videoData.push(resolved);
     }
-    return {videoData};
+    return { videoData };
 };
 
 export default function SyncDb() {
-    const {videoData} = useLoaderData<typeof loader>();
-    const actionData = useActionData<typeof action | { title: string, message: string }>()
+    const { videoData } = useLoaderData<typeof loader>();
+    const actionData = useActionData<
+        typeof action | { title: string; message: string }
+    >();
 
     if (actionData) {
         return (
@@ -133,31 +170,36 @@ export default function SyncDb() {
                 <h1>{'title' in actionData ? actionData.title : ''}</h1>
                 <p>{actionData.message}</p>
             </>
-        )
+        );
     }
 
     return (
         <div>
             <table className="table">
                 <thead>
-                <tr className="border-b-base-100">
-                    <th>File</th>
-                    <th>Date</th>
-                    <th>Flyers</th>
-                    <th>Formations</th>
-                    <th>View</th>
-                </tr>
+                    <tr className="border-b-base-100">
+                        <th>File</th>
+                        <th>Date</th>
+                        <th>Flyers</th>
+                        <th>Formations</th>
+                        <th>View</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {videoData.map((data, idx) =>
-                    data != null ? <tr key={idx} className="border-b-base-100">
-                        <td>{data.fileName}</td>
-                        <td>{formatDate(data.date)}</td>
-                        <td>{data.flyers.join(',')}</td>
-                        <td>{data.formationIds.join(',')}</td>
-                        <td>{data.view}</td>
-                    </tr> : null
-                )}
+                    {videoData.map((data) =>
+                        data != null ? (
+                            <tr
+                                key={data.fileName}
+                                className="border-b-base-100"
+                            >
+                                <td>{data.fileName}</td>
+                                <td>{formatDate(data.date)}</td>
+                                <td>{data.flyers.join(',')}</td>
+                                <td>{data.formationIds.join(',')}</td>
+                                <td>{data.view}</td>
+                            </tr>
+                        ) : null,
+                    )}
                 </tbody>
             </table>
 
@@ -167,10 +209,16 @@ export default function SyncDb() {
                         <div className="label">
                             <span className="label-text">Session Name</span>
                         </div>
-                        <input type="text" className="input input-bordered" name="name"/>
+                        <input
+                            type="text"
+                            className="input input-bordered"
+                            name="name"
+                        />
                     </label>
                 </div>
-                <button className="btn" type="submit">Import</button>
+                <button className="btn" type="submit">
+                    Import
+                </button>
             </form>
         </div>
     );

@@ -1,24 +1,24 @@
+import type { Buffer } from 'node:buffer';
 import { data, redirect, useActionData } from 'react-router';
 import invariant from 'tiny-invariant';
 import { trim } from '~/utils/ffmpegUtils';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import { type Buffer } from 'node:buffer'
 import type { Route } from './+types/flight.$flightId.trim';
 
-export const action = async ({request, params}: Route.ActionArgs) => {
+export const action = async ({ request, params }: Route.ActionArgs) => {
     if (request.method !== 'POST') {
-        return data({message: 'Method not allowed', status: 405});
+        return data({ message: 'Method not allowed', status: 405 });
     }
     if (!isLocalRequest(request)) {
-        throw new Response('Forbidden', {status: 403});
+        throw new Response('Forbidden', { status: 403 });
     }
 
     const flightId = params.flightId;
     invariant(flightId, 'flight id is required');
 
     const formData = await request.formData();
-    const fileNames = []
-    const target = formData.get('target')
+    const fileNames = [];
+    const target = formData.get('target');
     if (target === 'BOTH' || target === 'SIDE') {
         fileNames.push(formData.get('sideVideoUrl')?.toString());
     }
@@ -34,19 +34,23 @@ export const action = async ({request, params}: Route.ActionArgs) => {
             }
         }
     } catch (error) {
-        return {error: (error as Buffer[]).map(line => line.toString('utf8'))};
+        return {
+            error: (error as Buffer[]).map((line) => line.toString('utf8')),
+        };
     }
     return redirect(`/flight/${flightId}`);
-}
+};
 
 export default function TrimFlight() {
     const data = useActionData<{ error: string[] }>();
     if (data) {
         return (
             <>
-                {data.error.map((line, index) =>
-                    <code key={index} className="block mt-4 text-red">{line}</code>
-                )}
+                {data.error.map((line) => (
+                    <code key={line} className="block mt-4 text-red">
+                        {line}
+                    </code>
+                ))}
             </>
         );
     }

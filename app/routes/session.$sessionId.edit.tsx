@@ -1,25 +1,25 @@
+import { format } from 'date-fns';
+import { useState } from 'react';
+import { useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
-import {getSession, updateSession} from '~/models/sessions.server';
-import {useLoaderData} from 'react-router';
-import {isLocalRequest} from '~/utils/localGuardUtils';
-import type {Route} from './+types/session.$sessionId.edit';
-import {useState} from "react";
-import {format} from "date-fns";
+import { getSession, updateSession } from '~/models/sessions.server';
+import { isLocalRequest } from '~/utils/localGuardUtils';
+import type { Route } from './+types/session.$sessionId.edit';
 
-export const loader = async ({params, request}: Route.LoaderArgs) => {
-    invariant(params.sessionId, "session not found");
-    const isLocal = isLocalRequest(request)
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+    invariant(params.sessionId, 'session not found');
+    const isLocal = isLocalRequest(request);
 
     const session = await getSession(params.sessionId);
     if (!session) {
-        throw new Response("Not Found", {status: 404});
+        throw new Response('Not Found', { status: 404 });
     }
-    return {session, isLocal};
+    return { session, isLocal };
 };
 
-export const action = async ({params, request}: Route.ActionArgs) => {
+export const action = async ({ params, request }: Route.ActionArgs) => {
     if (request.method !== 'POST' || !isLocalRequest(request)) {
-        return new Response('Method not allowed', {status: 405});
+        return new Response('Method not allowed', { status: 405 });
     }
 
     const formData = await request.formData();
@@ -29,17 +29,22 @@ export const action = async ({params, request}: Route.ActionArgs) => {
 
     invariant(dateStr, 'Date is required');
 
-    const sessionId = params.sessionId
+    const sessionId = params.sessionId;
 
-    await updateSession({id: sessionId, name, date});
+    await updateSession({ id: sessionId, name, date });
 
-    return new Response(null, {status: 200, headers: {Location: `/session/${sessionId}`}});
+    return new Response(null, {
+        status: 200,
+        headers: { Location: `/session/${sessionId}` },
+    });
 };
 
 export default function SessionDetailsPage() {
-    const {session} = useLoaderData<typeof loader>();
+    const { session } = useLoaderData<typeof loader>();
     const [name, setName] = useState<string>(session.name ?? '');
-    const [date, setDate] = useState<string>(format(session.date, 'yyyy-MM-dd'));
+    const [date, setDate] = useState<string>(
+        format(session.date, 'yyyy-MM-dd'),
+    );
 
     return (
         <div>
@@ -49,17 +54,29 @@ export default function SessionDetailsPage() {
                     <div className="label">
                         <span className="label-text">Name</span>
                     </div>
-                    <input type="text" className="input input-bordered" name="name" value={name}
-                           onChange={(e) => setName(e.target.value)}/>
+                    <input
+                        type="text"
+                        className="input input-bordered"
+                        name="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
                 </label>
                 <label className="form-control w-full max-w-xs">
                     <div className="label">
                         <span className="label-text">Date</span>
                     </div>
-                    <input type="date" className="input input-bordered" name="date" value={date}
-                           onChange={(e) => setDate(e.target.value)}/>
+                    <input
+                        type="date"
+                        className="input input-bordered"
+                        name="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                    />
                 </label>
-                <button className="btn mt-4 max-w-xs" type="submit">Save</button>
+                <button className="btn mt-4 max-w-xs" type="submit">
+                    Save
+                </button>
             </form>
         </div>
     );
