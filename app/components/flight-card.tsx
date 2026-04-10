@@ -1,4 +1,4 @@
-import type { FlightFormation, Flyer, Score } from '@prisma/client';
+import type { FlightFormation, Flyer, Score } from 'prisma/generated/client';
 import { format } from 'date-fns';
 import { CameraSwitchIcon, EditIcon, ScoresIcon } from '~/components/icons';
 import { ChangeEvent, MouseEvent, useState } from 'react';

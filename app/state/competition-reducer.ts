@@ -1,4 +1,4 @@
-import { Session } from '@prisma/client'
+import { Session } from 'prisma/generated/client'
 
 export const competitionReducer = (state: EditCompetitionState, action: EditCompetitionAction) => {
     switch (action.type) {

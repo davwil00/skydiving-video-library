@@ -5,7 +5,7 @@ import { mkdir, readdir, rename } from "fs/promises";
 import { Dirent } from "fs";
 import { getDuration, trim } from "~/utils/ffmpegUtils";
 import { format } from "date-fns";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "prisma/generated/client";
 import type { Route } from './+types/solo.add';
 
 async function getAllFiles() {

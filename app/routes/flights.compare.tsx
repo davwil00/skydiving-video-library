@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router";
 import invariant from "tiny-invariant";
 import { getFlight } from "~/models/flights.server";
 import { useRef, useState } from "react";
-import { FlightFormation } from "@prisma/client";
+import { FlightFormation } from "prisma/generated/client";
 import type { Route } from './+types/flights.compare';
 import { formatDate } from "~/utils/utils";
 

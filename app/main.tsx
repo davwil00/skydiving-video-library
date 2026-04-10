@@ -2,7 +2,7 @@ import Navbar from '~/components/navbar'
 import Sidebar from '~/components/sidebar'
 import { usePageStateContext } from '~/contexts/page-state'
 import { useRef } from 'react'
-import { Session, SoloSession, Competition } from '@prisma/client'
+import { Session, SoloSession, Competition } from 'prisma/generated/client'
 import { type ReactNode } from 'react'
 import { LibraryStateProvider } from './contexts/library-state'
 

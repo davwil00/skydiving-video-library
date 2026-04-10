@@ -1,5 +1,5 @@
 import { prisma } from '~/db.server';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'prisma/generated/client';
 
 export function getByFormationId(formationId: string) {
     return prisma.flight.findMany({

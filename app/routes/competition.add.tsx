@@ -5,7 +5,7 @@ import { Route } from '../../.react-router/types/app/routes/+types/competition.a
 import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { formatDate } from '~/utils/utils';
 import { useRef, useState } from 'react'
-import { Session } from '@prisma/client'
+import { Session } from 'prisma/generated/client'
 
 type SessionIdAndDate = Pick<Session, 'id' | 'date'>
 export const loader = async () => {

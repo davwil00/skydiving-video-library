@@ -1,12 +1,12 @@
-import {
-  PrismaClient } from "@prisma/client";
+import { PrismaClient } from "prisma/generated/client";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 import { singleton } from "./singleton.server";
 
-// Hard-code a unique key, so we can look up the client when this module gets re-imported
-const prisma = singleton("prisma", () => new PrismaClient({
-  log: ['info', 'warn', 'error'],
-}));
-prisma.$connect();
+const adapter = new PrismaBetterSqlite3({
+  url: process.env.DATABASE_URL,
+});
 
-export { prisma };
+export const prisma = singleton("prisma", () => new PrismaClient({
+  adapter
+}));

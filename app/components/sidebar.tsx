@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { format } from 'date-fns';
 import { RefObject } from 'react';
-import { Session, SoloSession, Competition } from '@prisma/client';
+import { Session, SoloSession, Competition } from 'prisma/generated/client';
 import { usePageStateContext } from '~/contexts/page-state'
 import { LibraryType, useLibraryStateContext, useLibraryStateDispatchContext } from '~/contexts/library-state'
 
