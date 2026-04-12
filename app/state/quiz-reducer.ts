@@ -1,13 +1,9 @@
 import {
-    A_BLOCKS,
-    AA_BLOCKS,
-    AAA_BLOCKS,
     allFormations,
-    EIGHT_WAY_BLOCKS,
-    EIGHT_WAY_RANDOMS,
+    type Discipline,
     type Formation,
-    Level,
-    RANDOMS,
+    type Level,
+    type Type,
 } from '~/data/formations';
 import { shuffle } from '~/utils/utils';
 
@@ -15,20 +11,26 @@ export type QuizAction =
     | { type: 'startQuiz' }
     | { type: 'reset' }
     | { type: 'nextQuestion' }
-    | { type: 'answerQuestion'; answer: Formation; isCorrect: boolean }
+    | { type: 'answerQuestion'; answer: Formation | Slot; isCorrect: boolean }
     | { type: 'setQuestionSet'; value: QuestionSet }
     | { type: 'setQuizType'; value: QuizType }
     | { type: 'setDivePool'; value: DivePool }
-    | { type: 'setNumberOfQuestions'; value: number };
+    | { type: 'setNumberOfQuestions'; value: number }
+    | { type: 'setSlot'; value: Slot };
 
-export type Question = {
+export type FormationQuestion = {
     answer: Formation;
     choices: Formation[];
+};
+export type SlotQuestion = {
+    formation: Formation;
+    slotToIdentify: Slot;
 };
 
 export enum QuizType {
     NAME_TO_PICTURE,
     PICTURE_TO_NAME,
+    FIND_YOUR_SLOT,
 }
 
 export enum DivePool {
@@ -36,27 +38,73 @@ export enum DivePool {
     EIGHT_WAY,
 }
 
-export enum QuestionSet {
-    RANDOMS,
-    BLOCKS_A,
-    BLOCKS_AA,
-    BLOCKS_AAA,
-    INTERMEDIATE_RANDOMS,
-    INTERMEDIATE_BLOCKS,
-    SENIOR_RANDOMS,
-    SENIOR_BLOCKS,
+export class QuestionSet {
+    constructor(
+        public discipline: Discipline,
+        public level: Level,
+        public type: Type,
+    ) {}
+
+    equals(questionSet: QuestionSet): boolean {
+        return (
+            this.discipline === questionSet.discipline &&
+            this.level === questionSet.level &&
+            this.type === questionSet.type
+        );
+    }
 }
+
+export function containsQuestionSet(
+    questionSets: QuestionSet[],
+    questionSet: QuestionSet,
+): boolean {
+    return questionSets.find((qs) => qs.equals(questionSet)) !== undefined;
+}
+
+export const slots: Slot[] = [
+    { name: 'Inside Front', className: 'IF', divePools: [DivePool.EIGHT_WAY] },
+    { name: 'Outside Front', className: 'OF', divePools: [DivePool.EIGHT_WAY] },
+    { name: 'Inside Rear', className: 'IR', divePools: [DivePool.EIGHT_WAY] },
+    { name: 'Outside Rear', className: 'OR', divePools: [DivePool.EIGHT_WAY] },
+    {
+        name: 'Point',
+        className: 'P',
+        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+    },
+    {
+        name: 'Inside Centre',
+        className: 'IC',
+        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+    },
+    {
+        name: 'Outside Centre',
+        className: 'OC',
+        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+    },
+    {
+        name: 'Tail',
+        className: 'T',
+        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+    },
+];
+
+export type Slot = {
+    name: string;
+    className: string;
+    divePools: DivePool[];
+};
 
 export type QuizState = {
     started: boolean;
     questionNo: number;
     score: number;
-    questions: Question[];
-    selectedAnswer?: Formation;
+    questions: FormationQuestion[] | SlotQuestion[];
+    selectedAnswer?: Formation | Slot;
     quizType?: QuizType;
-    questionSet: QuestionSet[];
+    questionSets: QuestionSet[];
     divePool: DivePool[];
     numberOfQuestions: number;
+    slots: Slot[];
 };
 
 export const initialState: QuizState = {
@@ -66,9 +114,10 @@ export const initialState: QuizState = {
     questions: [],
     selectedAnswer: undefined,
     quizType: undefined,
-    questionSet: [],
+    questionSets: [],
     divePool: [],
     numberOfQuestions: 10,
+    slots: [],
 };
 
 export const quizReducer = (
@@ -81,12 +130,19 @@ export const quizReducer = (
                 ...initialState,
                 questionNo: 0,
                 quizType: state.quizType,
-                questionSet: state.questionSet,
+                questionSets: state.questionSets,
                 started: true,
-                questions: generateQuestions(
-                    state.questionSet,
-                    state.numberOfQuestions,
-                ),
+                questions:
+                    state.quizType === QuizType.FIND_YOUR_SLOT
+                        ? generateSlotQuestions(
+                              state.slots,
+                              state.questionSets,
+                              state.numberOfQuestions,
+                          )
+                        : generateFormationQuestions(
+                              state.questionSets,
+                              state.numberOfQuestions,
+                          ),
             };
 
         case 'reset':
@@ -102,17 +158,17 @@ export const quizReducer = (
             };
 
         case 'setQuestionSet':
-            if (state.questionSet.includes(action.value)) {
+            if (containsQuestionSet(state.questionSets, action.value)) {
                 return {
                     ...state,
-                    questionSet: state.questionSet.filter(
-                        (questionSet) => questionSet !== action.value,
+                    questionSets: state.questionSets.filter(
+                        (questionSet) => !questionSet.equals(action.value),
                     ),
                 };
             }
             return {
                 ...state,
-                questionSet: [...state.questionSet, action.value],
+                questionSets: [...state.questionSets, action.value],
             };
 
         case 'setDivePool':
@@ -127,6 +183,18 @@ export const quizReducer = (
             return {
                 ...state,
                 divePool: [...state.divePool, action.value],
+            };
+
+        case 'setSlot':
+            if (state.slots.includes(action.value)) {
+                return {
+                    ...state,
+                    slots: state.slots.filter((slot) => slot !== action.value),
+                };
+            }
+            return {
+                ...state,
+                slots: [...state.slots, action.value],
             };
 
         case 'setQuizType':
@@ -153,47 +221,61 @@ export const quizReducer = (
     }
 };
 
-function generateQuestions(
-    questionSet: QuestionSet[],
+function getFormationsToIncludeFromQuestionSets(
+    questionSets: QuestionSet[],
+): Formation[] {
+    const formationsToInclude = allFormations.filter((formation) =>
+        questionSets.some(
+            (questionSet) =>
+                formation.discipline === questionSet.discipline &&
+                formation.level === questionSet.level &&
+                formation.type === questionSet.type,
+        ),
+    );
+    shuffle(formationsToInclude);
+    return formationsToInclude;
+}
+
+function generateFormationQuestions(
+    questionSets: QuestionSet[],
     numberOfQuestions: number,
-): Question[] {
-    const formationsToInclude = [
-        ...(questionSet.includes(QuestionSet.RANDOMS) ? RANDOMS : []),
-        ...(questionSet.includes(QuestionSet.BLOCKS_A) ? A_BLOCKS : []),
-        ...(questionSet.includes(QuestionSet.BLOCKS_AA) ? AA_BLOCKS : []),
-        ...(questionSet.includes(QuestionSet.BLOCKS_AAA) ? AAA_BLOCKS : []),
-        ...(questionSet.includes(QuestionSet.INTERMEDIATE_RANDOMS)
-            ? EIGHT_WAY_RANDOMS.filter(
-                  (formation) => formation.level === Level.INTERMEDIATE,
-              )
-            : []),
-        ...(questionSet.includes(QuestionSet.INTERMEDIATE_BLOCKS)
-            ? EIGHT_WAY_BLOCKS.filter(
-                  (formation) => formation.level === Level.INTERMEDIATE,
-              )
-            : []),
-        ...(questionSet.includes(QuestionSet.SENIOR_RANDOMS)
-            ? EIGHT_WAY_RANDOMS.filter(
-                  (formation) => formation.level === Level.SENIOR,
-              )
-            : []),
-        ...(questionSet.includes(QuestionSet.SENIOR_BLOCKS)
-            ? EIGHT_WAY_BLOCKS.filter(
-                  (formation) => formation.level === Level.SENIOR,
-              )
-            : []),
-    ];
+): FormationQuestion[] {
+    const formationsToInclude =
+        getFormationsToIncludeFromQuestionSets(questionSets);
     const numberOfQuestionsToGenerate =
         formationsToInclude.length > numberOfQuestions
             ? numberOfQuestions
             : formationsToInclude.length;
-    shuffle(formationsToInclude);
     return formationsToInclude
         .slice(0, numberOfQuestionsToGenerate)
         .map((formation) => ({
             answer: formation,
             choices: generateMultipleChoiceAnswers(formation),
         }));
+}
+
+function generateSlotQuestions(
+    slots: Slot[],
+    questionSets: QuestionSet[],
+    numberOfQuestions: number,
+): SlotQuestion[] {
+    const slotsToInclude = [...slots];
+    const formationsToInclude =
+        getFormationsToIncludeFromQuestionSets(questionSets);
+    const numberOfQuestionsToGenerate =
+        formationsToInclude.length > numberOfQuestions
+            ? numberOfQuestions
+            : formationsToInclude.length;
+    return formationsToInclude
+        .slice(0, numberOfQuestionsToGenerate)
+        .map((formation) => {
+            shuffle(slotsToInclude);
+            const slotToIdentify = slotsToInclude[0];
+            return {
+                formation,
+                slotToIdentify,
+            };
+        });
 }
 
 function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {

@@ -14,102 +14,123 @@ export enum Discipline {
     EIGHT_WAY,
 }
 
+export enum Type {
+    RANDOM,
+    BLOCK,
+}
+
 export const RANDOMS: Random[] = [
     {
         id: 'A',
         name: 'Unipod',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'B',
         name: 'Stairstep Diamond',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'C',
         name: 'Murphy Flake',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'D',
         name: 'Yuan',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'E',
         name: 'Meeker',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'F',
         name: 'Open Accordian',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'G',
         name: 'Cataccord',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'H',
         name: 'Bow',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'J',
         name: 'Donut',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'K',
         name: 'Hook',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'L',
         name: 'Adder',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'M',
         name: 'Star',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'N',
         name: 'Crank',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'O',
         name: 'Satellite',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'P',
         name: 'Sidebody',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'Q',
         name: 'Phalanx',
         level: Level.ROOKIE,
         discipline: Discipline.FOUR_WAY,
+        type: Type.RANDOM,
     },
 ];
 
@@ -120,6 +141,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Side Flake Donut',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '4',
@@ -127,6 +149,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Monopod',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '6',
@@ -134,6 +157,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Stardian',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '7',
@@ -141,6 +165,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Sidebuddies',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '8',
@@ -148,6 +173,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Canadian Tree',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '9',
@@ -155,6 +181,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Cat + Accordian',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '19',
@@ -162,6 +189,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Icepick',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '21',
@@ -169,6 +197,7 @@ export const A_BLOCKS: Block[] = [
         endFormation: 'Marquis',
         level: Level.A,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
 ];
 
@@ -179,6 +208,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Molar',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '11',
@@ -186,6 +216,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Photon',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '13',
@@ -193,6 +224,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Mixed Accordions',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '14',
@@ -200,6 +232,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Bipole',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '15',
@@ -207,6 +240,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Caterpillar',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '18',
@@ -214,6 +248,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Ziroon',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '20',
@@ -221,6 +256,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Zipper',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '22',
@@ -228,6 +264,7 @@ export const AA_BLOCKS: Block[] = [
         endFormation: 'Chinese Tee',
         level: Level.AA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
 ];
 
@@ -238,6 +275,7 @@ export const AAA_BLOCKS: Block[] = [
         endFormation: 'Turf',
         level: Level.AAA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '5',
@@ -245,6 +283,7 @@ export const AAA_BLOCKS: Block[] = [
         endFormation: 'Opal',
         level: Level.AAA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '10',
@@ -252,6 +291,7 @@ export const AAA_BLOCKS: Block[] = [
         endFormation: 'Bunyip',
         level: Level.AAA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '12',
@@ -259,6 +299,7 @@ export const AAA_BLOCKS: Block[] = [
         endFormation: 'Bundy',
         level: Level.AAA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '16',
@@ -266,6 +307,7 @@ export const AAA_BLOCKS: Block[] = [
         endFormation: 'Box',
         level: Level.AAA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '17',
@@ -273,6 +315,7 @@ export const AAA_BLOCKS: Block[] = [
         endFormation: 'Murphy',
         level: Level.AAA,
         discipline: Discipline.FOUR_WAY,
+        type: Type.BLOCK,
     },
 ];
 
@@ -283,6 +326,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Donut Flake',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '2',
@@ -290,6 +334,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Swiss Bear',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '3',
@@ -297,6 +342,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Double Donuts',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '4',
@@ -304,6 +350,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'In-Out',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '5',
@@ -311,6 +358,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Opposed Crank',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '6',
@@ -318,6 +366,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Star',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '7',
@@ -325,6 +374,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Nacho',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '8',
@@ -332,6 +382,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Frisbee',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '9',
@@ -339,6 +390,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Mahal',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '10',
@@ -346,6 +398,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Donut',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '11',
@@ -353,6 +406,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Norwegian Donut',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '12',
@@ -360,6 +414,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Stereo Bipoles',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '13',
@@ -367,6 +422,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Double Satellite',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '14',
@@ -374,6 +430,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Zippered Opals',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '15',
@@ -381,6 +438,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Double Yuans',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '16',
@@ -388,6 +446,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Monopods',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '17',
@@ -395,6 +454,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Buzzard',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '18',
@@ -402,6 +462,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Sidebody Donut',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '19',
@@ -409,6 +470,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Compressed Diamonds',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '20',
@@ -416,6 +478,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Donut Cross',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '21',
@@ -423,6 +486,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Eye',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
     {
         id: '22',
@@ -430,6 +494,7 @@ export const EIGHT_WAY_BLOCKS: Block[] = [
         endFormation: 'Compressed Stairstep Diamonds',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.BLOCK,
     },
 ];
 
@@ -439,96 +504,112 @@ export const EIGHT_WAY_RANDOMS: Random[] = [
         name: 'Caterpillar',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'B',
         name: 'Stairstep',
         level: Level.SENIOR,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'C',
         name: 'Hourglass',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'D',
         name: 'Hope Diamond',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'E',
         name: 'Rubik',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'F',
         name: 'Diamond Flake',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'G',
         name: 'Arrowhead',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'H',
         name: 'Irquois',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'J',
         name: 'Springbok',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'K',
         name: 'Double Meekers',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'L',
         name: 'Open Facing Diamond',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'M',
         name: 'Double Spiders',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'N',
         name: 'Zipper Flake',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'O',
         name: 'Compressed Accordion',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'P',
         name: 'Venus',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
     {
         id: 'Q',
         name: 'Compass',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
+        type: Type.RANDOM,
     },
 ];
 
@@ -545,6 +626,7 @@ export interface Formation {
     id: string;
     level: Level;
     discipline: Discipline;
+    type: Type;
 }
 
 export interface Random extends Formation {

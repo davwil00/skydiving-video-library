@@ -1,10 +1,13 @@
 import type React from 'react';
+import { Discipline, Level, Type } from '~/data/formations';
 import {
+    containsQuestionSet,
     DivePool,
     QuestionSet,
     type QuizAction,
     type QuizState,
     QuizType,
+    slots,
 } from '~/state/quiz-reducer';
 
 type QuizConfigProps = {
@@ -51,11 +54,28 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                             })
                         }
                     />
+                    <input
+                        type="radio"
+                        name="quiz-type"
+                        checked={quizState.quizType === QuizType.FIND_YOUR_SLOT}
+                        className="btn text-white"
+                        aria-label="Find your slot"
+                        autoComplete="off"
+                        onChange={() =>
+                            dispatch({
+                                type: 'setQuizType',
+                                value: QuizType.FIND_YOUR_SLOT,
+                            })
+                        }
+                    />
                 </div>
             </>
         );
     };
     const DivePoolConfig = () => {
+        if (quizState.quizType == null) {
+            return null;
+        }
         return (
             <>
                 <h2>Divepool(s)</h2>
@@ -98,6 +118,9 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
     };
 
     const FormationsConfig = () => {
+        if (quizState.divePool.length < 1) {
+            return null;
+        }
         const makeFormationInput = (
             label: string,
             questionSet: QuestionSet,
@@ -107,7 +130,10 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                     type="checkbox"
                     name="quiz-question-set"
                     className="text-white btn"
-                    checked={quizState.questionSet?.includes(questionSet)}
+                    checked={containsQuestionSet(
+                        quizState.questionSets,
+                        questionSet,
+                    )}
                     aria-label={label}
                     autoComplete="off"
                     onChange={() =>
@@ -119,29 +145,65 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
         const formationOptions = [];
         if (quizState.divePool.includes(DivePool.FOUR_WAY)) {
             formationOptions.push(
-                { label: 'Randoms', questionSet: QuestionSet.RANDOMS },
-                { label: 'A blocks', questionSet: QuestionSet.BLOCKS_A },
-                { label: 'AA blocks', questionSet: QuestionSet.BLOCKS_AA },
-                { label: 'AAA blocks', questionSet: QuestionSet.BLOCKS_AAA },
+                {
+                    label: 'Randoms',
+                    questionSet: new QuestionSet(
+                        Discipline.FOUR_WAY,
+                        Level.ROOKIE,
+                        Type.RANDOM,
+                    ),
+                },
+                {
+                    label: 'A blocks',
+                    questionSet: new QuestionSet(
+                        Discipline.FOUR_WAY,
+                        Level.A,
+                        Type.BLOCK,
+                    ),
+                },
+                {
+                    label: 'AA blocks',
+                    questionSet: new QuestionSet(
+                        Discipline.FOUR_WAY,
+                        Level.AA,
+                        Type.BLOCK,
+                    ),
+                },
+                {
+                    label: 'AAA blocks',
+                    questionSet: new QuestionSet(
+                        Discipline.FOUR_WAY,
+                        Level.AAA,
+                        Type.BLOCK,
+                    ),
+                },
             );
         }
         if (quizState.divePool.includes(DivePool.EIGHT_WAY)) {
             formationOptions.push(
                 {
                     label: 'Intermediate Randoms',
-                    questionSet: QuestionSet.INTERMEDIATE_RANDOMS,
+                    questionSet: new QuestionSet(
+                        Discipline.EIGHT_WAY,
+                        Level.INTERMEDIATE,
+                        Type.RANDOM,
+                    ),
                 },
                 {
                     label: 'Intermediate Blocks',
-                    questionSet: QuestionSet.INTERMEDIATE_BLOCKS,
-                },
-                {
-                    label: 'Senior Randoms',
-                    questionSet: QuestionSet.SENIOR_RANDOMS,
+                    questionSet: new QuestionSet(
+                        Discipline.EIGHT_WAY,
+                        Level.INTERMEDIATE,
+                        Type.BLOCK,
+                    ),
                 },
                 {
                     label: 'Senior Blocks',
-                    questionSet: QuestionSet.SENIOR_BLOCKS,
+                    questionSet: new QuestionSet(
+                        Discipline.EIGHT_WAY,
+                        Level.SENIOR,
+                        Type.BLOCK,
+                    ),
                 },
             );
         }
@@ -157,9 +219,48 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
         );
     };
 
+    const SlotConfig = () => {
+        if (
+            quizState.quizType !== QuizType.FIND_YOUR_SLOT ||
+            quizState.divePool.length < 1
+        ) {
+            return null;
+        }
+        const slotsAvailable = slots.filter((slot) =>
+            slot.divePools.some((divePool) =>
+                quizState.divePool.includes(divePool),
+            ),
+        );
+
+        return (
+            <>
+                <h2>Slots to include:</h2>
+                <div className="flex flex-wrap gap-2">
+                    {slotsAvailable.map((slot) => (
+                        <input
+                            key={slot.className}
+                            type="checkbox"
+                            name="quiz-question-set"
+                            className="text-white btn"
+                            checked={quizState.slots.includes(slot)}
+                            aria-label={slot.name}
+                            autoComplete="off"
+                            onChange={() =>
+                                dispatch({ type: 'setSlot', value: slot })
+                            }
+                        />
+                    ))}
+                </div>
+            </>
+        );
+    };
+
     function canStart() {
         return (
-            quizState.questionSet.length > 0 && quizState.quizType !== undefined
+            quizState.questionSets.length > 0 &&
+            quizState.quizType !== undefined &&
+            (quizState.quizType !== QuizType.FIND_YOUR_SLOT ||
+                quizState.slots.length > 0)
         );
     }
 
@@ -190,8 +291,9 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         ))}
                     </select>
                 </div>
-                {quizState.quizType != null ? <DivePoolConfig /> : null}
-                {quizState.divePool != null ? <FormationsConfig /> : null}
+                <DivePoolConfig />
+                <FormationsConfig />
+                <SlotConfig />
 
                 <button
                     className="btn text-white mt-4"

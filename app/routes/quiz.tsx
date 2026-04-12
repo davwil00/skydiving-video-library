@@ -1,12 +1,17 @@
+import type React from 'react';
 import { useEffect, useReducer, useRef } from 'react';
+import FormationImage from '~/components/formations/formation-images';
 import { CheckIcon, XIcon } from '~/components/icons';
 import QuizConfig from '~/components/quiz-config';
 import { type Formation, isRandom } from '~/data/formations';
 import {
+    type FormationQuestion,
     initialState,
-    type Question,
     QuizType,
     quizReducer,
+    type Slot,
+    type SlotQuestion,
+    slots,
 } from '~/state/quiz-reducer';
 import { getFormationImageUrl } from '~/utils/utils';
 
@@ -87,7 +92,7 @@ export default function QuizPage() {
         );
     }
 
-    function identifyPictureFromFormation(currentQuestion: Question) {
+    function identifyPictureFromFormation(currentQuestion: FormationQuestion) {
         return (
             <div className="card text-black">
                 <div className="justify-between flex mb-4">
@@ -137,7 +142,7 @@ export default function QuizPage() {
         return `${formation.id}`;
     }
 
-    function identifyFormationFromPicture(currentQuestion: Question) {
+    function identifyFormationFromPicture(currentQuestion: FormationQuestion) {
         return (
             <div className="card text-black">
                 <div className="justify-between flex mb-4">
@@ -223,6 +228,63 @@ export default function QuizPage() {
         );
     }
 
+    function identifySlot(currentQuestion: SlotQuestion) {
+        const handleClick = (event: React.MouseEvent<SVGSVGElement>) => {
+            if (!(event.target instanceof SVGPathElement)) {
+                return;
+            }
+            const slotClass = event.target.getAttribute('class');
+            const isCorrect =
+                currentQuestion.slotToIdentify.className === slotClass;
+            const answer = slots.find((slot) => slot.className === slotClass);
+            if (!answer) {
+                return;
+            }
+            dispatch({ type: 'answerQuestion', answer, isCorrect });
+        };
+        return (
+            <div className="card text-black">
+                <div className="justify-between flex mb-4">
+                    <div>Question {quizState.questionNo + 1}</div>
+                    <div>Score: {quizState.score}</div>
+                </div>
+                <figure
+                    className={
+                        quizState.selectedAnswer === undefined ? 'quiz' : ''
+                    }
+                >
+                    <FormationImage
+                        className="max-h-[50vh]"
+                        formation={currentQuestion.formation}
+                        onClick={(e) => handleClick(e)}
+                    />
+                </figure>
+                {quizState.selectedAnswer ? (
+                    <div className="flex flex-col">
+                        {quizState.selectedAnswer ===
+                        currentQuestion.slotToIdentify ? (
+                            <span>
+                                Correct, it was {quizState.selectedAnswer.name}
+                            </span>
+                        ) : (
+                            <span>
+                                Incorrect, you found{' '}
+                                {(quizState.selectedAnswer as Slot).name}
+                            </span>
+                        )}
+                        <button
+                            type="button"
+                            className="btn text-white"
+                            onClick={() => dispatch({ type: 'nextQuestion' })}
+                        >
+                            Next
+                        </button>
+                    </div>
+                ) : null}
+            </div>
+        );
+    }
+
     if (
         quizState.started &&
         quizState.questionNo === quizState.questions.length
@@ -232,9 +294,15 @@ export default function QuizPage() {
         const currentQuestion = quizState.questions[quizState.questionNo];
         switch (quizState.quizType) {
             case QuizType.NAME_TO_PICTURE:
-                return identifyPictureFromFormation(currentQuestion);
+                return identifyPictureFromFormation(
+                    currentQuestion as FormationQuestion,
+                );
             case QuizType.PICTURE_TO_NAME:
-                return identifyFormationFromPicture(currentQuestion);
+                return identifyFormationFromPicture(
+                    currentQuestion as FormationQuestion,
+                );
+            case QuizType.FIND_YOUR_SLOT:
+                return identifySlot(currentQuestion as SlotQuestion);
         }
     } else {
         return <QuizConfig quizState={quizState} dispatch={dispatch} />;

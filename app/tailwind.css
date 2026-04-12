@@ -138,3 +138,37 @@
         fill: #6f2f9f !important;
     }
 }
+
+.quiz {
+    .P {
+        fill: #ffffff !important;
+    }
+
+    .IF {
+        fill: #ffffff !important;
+    }
+
+    .OF {
+        fill: #ffffff !important;
+    }
+
+    .IC {
+        fill: #ffffff !important;
+    }
+
+    .OC {
+        fill: #ffffff !important;
+    }
+
+    .IR {
+        fill: #ffffff !important;
+    }
+
+    .OR {
+        fill: #ffffff !important;
+    }
+
+    .T {
+        fill: #ffffff !important;
+    }
+}
