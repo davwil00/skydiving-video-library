@@ -550,7 +550,7 @@ export const EIGHT_WAY_RANDOMS: Random[] = [
     },
     {
         id: 'H',
-        name: 'Irquois',
+        name: 'Iroquois',
         level: Level.INTERMEDIATE,
         discipline: Discipline.EIGHT_WAY,
         type: Type.RANDOM,
@@ -638,7 +638,7 @@ export interface Block extends Formation {
     endFormation: string;
 }
 
-export const FORMATIONS = [...RANDOMS, ...A_BLOCKS, ...AA_BLOCKS].reduce(
+export const FORMATIONS = [...RANDOMS, ...A_BLOCKS, ...AA_BLOCKS, ...AAA_BLOCKS].reduce(
     (acc, curr) => ({
         ...acc,
         [curr.id]: curr,

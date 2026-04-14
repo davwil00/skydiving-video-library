@@ -5,7 +5,7 @@ import FlightCard from '~/components/flight-card';
 import { ViewSwitcher } from '~/components/view-switcher';
 import {
     A_BLOCKS,
-    AA_BLOCKS,
+    AA_BLOCKS, AAA_BLOCKS,
     FORMATIONS,
     getDisplayName,
     RANDOMS,
@@ -28,9 +28,9 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     return { flights, formation, isLocal };
 };
 
-const orderedFormations = [...RANDOMS, ...A_BLOCKS, ...AA_BLOCKS];
+const orderedFormations = [...RANDOMS, ...A_BLOCKS, ...AA_BLOCKS, ...AAA_BLOCKS];
 
-export default function SessionDetailsPage() {
+export default function Formation() {
     const { flights, formation, isLocal } = useLoaderData<typeof loader>();
     const [searchParams] = useSearchParams();
     const activeView = searchParams.get('view') || 'diagram';
