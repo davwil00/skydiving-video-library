@@ -38,6 +38,7 @@ import O from '~/components/formations/8-way/randoms/O';
 import P from '~/components/formations/8-way/randoms/P';
 import Q from '~/components/formations/8-way/randoms/Q';
 import { Discipline, type Formation } from '~/data/formations';
+import { getFormationImageUrl } from '~/utils/utils';
 
 interface Props extends SVGProps<SVGSVGElement> {
     formation: Formation;
@@ -122,6 +123,14 @@ export default function FormationImage(props: Props) {
             case '22':
                 return <Svg22 {...props} />;
         }
+    } else if (props.formation.discipline === Discipline.FOUR_WAY) {
+        return (
+            <img
+                className={props.className}
+                alt="skydiving formation"
+                src={getFormationImageUrl(props.formation)}
+            />
+        );
     }
     return null;
 }

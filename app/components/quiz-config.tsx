@@ -6,6 +6,7 @@ import {
     QuestionSet,
     type QuizAction,
     type QuizState,
+    Difficulty,
     QuizType,
     slots,
 } from '~/state/quiz-reducer';
@@ -72,6 +73,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
             </>
         );
     };
+
     const DivePoolConfig = () => {
         if (quizState.quizType == null) {
             return null;
@@ -240,7 +242,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         <input
                             key={slot.className}
                             type="checkbox"
-                            name="quiz-question-set"
+                            name="quiz-slot"
                             className="text-white btn"
                             checked={quizState.slots.includes(slot)}
                             aria-label={slot.name}
@@ -250,6 +252,58 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                             }
                         />
                     ))}
+                </div>
+            </>
+        );
+    };
+
+    const DifficultyConfig = () => {
+        if (
+            !(quizState.quizType === QuizType.NAME_TO_PICTURE || quizState.quizType === QuizType.PICTURE_TO_NAME)
+        ) {
+            return null;
+        }
+
+        if (quizState.questionSets.length === 0 || quizState.questionSets.every((qs) => qs.type === Type.BLOCK )) {
+            return null;
+        }
+
+        return (
+            <>
+                <h2>Difficulty:</h2>
+                <div className="flex flex-wrap gap-2">
+                    <input
+                        type="radio"
+                        name="quiz-difficulty"
+                        className="btn text-white"
+                        checked={
+                            quizState.difficulty === Difficulty.EASY
+                        }
+                        aria-label="Easy (with formation names)"
+                        autoComplete="off"
+                        onChange={() =>
+                            dispatch({
+                                type: 'setDifficulty',
+                                value: Difficulty.EASY,
+                            })
+                        }
+                    />
+                    <input
+                        type="radio"
+                        name="quiz-difficulty"
+                        className="btn text-white"
+                        checked={
+                            quizState.difficulty === Difficulty.HARD
+                        }
+                        aria-label="Hard: (Letters/Numbers only)"
+                        autoComplete="off"
+                        onChange={() =>
+                            dispatch({
+                                type: 'setDifficulty',
+                                value: Difficulty.HARD,
+                            })
+                        }
+                    />
                 </div>
             </>
         );
@@ -293,6 +347,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                 </div>
                 <DivePoolConfig />
                 <FormationsConfig />
+                <DifficultyConfig />
                 <SlotConfig />
 
                 <button

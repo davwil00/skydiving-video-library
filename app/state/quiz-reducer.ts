@@ -16,7 +16,8 @@ export type QuizAction =
     | { type: 'setQuizType'; value: QuizType }
     | { type: 'setDivePool'; value: DivePool }
     | { type: 'setNumberOfQuestions'; value: number }
-    | { type: 'setSlot'; value: Slot };
+    | { type: 'setSlot'; value: Slot }
+    | { type: 'setDifficulty'; value: Difficulty };
 
 export type FormationQuestion = {
     answer: Formation;
@@ -36,6 +37,11 @@ export enum QuizType {
 export enum DivePool {
     FOUR_WAY,
     EIGHT_WAY,
+}
+
+export enum Difficulty {
+    EASY,
+    HARD
 }
 
 export class QuestionSet {
@@ -105,6 +111,7 @@ export type QuizState = {
     divePool: DivePool[];
     numberOfQuestions: number;
     slots: Slot[];
+    difficulty?: Difficulty;
 };
 
 export const initialState: QuizState = {
@@ -118,6 +125,7 @@ export const initialState: QuizState = {
     divePool: [],
     numberOfQuestions: 10,
     slots: [],
+    difficulty: undefined
 };
 
 export const quizReducer = (
@@ -131,6 +139,8 @@ export const quizReducer = (
                 questionNo: 0,
                 quizType: state.quizType,
                 questionSets: state.questionSets,
+                slots: state.slots,
+                divePool: state.divePool,
                 started: true,
                 questions:
                     state.quizType === QuizType.FIND_YOUR_SLOT
@@ -201,6 +211,12 @@ export const quizReducer = (
             return {
                 ...state,
                 quizType: action.value,
+            };
+
+        case 'setDifficulty':
+            return {
+                ...state,
+                difficulty: action.value
             };
 
         case 'answerQuestion':
@@ -283,6 +299,7 @@ function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
         (formation) =>
             formation.level === actualAnswer.level &&
             formation.discipline === actualAnswer.discipline &&
+            formation.type === actualAnswer.type &&
             formation !== actualAnswer,
     );
     const answers = possibleAlternateAnswers.slice(0, 3).concat(actualAnswer);

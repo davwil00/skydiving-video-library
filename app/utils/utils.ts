@@ -35,7 +35,7 @@ export function get8WayRandomImageUrl(random: Random) {
 }
 
 export function get8WayBlockImageUrl(blockId: string): string {
-    return `/images/8-way/blocks/${blockId}.png`;
+    return `/images/8-way/blocks/${blockId}.svg`;
 }
 
 export function capitalise(string: string): string {

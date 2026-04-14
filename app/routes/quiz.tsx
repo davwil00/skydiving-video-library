@@ -5,15 +5,15 @@ import { CheckIcon, XIcon } from '~/components/icons';
 import QuizConfig from '~/components/quiz-config';
 import { type Formation, isRandom } from '~/data/formations';
 import {
+    Difficulty,
     type FormationQuestion,
     initialState,
-    QuizType,
     quizReducer,
+    QuizType,
     type Slot,
     type SlotQuestion,
     slots,
 } from '~/state/quiz-reducer';
-import { getFormationImageUrl } from '~/utils/utils';
 
 export default function QuizPage() {
     const [quizState, dispatch] = useReducer(quizReducer, initialState);
@@ -43,13 +43,20 @@ export default function QuizPage() {
                 <p className="text-center text-5xl text-black">
                     You scored {quizState.score}/{quizState.questions.length}
                 </p>
-                <div className="text-center mt-8">
+                <div className="text-center mt-8 flex gap-4 justify-center">
+                    <button
+                        className="btn text-white"
+                        onClick={() => dispatch({ type: 'startQuiz' })}
+                        type="button"
+                    >
+                        Play again
+                    </button>
                     <button
                         className="btn text-white"
                         onClick={() => dispatch({ type: 'reset' })}
                         type="button"
                     >
-                        Play again
+                        Play a different quiz
                     </button>
                 </div>
             </div>
@@ -80,11 +87,9 @@ export default function QuizPage() {
                                 : {}
                         }
                     >
-                        <img
-                            key={`img-${choice.id}`}
-                            className={`w-max max-h-[calc(50vh-35px)] mx-auto`}
-                            alt="skydiving formation"
-                            src={getFormationImageUrl(choice)}
+                        <FormationImage formation={choice}
+                                        key={`img-${choice.id}`}
+                                        className={`w-full h-full h-max max-h-[calc(50vh-35px)] mx-auto`}
                         />
                     </button>
                 ))}
@@ -136,7 +141,7 @@ export default function QuizPage() {
 
     function getFormationDisplayName(formation: Formation) {
         if (isRandom(formation)) {
-            return `${formation.id} - ${formation.name}`;
+            return `${formation.id}${quizState.difficulty === Difficulty.EASY ? `- ${formation.name}` : ''}`;
         }
 
         return `${formation.id}`;
@@ -150,10 +155,9 @@ export default function QuizPage() {
                     <div>Score: {quizState.score}</div>
                 </div>
                 <figure>
-                    <img
-                        alt="skydiving formation"
+                    <FormationImage
+                        formation={currentQuestion.answer}
                         className="max-h-[50vh]"
-                        src={getFormationImageUrl(currentQuestion.answer)}
                     />
                 </figure>
                 <div className="card-body">
@@ -254,7 +258,7 @@ export default function QuizPage() {
                     }
                 >
                     <FormationImage
-                        className="max-h-[50vh]"
+                        className="max-h-[75vh]"
                         formation={currentQuestion.formation}
                         onClick={(e) => handleClick(e)}
                     />
