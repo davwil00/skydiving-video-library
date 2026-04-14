@@ -38,7 +38,7 @@
     "@react-router/serve": "^7.14.2",
     "@tailwindcss/vite": "^4.2.4",
     "date-fns": "^4.1.0",
-    "dotenv-cli": "^10.0.0",
+    "dotenv-cli": "^11.0.0",
     "ffmetadata": "^1.7.0",
     "isbot": "^5.1.39",
     "react": "^19.2.5",
