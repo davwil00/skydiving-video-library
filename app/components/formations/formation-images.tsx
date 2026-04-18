@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import { type MouseEvent, type ReactNode, type SVGProps, useState } from 'react'
 import Svg1 from '~/components/formations/8-way/blocks/1';
 import Svg2 from '~/components/formations/8-way/blocks/2';
 import Svg3 from '~/components/formations/8-way/blocks/3';
@@ -43,7 +43,8 @@ import { getFormationImageUrl } from '~/utils/utils';
 interface Props extends SVGProps<SVGSVGElement> {
     formation: Formation;
 }
-export default function FormationImage(props: Props) {
+
+function getFormationImage(props: Props): ReactNode {
     if (props.formation.discipline === Discipline.EIGHT_WAY) {
         switch (props.formation.id) {
             case 'A':
@@ -132,5 +133,44 @@ export default function FormationImage(props: Props) {
             />
         );
     }
-    return null;
+}
+
+const ROLE_TOOLTIPS: Record<string, string> = {
+    P: 'Point',
+    T: 'Tail',
+    OF: 'Outside Front',
+    IC: 'Inside Centre',
+    OC: 'Outside Centre',
+    IF: 'Inside Front',
+    IR: 'Inside Rear',
+    OR: 'Outside Rear',
+};
+
+export default function FormationImage(props: Props) {
+    const [tooltip, setTooltip] = useState<string>();
+
+    const showTooltip = (e: MouseEvent<HTMLDivElement>) => {
+        if (!(e.target instanceof SVGPathElement)) {
+            setTooltip(undefined);
+            return;
+        }
+
+        const className = e.target.getAttribute('class')?.trim();
+        const role = className
+            ?.split(/\s+/)
+            .find((token: string) => token in ROLE_TOOLTIPS);
+
+        setTooltip(role ? ROLE_TOOLTIPS[role] : undefined);
+    };
+
+    const image = getFormationImage(props);
+
+    return (
+        <>
+            <div className="h-1">{tooltip}</div>
+            <div onClick={(e) => showTooltip(e)}>
+                {image}
+            </div>
+        </>
+    );
 }

@@ -13,17 +13,6 @@ import { useSwipe } from '~/hooks/useSwipe';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/formation.$formationId';
 
-const ROLE_TOOLTIPS: Record<string, string> = {
-    P: 'Point',
-    T: 'Tail',
-    OF: 'Outside Front',
-    IC: 'Inside Centre',
-    OC: 'Outside Centre',
-    IF: 'Inside Front',
-    IR: 'Inside Rear',
-    OR: 'Outside Rear',
-};
-
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
     const isLocal = isLocalRequest(request);
@@ -38,7 +27,6 @@ export default function EightWayFormation() {
     const { formation } = useLoaderData<typeof loader>();
     const navigate = useNavigate();
     const [altColours, setAltColours] = useState<boolean>(false);
-    const [tooltip, setTooltip] = useState<string>();
 
     const currentIndex = orderedFormations.findIndex(
         (f) => f.id === formation.id,
@@ -60,20 +48,6 @@ export default function EightWayFormation() {
 
     const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight);
 
-    const showTooltip = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!(e.target instanceof SVGPathElement)) {
-            setTooltip(undefined);
-            return;
-        }
-
-        const className = e.target.getAttribute('class')?.trim();
-        const role = className
-            ?.split(/\s+/)
-            .find((token) => token in ROLE_TOOLTIPS);
-
-        setTooltip(role ? ROLE_TOOLTIPS[role] : undefined);
-    };
-
     return (
         <div
             className={`relative ${altColours ? 'alt' : ''}`}
@@ -92,13 +66,10 @@ export default function EightWayFormation() {
                     Toggle colours
                 </button>
             </div>
-            <div className="h-1">{tooltip}</div>
-            <div onClick={(e) => showTooltip(e)}>
-                <FormationImage
-                    formation={formation}
-                    className="max-h-[100vh] mx-auto mt-8 pb-50"
-                />
-            </div>
+            <FormationImage
+                formation={formation}
+                className="max-h-[100vh] mx-auto mt-8 pb-50"
+            />
         </div>
     );
 }
