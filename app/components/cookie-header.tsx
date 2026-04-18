@@ -1,8 +1,19 @@
 import { usePageStateContext } from '~/contexts/page-state';
+import { useSiteStateDispatchContext } from '~/contexts/site-state';
+import { SiteType } from '~/utils/site-utils';
 import { SkydiverIcon } from './icons';
 
-export default function CookieHeader() {
+export default function CookieHeader(props: { isLocal: boolean }) {
     const { isFullScreen } = usePageStateContext();
+    const dispatch = useSiteStateDispatchContext();
+    const switchSite = () => {
+        if (props.isLocal) {
+            dispatch({
+                type: 'setSiteState',
+                value: SiteType.TUNNEL_VISION,
+            });
+        }
+    };
     if (isFullScreen) {
         return null;
     }
@@ -34,7 +45,7 @@ export default function CookieHeader() {
                     />
                 </div>
             </div>
-            <div>
+            <div onClick={switchSite}>
                 <SkydiverIcon fill={'white'} />
             </div>
         </div>

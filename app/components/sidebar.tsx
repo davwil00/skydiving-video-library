@@ -3,8 +3,8 @@ import type { Competition } from 'prisma/generated/client';
 import type React from 'react';
 import type { RefObject } from 'react';
 import { Link } from 'react-router';
-import { useLibraryStateContext } from '~/contexts/library-state';
 import { usePageStateContext } from '~/contexts/page-state';
+import { useSiteStateContext } from '~/contexts/site-state';
 import { SiteType } from '~/utils/site-utils';
 
 export type SidebarSession = { id: string; date: Date; name?: string | null };
@@ -25,7 +25,7 @@ function Divider() {
 
 export default function Sidebar(props: SidebarProps) {
     const { sessions, competitions, isLocal, drawerRef } = props;
-    const { siteType } = useLibraryStateContext();
+    const { siteType } = useSiteStateContext();
     const sessionsByYear = Object.groupBy(sessions, (session) =>
         new Date(session.date).getFullYear().toString(),
     );

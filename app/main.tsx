@@ -3,9 +3,9 @@ import CookieHeader from '~/components/cookie-header';
 import Sidebar, { type SidebarSession } from '~/components/sidebar';
 import TunnelVisionHeader from '~/components/tunnel-vision-header';
 import { usePageStateContext } from '~/contexts/page-state';
+import { useSiteStateContext } from '~/contexts/site-state';
 import { SiteType } from '~/utils/site-utils';
 import type { Competition } from '../prisma/generated/client';
-import { LibraryStateProvider } from './contexts/library-state';
 
 export default function Main({
     children,
@@ -16,14 +16,15 @@ export default function Main({
         sessions: SidebarSession[];
         competitions: Competition[];
         isLocal: boolean;
-        siteType: SiteType;
     };
 }) {
     const drawerRef = useRef<HTMLInputElement>(null);
-
+    const { siteType, theme } = useSiteStateContext();
     const { isFullScreen } = usePageStateContext();
+
     return (
         <main
+            data-theme={theme}
             className={`relative min-h-screen bg-white sm:flex sm:justify-center ${isFullScreen ? 'fullscreen' : ''}`}
         >
             <div className="drawer md:drawer-open">
@@ -34,21 +35,19 @@ export default function Main({
                     ref={drawerRef}
                 />
                 <div className="drawer-content">
-                    {data?.siteType === SiteType.TUNNEL_VISION ? (
+                    {siteType === SiteType.TUNNEL_VISION ? (
                         <TunnelVisionHeader />
                     ) : (
-                        <CookieHeader />
+                        <CookieHeader isLocal={data?.isLocal || false} />
                     )}
                     <div className={`p-4`}>{children}</div>
                 </div>
-                <LibraryStateProvider siteType={data?.siteType}>
-                    <Sidebar
-                        sessions={data?.sessions || []}
-                        competitions={data?.competitions || []}
-                        isLocal={data?.isLocal || false}
-                        drawerRef={drawerRef}
-                    />
-                </LibraryStateProvider>
+                <Sidebar
+                    sessions={data?.sessions || []}
+                    competitions={data?.competitions || []}
+                    isLocal={data?.isLocal || false}
+                    drawerRef={drawerRef}
+                />
             </div>
         </main>
     );

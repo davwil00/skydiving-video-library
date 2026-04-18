@@ -11,13 +11,14 @@ import {
 } from 'react-router';
 import type { SidebarSession } from '~/components/sidebar';
 import { PageStateProvider } from '~/contexts/page-state';
+import { SiteStateProvider } from '~/contexts/site-state';
 import Main from '~/main';
 import { getAllCompetitions } from '~/models/competitions.server';
 import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { getAllSoloSessions } from '~/models/solo-sessions.server';
 import stylesheet from '~/tailwind.css?url';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import { getSiteType, getTheme, SiteType } from '~/utils/site-utils';
+import { getSiteType, SiteType } from '~/utils/site-utils';
 import type { Route } from './+types/root';
 
 function getSessions(siteType: SiteType): Promise<SidebarSession[]> {
@@ -37,8 +38,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     const sessions = await getSessions(siteType);
     const competitions = await getAllCompetitions();
     const isLocal = isLocalRequest(request);
-    const theme = getTheme(siteType);
-    return { sessions, competitions, isLocal, theme, siteType };
+    return { sessions, competitions, isLocal, siteType };
 };
 
 export const meta = () => {
@@ -56,7 +56,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     const data = useRouteLoaderData<typeof loader>('root');
 
     return (
-        <html lang="en" data-theme={data?.theme}>
+        <html lang="en">
             <head>
                 <meta charSet="utf-8" />
                 <meta
@@ -70,8 +70,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
             <body className="h-full">
                 <PageStateProvider>
-                    <Main data={data}>{children}</Main>
+                    <SiteStateProvider siteType={data?.siteType}>
+                        <Main data={data}>{children}</Main>
+                    </SiteStateProvider>
                 </PageStateProvider>
+
                 <ScrollRestoration />
                 <Scripts />
             </body>

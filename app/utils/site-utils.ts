@@ -14,12 +14,3 @@ export function getSiteType(hostname?: string): SiteType {
             return SiteType.COOKIES;
     }
 }
-
-export function getTheme(siteType: SiteType) {
-    switch (siteType) {
-        case SiteType.TUNNEL_VISION:
-            return 'tunnelvision';
-        default:
-            return 'cookies';
-    }
-}
