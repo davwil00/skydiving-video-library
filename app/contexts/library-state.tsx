@@ -5,20 +5,14 @@ import {
     useContext,
     useReducer,
 } from 'react';
-export enum LibraryType {
-    TEAM = 'Team',
-    SOLO = 'Solo',
-    FS_NIGHT = 'FS Night',
-}
+import { SiteType } from '~/utils/site-utils';
 
 type LibraryState = {
-    libraryType: LibraryType;
-    canSwitch: boolean;
+    siteType: SiteType;
 };
 
 export const initialState: LibraryState = {
-    libraryType: LibraryType.TEAM,
-    canSwitch: true,
+    siteType: SiteType.COOKIES,
 };
 
 const LibraryStateContext = createContext<LibraryState>(initialState);
@@ -27,19 +21,14 @@ const LibraryStateDispatchContext = createContext<Dispatch<LibraryStateAction>>(
 );
 
 export function LibraryStateProvider({
-    hostName,
+    siteType,
     children,
 }: {
-    hostName?: string;
+    siteType?: SiteType;
     children: ReactNode;
 }) {
-    const libraryType = hostName?.includes('solo')
-        ? LibraryType.SOLO
-        : LibraryType.TEAM;
-    const canSwitch = hostName?.includes('solo') || false;
     const [libraryState, dispatch] = useReducer(libraryStateReducer, {
-        libraryType,
-        canSwitch,
+        siteType: siteType ?? SiteType.COOKIES,
     });
 
     return (
@@ -59,14 +48,14 @@ const libraryStateReducer = (
         case 'setLibraryState':
             return {
                 ...state,
-                libraryType: action.value,
+                siteType: action.value,
             };
         default:
             return state;
     }
 };
 
-type LibraryStateAction = { type: 'setLibraryState'; value: LibraryType };
+type LibraryStateAction = { type: 'setLibraryState'; value: SiteType };
 
 export const useLibraryStateContext = () => useContext(LibraryStateContext);
 export const useLibraryStateDispatchContext = () =>

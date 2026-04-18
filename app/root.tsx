@@ -9,6 +9,7 @@ import {
     useRouteError,
     useRouteLoaderData,
 } from 'react-router';
+import type { SidebarSession } from '~/components/sidebar';
 import { PageStateProvider } from '~/contexts/page-state';
 import Main from '~/main';
 import { getAllCompetitions } from '~/models/competitions.server';
@@ -16,15 +17,28 @@ import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { getAllSoloSessions } from '~/models/solo-sessions.server';
 import stylesheet from '~/tailwind.css?url';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { getSiteType, getTheme, SiteType } from '~/utils/site-utils';
 import type { Route } from './+types/root';
 
+function getSessions(siteType: SiteType): Promise<SidebarSession[]> {
+    switch (siteType) {
+        case SiteType.COOKIES:
+            return getAllNonCompetitionSessionDates();
+        case SiteType.SOLO:
+            return getAllSoloSessions();
+        default:
+            return Promise.resolve([]);
+    }
+}
+
 export const loader = async ({ request }: Route.LoaderArgs) => {
-    const sessions = await getAllNonCompetitionSessionDates();
-    const soloSessions = await getAllSoloSessions();
+    const hostName = new URL(request.url).hostname;
+    const siteType = getSiteType(hostName);
+    const sessions = await getSessions(siteType);
     const competitions = await getAllCompetitions();
     const isLocal = isLocalRequest(request);
-    const hostName = request.url;
-    return { sessions, soloSessions, competitions, isLocal, hostName };
+    const theme = getTheme(siteType);
+    return { sessions, competitions, isLocal, theme, siteType };
 };
 
 export const meta = () => {
@@ -42,7 +56,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     const data = useRouteLoaderData<typeof loader>('root');
 
     return (
-        <html lang="en" data-theme="dark">
+        <html lang="en" data-theme={data?.theme}>
             <head>
                 <meta charSet="utf-8" />
                 <meta

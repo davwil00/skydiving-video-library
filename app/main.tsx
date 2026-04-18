@@ -1,12 +1,10 @@
-import type {
-    Competition,
-    Session,
-    SoloSession,
-} from 'prisma/generated/client';
 import { type ReactNode, useRef } from 'react';
-import Navbar from '~/components/navbar';
-import Sidebar from '~/components/sidebar';
+import CookieHeader from '~/components/cookie-header';
+import Sidebar, { type SidebarSession } from '~/components/sidebar';
+import TunnelVisionHeader from '~/components/tunnel-vision-header';
 import { usePageStateContext } from '~/contexts/page-state';
+import { SiteType } from '~/utils/site-utils';
+import type { Competition } from '../prisma/generated/client';
 import { LibraryStateProvider } from './contexts/library-state';
 
 export default function Main({
@@ -15,11 +13,10 @@ export default function Main({
 }: {
     children: ReactNode;
     data?: {
-        sessions: Pick<Session, 'id' | 'name' | 'date'>[];
-        soloSessions: SoloSession[];
+        sessions: SidebarSession[];
         competitions: Competition[];
         isLocal: boolean;
-        hostName: string;
+        siteType: SiteType;
     };
 }) {
     const drawerRef = useRef<HTMLInputElement>(null);
@@ -37,13 +34,16 @@ export default function Main({
                     ref={drawerRef}
                 />
                 <div className="drawer-content">
-                    <Navbar />
+                    {data?.siteType === SiteType.TUNNEL_VISION ? (
+                        <TunnelVisionHeader />
+                    ) : (
+                        <CookieHeader />
+                    )}
                     <div className={`p-4`}>{children}</div>
                 </div>
-                <LibraryStateProvider hostName={data?.hostName}>
+                <LibraryStateProvider siteType={data?.siteType}>
                     <Sidebar
                         sessions={data?.sessions || []}
-                        soloSessions={data?.soloSessions || []}
                         competitions={data?.competitions || []}
                         isLocal={data?.isLocal || false}
                         drawerRef={drawerRef}

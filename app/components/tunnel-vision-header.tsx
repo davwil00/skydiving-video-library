@@ -1,13 +1,12 @@
 import { usePageStateContext } from '~/contexts/page-state';
-import { SkydiverIcon } from './icons';
 
-export default function Navbar() {
+export default function TunnelVisionHeader() {
     const { isFullScreen } = usePageStateContext();
     if (isFullScreen) {
         return null;
     }
     return (
-        <div className="w-full navbar bg-base-200">
+        <div className="w-full navbar bg-linear-to-r from-base-200 to-base-300 flex justify-between">
             <div className="flex-none md:hidden">
                 <label htmlFor="drawer-toggle" className="btn btn-square">
                     <svg
@@ -28,14 +27,18 @@ export default function Navbar() {
             <div className="flex-1 hidden lg:block">
                 <div className="flex-1">
                     <img
-                        src="/images/logo-text.png"
+                        src="/images/logos/tunnel-vision-text-only.png"
                         className="h-[64px]"
-                        alt="the words chocolate chip cookies written in a font that looks like the letters contains chocolate chips"
+                        alt="tunnel vision"
                     />
                 </div>
             </div>
-            <div>
-                <SkydiverIcon fill={'white'} />
+            <div className="">
+                <img
+                    src="/images/logos/tunnel-vision-logo.png"
+                    className="max-h-[64px]"
+                    alt="tunnel vision logo - concentric circles"
+                />
             </div>
         </div>
     );

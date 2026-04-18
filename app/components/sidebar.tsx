@@ -1,21 +1,15 @@
 import { format } from 'date-fns';
-import type {
-    Competition,
-    Session,
-    SoloSession,
-} from 'prisma/generated/client';
+import type { Competition } from 'prisma/generated/client';
+import type React from 'react';
 import type { RefObject } from 'react';
 import { Link } from 'react-router';
-import {
-    LibraryType,
-    useLibraryStateContext,
-    useLibraryStateDispatchContext,
-} from '~/contexts/library-state';
+import { useLibraryStateContext } from '~/contexts/library-state';
 import { usePageStateContext } from '~/contexts/page-state';
+import { SiteType } from '~/utils/site-utils';
 
+export type SidebarSession = { id: string; date: Date; name?: string | null };
 type SidebarProps = {
-    sessions: Pick<Session, 'id' | 'date' | 'name'>[];
-    soloSessions: SoloSession[];
+    sessions: SidebarSession[];
     competitions: Competition[];
     isLocal: boolean;
     drawerRef: RefObject<HTMLInputElement | null>;
@@ -30,22 +24,9 @@ function Divider() {
 }
 
 export default function Sidebar(props: SidebarProps) {
-    const { sessions, soloSessions, competitions, isLocal, drawerRef } = props;
-    const { libraryType, canSwitch } = useLibraryStateContext();
-    const dispatch = useLibraryStateDispatchContext();
-    let sessionsToShow: { id: string; date: Date; name?: string | null }[];
-    switch (libraryType) {
-        case LibraryType.TEAM:
-            sessionsToShow = sessions;
-            break;
-        case LibraryType.SOLO:
-            sessionsToShow = soloSessions;
-            break;
-        default:
-            sessionsToShow = [];
-            break;
-    }
-    const sessionsByYear = Object.groupBy(sessionsToShow, (session) =>
+    const { sessions, competitions, isLocal, drawerRef } = props;
+    const { siteType } = useLibraryStateContext();
+    const sessionsByYear = Object.groupBy(sessions, (session) =>
         new Date(session.date).getFullYear().toString(),
     );
     const clickCallback = () => {
@@ -103,6 +84,113 @@ export default function Sidebar(props: SidebarProps) {
         }
     }
 
+    function SessionLinks() {
+        if (Object.keys(sessionsByYear).length === 0) {
+            return null;
+        }
+        return (
+            <li>
+                <h2 className="menu-title">Sessions</h2>
+                <ul>
+                    {Object.entries(sessionsByYear).map(([year, sessions]) => (
+                        <div className="collapse" key={`year-${year}`}>
+                            <input type="checkbox" />
+                            <div className="collapse-title">{year}</div>
+                            <div className="collapse-content">
+                                {sessions?.map((session) => (
+                                    <li key={`session-${session.id}`}>
+                                        <Link
+                                            to={{
+                                                pathname: `${siteType === SiteType.SOLO ? '/solo' : '/session'}/${session.id}`,
+                                            }}
+                                            onClick={clickCallback}
+                                        >
+                                            {session.name ??
+                                                format(
+                                                    new Date(session.date),
+                                                    'dd/MM',
+                                                )}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </ul>
+            </li>
+        );
+    }
+
+    function CompetitionLinks() {
+        if (siteType === SiteType.TUNNEL_VISION) {
+            return null;
+        }
+        return (
+            <li>
+                <h2 className="menu-title">Competitions</h2>
+                <ul>
+                    {competitions?.map((competition) => (
+                        <li key={`competition-${competition.id}`}>
+                            <Link
+                                to={{
+                                    pathname: `/competition/${competition.id}`,
+                                }}
+                                onClick={clickCallback}
+                            >
+                                {competition.name}
+                                {getMedalFromRank(competition.rank)}
+                            </Link>
+                        </li>
+                    ))}
+                    {isLocal ? (
+                        <li>
+                            <a href="/competition/add">Add</a>
+                        </li>
+                    ) : null}
+                </ul>
+            </li>
+        );
+    }
+
+    function FormationLinks(props: {
+        title: string;
+        formations: string[][];
+        linkType: FormationLinkType;
+    }) {
+        const { title, formations, linkType } = props;
+        return (
+            <li className="items-start">
+                <h2 className="menu-title">{title}</h2>
+                <ul>
+                    {formations.map((formation) =>
+                        makeLinkBlock(
+                            formation,
+                            linkType,
+                            `${linkType}-${formation}`,
+                        ),
+                    )}
+                </ul>
+            </li>
+        );
+    }
+
+    function LinkWithGuard(props: {
+        requiresLocal: boolean;
+        requiredSiteType?: SiteType;
+        children: React.ReactNode;
+    }) {
+        const { requiresLocal, requiredSiteType, children } = props;
+        if (
+            requiresLocal &&
+            isLocal &&
+            requiredSiteType &&
+            requiredSiteType === siteType
+        ) {
+            return children;
+        }
+        return null;
+    }
+
     return (
         <div className="drawer-side overflow-x-hidden">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: this will always be there */}
@@ -114,99 +202,12 @@ export default function Sidebar(props: SidebarProps) {
                             Home
                         </Link>
                     </li>
-                    {canSwitch ? (
-                        <fieldset className="fieldset">
-                            <label htmlFor="library-select" className="label">
-                                Library
-                            </label>
-                            <select
-                                className="select select-sm"
-                                id="library-select"
-                                defaultValue={libraryType}
-                                onChange={(e) =>
-                                    dispatch({
-                                        type: 'setLibraryState',
-                                        value: e.target.value as LibraryType,
-                                    })
-                                }
-                            >
-                                {Object.entries(LibraryType).map(
-                                    ([value, name]) => (
-                                        <option key={value} value={name}>
-                                            {name}
-                                        </option>
-                                    ),
-                                )}
-                            </select>
-                        </fieldset>
-                    ) : null}
-                    <li>
-                        <h2 className="menu-title">Sessions</h2>
-                        <ul>
-                            {Object.entries(sessionsByYear).map(
-                                ([year, sessions]) => (
-                                    <div
-                                        className="collapse"
-                                        key={`year-${year}`}
-                                    >
-                                        <input type="checkbox" />
-                                        <div className="collapse-title">
-                                            {year}
-                                        </div>
-                                        <div className="collapse-content">
-                                            {sessions?.map((session) => (
-                                                <li
-                                                    key={`session-${session.id}`}
-                                                >
-                                                    <Link
-                                                        to={{
-                                                            pathname: `${libraryType === LibraryType.SOLO ? '/solo' : '/session'}/${session.id}`,
-                                                        }}
-                                                        onClick={clickCallback}
-                                                    >
-                                                        {session.name ??
-                                                            format(
-                                                                new Date(
-                                                                    session.date,
-                                                                ),
-                                                                'dd/MM',
-                                                            )}
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ),
-                            )}
-                        </ul>
-                    </li>
-                    <li>
-                        <h2 className="menu-title">Competitions</h2>
-                        <ul>
-                            {competitions?.map((competition) => (
-                                <li key={`competition-${competition.id}`}>
-                                    <Link
-                                        to={{
-                                            pathname: `/competition/${competition.id}`,
-                                        }}
-                                        onClick={clickCallback}
-                                    >
-                                        {competition.name}
-                                        {getMedalFromRank(competition.rank)}
-                                    </Link>
-                                </li>
-                            ))}
-                            {isLocal ? (
-                                <li>
-                                    <a href="/competition/add">Add</a>
-                                </li>
-                            ) : null}
-                        </ul>
-                    </li>
+                    <SessionLinks />
+                    <CompetitionLinks />
                     <Divider />
                 </ul>
 
-                {libraryType === LibraryType.SOLO ? (
+                {siteType === SiteType.SOLO ? (
                     <ul className="menu p-4 pt-0 text-base-content flex-nowrap">
                         <li>
                             {isLocal ? (
@@ -220,192 +221,163 @@ export default function Sidebar(props: SidebarProps) {
                         </li>
                     </ul>
                 ) : null}
-                {libraryType === LibraryType.TEAM ? (
-                    <ul className="menu p-4 pt-0 text-base-content flex-nowrap">
-                        <li>
+                <ul className="menu p-4 pt-0 text-base-content flex-nowrap">
+                    <li>
+                        <Link
+                            to={{ pathname: '/quiz' }}
+                            onClick={clickCallback}
+                        >
+                            Quiz
+                        </Link>
+                        <LinkWithGuard requiresLocal={true}>
                             <Link
-                                to={{ pathname: '/quiz' }}
+                                to={{ pathname: '/tag' }}
                                 onClick={clickCallback}
                             >
-                                Quiz
+                                Tag
                             </Link>
-                            {isLocal ? (
-                                <Link
-                                    to={{ pathname: '/tag' }}
-                                    onClick={clickCallback}
-                                >
-                                    Tag
-                                </Link>
-                            ) : null}
-                            {isLocal ? (
-                                <Link
-                                    to={{ pathname: '/trim-pending' }}
-                                    onClick={clickCallback}
-                                >
-                                    Trim Pending
-                                </Link>
-                            ) : null}
+                        </LinkWithGuard>
+                        <LinkWithGuard requiresLocal={true}>
+                            <Link
+                                to={{ pathname: '/trim-pending' }}
+                                onClick={clickCallback}
+                            >
+                                Trim Pending
+                            </Link>
+                        </LinkWithGuard>
+                        <LinkWithGuard
+                            requiresLocal={false}
+                            requiredSiteType={SiteType.COOKIES}
+                        >
                             <Link
                                 to={{ pathname: '/logos' }}
                                 onClick={clickCallback}
                             >
                                 Logos
                             </Link>
+                        </LinkWithGuard>
+                        <LinkWithGuard
+                            requiresLocal={false}
+                            requiredSiteType={SiteType.COOKIES}
+                        >
                             <Link
                                 to={{ pathname: '/customise-logo' }}
                                 onClick={clickCallback}
                             >
                                 Customise Logo
                             </Link>
+                        </LinkWithGuard>
+                        <LinkWithGuard
+                            requiresLocal={false}
+                            requiredSiteType={SiteType.COOKIES}
+                        >
                             <Link
                                 to={{ pathname: '/8-way-nationals-2024' }}
                                 onClick={clickCallback}
                             >
                                 8 Way (Nationals 2024) 🥈
                             </Link>
-                            <Link
-                                to={{ pathname: '/8-way/dive-builder' }}
-                                onClick={clickCallback}
-                            >
-                                8 Way Dive Builder
-                            </Link>
-                        </li>
-                        <Divider />
-                        <li className="items-start">
-                            <h2 className="menu-title">Randoms</h2>
-                            <ul>
-                                {[
+                        </LinkWithGuard>
+                        <Link
+                            to={{ pathname: '/8-way/dive-builder' }}
+                            onClick={clickCallback}
+                        >
+                            8 Way Dive Builder
+                        </Link>
+                    </li>
+                    {siteType === SiteType.COOKIES ? (
+                        <>
+                            <FormationLinks
+                                title="Randoms"
+                                formations={[
                                     ['A', 'B', 'C', 'D'],
                                     ['E', 'F', 'G', 'H'],
                                     ['J', 'K', 'L', 'M'],
                                     ['N', 'O', 'P', 'Q'],
-                                ].map((formation, idx) =>
-                                    makeLinkBlock(
-                                        formation,
-                                        FormationLinkType.FOUR_WAY,
-                                        `4rand${idx}`,
-                                    ),
-                                )}
-                            </ul>
-                        </li>
-                        <Divider />
-                        <li className="items-start">
-                            <h2 className="menu-title">A Blocks</h2>
-                            <ul>
-                                {[
+                                ]}
+                                linkType={FormationLinkType.FOUR_WAY}
+                            />
+                            <Divider />
+                            <FormationLinks
+                                title="A Blocks"
+                                formations={[
                                     ['2', '4', '6', '7'],
                                     ['8', '9', '19', '21'],
-                                ].map((formation, idx) =>
-                                    makeLinkBlock(
-                                        formation,
-                                        FormationLinkType.FOUR_WAY,
-                                        `4block${idx}`,
-                                    ),
-                                )}
-                            </ul>
-                        </li>
-                        <li className="items-start">
-                            <h2 className="menu-title">AA Blocks</h2>
-                            <ul>
-                                {[
+                                ]}
+                                linkType={FormationLinkType.FOUR_WAY}
+                            />
+                            <FormationLinks
+                                title="AA Blocks"
+                                formations={[
                                     ['1', '11', '13', '14'],
                                     ['15', '18', '20', '22'],
-                                ].map((formation, idx) =>
-                                    makeLinkBlock(
-                                        formation,
-                                        FormationLinkType.FOUR_WAY,
-                                        `4block${idx}`,
-                                    ),
-                                )}
-                            </ul>
-                        </li>
-                        <li className="items-start">
-                            <h2 className="menu-title">AAA Blocks</h2>
-                            <ul>
-                                {[
+                                ]}
+                                linkType={FormationLinkType.FOUR_WAY}
+                            />
+                            <FormationLinks
+                                title="AAA Blocks"
+                                formations={[
                                     ['3', '5', '10'],
                                     ['12', '16', '17'],
-                                ].map((formation, idx) =>
-                                    makeLinkBlock(
-                                        formation,
-                                        FormationLinkType.FOUR_WAY,
-                                        `4block${idx}`,
-                                    ),
-                                )}
-                            </ul>
-                        </li>
-                        <li className="items-start">
-                            <h2 className="menu-title">8 Way Randoms</h2>
-                            <ul>
-                                {[
-                                    ['A', 'B', 'C', 'D'],
-                                    ['E', 'F', 'G', 'H'],
-                                    ['J', 'K', 'L', 'M'],
-                                    ['N', 'O', 'P', 'Q'],
-                                ].map((formation, idx) =>
-                                    makeLinkBlock(
-                                        formation,
-                                        FormationLinkType.EIGHT_WAY,
-                                        `8rand${idx}`,
-                                    ),
-                                )}
-                            </ul>
-                        </li>
-                        <li className="items-start">
-                            <h2 className="menu-title">8 Way Blocks</h2>
-                            <ul>
-                                {[
-                                    ['1', '2', '3', '4'],
-                                    ['5', '6', '7', '8'],
-                                    ['9', '10', '11', '12'],
-                                    ['13', '14', '15', '16'],
-                                    ['17', '18', '19', '20'],
-                                    ['21', '22'],
-                                ].map((formation, idx) =>
-                                    makeLinkBlock(
-                                        formation,
-                                        FormationLinkType.EIGHT_WAY,
-                                        `8block${idx}`,
-                                    ),
-                                )}
-                            </ul>
-                        </li>
-                        <Divider />
-                        <ul>
-                            <form
-                                className="join"
-                                action="/search"
-                                method="GET"
+                                ]}
+                                linkType={FormationLinkType.FOUR_WAY}
+                            />
+                        </>
+                    ) : null}
+                    <Divider />
+                    <FormationLinks
+                        title="8 Way Randoms"
+                        formations={[
+                            ['A', 'B', 'C', 'D'],
+                            ['E', 'F', 'G', 'H'],
+                            ['J', 'K', 'L', 'M'],
+                            ['N', 'O', 'P', 'Q'],
+                        ]}
+                        linkType={FormationLinkType.EIGHT_WAY}
+                    />
+                    <FormationLinks
+                        title="8 Way Blocks"
+                        formations={[
+                            ['1', '2', '3', '4'],
+                            ['5', '6', '7', '8'],
+                            ['9', '10', '11', '12'],
+                            ['13', '14', '15', '16'],
+                            ['17', '18', '19', '20'],
+                            ['21', '22'],
+                        ]}
+                        linkType={FormationLinkType.EIGHT_WAY}
+                    />
+                    <Divider />
+                    <ul>
+                        <form className="join" action="/search" method="GET">
+                            <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
+                                <input
+                                    type="text"
+                                    className=""
+                                    placeholder="Search"
+                                    name="query"
+                                />
+                            </label>
+                            <button
+                                className="btn btn-neutral join-item"
+                                type="submit"
                             >
-                                <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
-                                    <input
-                                        type="text"
-                                        className=""
-                                        placeholder="Search"
-                                        name="query"
-                                    />
-                                </label>
-                                <button
-                                    className="btn btn-neutral join-item"
-                                    type="submit"
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                    className="h-4 w-4 opacity-70"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 16 16"
-                                        fill="currentColor"
-                                        className="h-4 w-4 opacity-70"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                </button>
-                            </form>
-                        </ul>
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </button>
+                        </form>
                     </ul>
-                ) : null}
+                </ul>
             </div>
         </div>
     );

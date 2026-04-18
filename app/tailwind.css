@@ -5,7 +5,7 @@
 }
 
 @plugin "daisyui/theme" {
-    name: dark;
+    name: cookies;
     default: false;
     prefersdark: true;
     color-scheme: dark;
@@ -40,6 +40,44 @@
     --card-p: 1em;
     --btn-neutral: oklch(0.313815 0.021108 254.139);
     --btn-neutral-border: oklab(0.97807 -0.00659901 -0.0282392 / 0.2);
+}
+
+@plugin "daisyui/theme" {
+    name: tunnelvision;
+    default: false;
+    prefersdark: true;
+    color-scheme: dark;
+    --color-base-100: #102036;
+    --color-base-200: #0c1728;
+    --color-base-300: #070e18;
+    --color-base-content: #eefcff;
+    --color-primary: #45deff;
+    --color-primary-content: #03111c;
+    --color-secondary: #1c6fe4;
+    --color-secondary-content: #f5fbff;
+    --color-accent: #7ddfff;
+    --color-accent-content: #062031;
+    --color-neutral: #0a1320;
+    --color-neutral-content: #d8f1ff;
+    --color-info: #2ebcf7;
+    --color-info-content: #03121d;
+    --color-success: #2fd6c4;
+    --color-success-content: #041513;
+    --color-warning: #f4c15f;
+    --color-warning-content: #2b1800;
+    --color-error: #ef7180;
+    --color-error-content: #300811;
+    --btn-neutral: #12304c;
+    --btn-neutral-border: #75e4ff33;
+    --radius-selector: 0.5rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
+    --size-selector: 0.3125rem;
+    --size-field: 0.3125rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+    --card-p: 1em;
 }
 
 .btn {
