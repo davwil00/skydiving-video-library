@@ -89,7 +89,10 @@ export default function EightWayDive() {
                         />
                     </>
                 )}
-                <p className="fixed bottom-0 p-4">Swipe to scroll through the formations, click a person to see the position</p>
+                <p className="fixed bottom-0 p-4">
+                    Swipe to scroll through the formations, click a person to
+                    see the position
+                </p>
             </div>
         </div>
     );

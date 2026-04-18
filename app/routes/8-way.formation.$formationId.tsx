@@ -1,4 +1,3 @@
-import type React from 'react';
 import { useCallback, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router';
 import invariant from 'tiny-invariant';

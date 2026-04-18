@@ -1,4 +1,9 @@
-import { type MouseEvent, type ReactNode, type SVGProps, useState } from 'react'
+import {
+    type MouseEvent,
+    type ReactNode,
+    type SVGProps,
+    useState,
+} from 'react';
 import Svg1 from '~/components/formations/8-way/blocks/1';
 import Svg2 from '~/components/formations/8-way/blocks/2';
 import Svg3 from '~/components/formations/8-way/blocks/3';
@@ -168,9 +173,7 @@ export default function FormationImage(props: Props) {
     return (
         <>
             <div className="h-1">{tooltip}</div>
-            <div onClick={(e) => showTooltip(e)}>
-                {image}
-            </div>
+            <div onClick={(e) => showTooltip(e)}>{image}</div>
         </>
     );
 }
