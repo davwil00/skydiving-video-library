@@ -1,74 +1,62 @@
-import { useLoaderData } from 'react-router';
-import { EIGHT_WAY_FORMATIONS, getDisplayName } from '~/data/formations';
-import { getFormationImageUrl } from '~/utils/utils';
-import type { Route } from './+types/formation.$formationId';
-
-export const loader = async ({ request }: Route.LoaderArgs) => {
-    const url = new URL(request.url);
-    const diveParam = url.searchParams.get('dive');
-    const formations = diveParam
-        ? diveParam
-              .split(',')
-              .map((id) => EIGHT_WAY_FORMATIONS[id.toUpperCase()])
-        : [];
-
-    return { formations };
-};
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { EIGHT_WAY_BLOCKS, EIGHT_WAY_RANDOMS } from '~/data/formations';
 
 export default function EightWayFormation() {
-    const { formations } = useLoaderData<typeof loader>();
-
-    if (formations.length === 0) {
-        return (
-            <div>
-                <form>
-                    <label className="input input-bordered flex items-center gap-2 join-item w-[75%] bg-white">
-                        <input
-                            name="dive"
-                            placeholder="comma separated list of formations e.g. '1,A'"
-                        />
-                    </label>
-                    <button type="submit" className="btn btn-neutral">
-                        Generate
-                    </button>
-                </form>
-            </div>
-        );
-    }
-
+    const [selectedFormations, setSelectedFormations] = useState<string[]>([]);
+    const navigate = useNavigate();
     return (
-        <div className="relative">
-            <h1 className="text-2xl">
-                {formations.map(
-                    (formation) =>
-                        `${formation.id} - ${getDisplayName(formation)}`,
-                )}
-            </h1>
-            <img
-                src="/images/8-way/starting-1.png"
-                alt="Starting Position 1"
-                className="h-fit max-h-[80vh] mx-auto mt-2"
-            />
-            {formations.map((formation) => (
-                <div key={formation.id}>
-                    <img
-                        src={getFormationImageUrl(formation)}
-                        alt={`${formation.id}`}
-                        className="h-fit max-h-[80vh] mx-auto mt-2"
-                    />
-                </div>
-            ))}
-            Key:
-            <ul>
-                <li>Point - White</li>
-                <li>Outside Front - Grey</li>
-                <li>Inside Front - Purple</li>
-                <li>Outside Center - Red</li>
-                <li>Inside Center - Blue</li>
-                <li>Outside Rear - Orange</li>
-                <li>Inside Rear - Green</li>
-                <li>Tail - Yellow</li>
-            </ul>
+        <div>
+            <h1 className="text-2xl mb-4">8 Way Dive Builder</h1>
+            <form>
+                <ul className="grid grid-cols-4 gap-2 mb-4 w-fit">
+                    {EIGHT_WAY_RANDOMS.map((random) => (
+                        <li key={`random-${random.id}`}>
+                            <button
+                                type="button"
+                                className={`kbd text-white p-4 ${selectedFormations.includes(random.id) ? 'bg-primary' : ''}`}
+                                onClick={() =>
+                                    setSelectedFormations((prev) => [
+                                        ...prev,
+                                        random.id,
+                                    ])
+                                }
+                            >
+                                {random.id}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+                <ul className="grid grid-cols-4 gap-2 mb-4 w-fit">
+                    {EIGHT_WAY_BLOCKS.map((block) => (
+                        <li key={`block-${block.id}`}>
+                            <button
+                                type="button"
+                                className={`kbd text-white p-4 ${selectedFormations.includes(block.id) ? 'bg-primary' : ''}`}
+                                onClick={() =>
+                                    setSelectedFormations((prev) => [
+                                        ...prev,
+                                        block.id,
+                                    ])
+                                }
+                            >
+                                {block.id}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+                <button
+                    type="button"
+                    className="btn btn-neutral"
+                    onClick={() =>
+                        navigate(
+                            `/8-way/dive?dive=${selectedFormations.join(',')}`,
+                        )
+                    }
+                >
+                    Generate
+                </button>
+            </form>
         </div>
     );
 }
