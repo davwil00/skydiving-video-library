@@ -6,36 +6,52 @@ import { generateRandomDive } from '~/data/formations';
 import { getLatestSession } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/_index';
+import { useSiteStateContext } from '~/contexts/site-state'
+import { SiteType } from '~/utils/site-utils'
 
 export const meta: MetaFunction = () => [
-    { title: 'Chocolate Chip Cookies Video Library' },
+    {title: 'Chocolate Chip Cookies Video Library'},
 ];
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({request}: Route.LoaderArgs) => {
     const latestSession = await getLatestSession();
     const isLocal = isLocalRequest(request);
     const seed = parseInt(format(new Date(), 'yyyyMMdd'), 10);
     const diveOfTheDay = generateRandomDive(seed);
-    return { latestSession, isLocal, diveOfTheDay };
+    return {latestSession, isLocal, diveOfTheDay};
 };
 
 export default function Index() {
-    const { latestSession, isLocal, diveOfTheDay } =
-        useLoaderData<typeof loader>();
-
-    if (!latestSession) {
-        return null;
-    }
+    const {latestSession, isLocal, diveOfTheDay} = useLoaderData<typeof loader>();
+    const {siteType} = useSiteStateContext()
 
     const diveLinks = diveOfTheDay.map((formation) => (
         <Link
             key={formation}
-            to={`/formation/${formation}`}
+            to={`${siteType === SiteType.TUNNEL_VISION ? '/8-way' : ''}/formation/${formation}`}
             className="pr-2 underline"
         >
             {formation}
         </Link>
     ));
+
+    if (siteType === SiteType.TUNNEL_VISION) {
+        return (
+            <div className="mx-auto w-fit">
+                <img src={"images/logos/tunnel-vision.jpeg"} alt="Tunnel Vision" className="mb-4" />
+                <div className="text-black text-3xl mb-3">
+                    Dive of the day - {diveLinks}
+                </div>
+                <ul>
+                    <a className="btn" href="/quiz">Quiz</a>
+                </ul>
+            </div>
+        )
+    }
+    if (!latestSession) {
+        return null;
+
+    }
 
     return (
         <>
