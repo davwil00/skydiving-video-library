@@ -1,9 +1,11 @@
-import type { TouchEvent } from 'react';
+import type { MouseEvent, TouchEvent } from 'react';
 import { useCallback, useRef } from 'react';
 
 interface SwipeHandlers {
     onTouchStart: (e: TouchEvent) => void;
     onTouchEnd: (e: TouchEvent) => void;
+    onMouseDown: (e: MouseEvent) => void;
+    onMouseUp: (e: MouseEvent) => void;
 }
 
 export function useSwipe(
@@ -13,14 +15,10 @@ export function useSwipe(
 ): SwipeHandlers {
     const touchStartX = useRef<number | null>(null);
 
-    const onTouchStart = useCallback((e: TouchEvent) => {
-        touchStartX.current = e.targetTouches[0].clientX;
-    }, []);
-
-    const onTouchEnd = useCallback(
-        (e: TouchEvent) => {
+    const triggerSwipe = useCallback(
+        (clientX: number) => {
             if (touchStartX.current === null) return;
-            const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+            const deltaX = clientX - touchStartX.current;
             if (Math.abs(deltaX) >= minSwipeDistance) {
                 if (deltaX < 0) {
                     onSwipeLeft();
@@ -33,5 +31,21 @@ export function useSwipe(
         [onSwipeLeft, onSwipeRight, minSwipeDistance],
     );
 
-    return { onTouchStart, onTouchEnd };
+    const onTouchStart = useCallback((e: TouchEvent) => {
+        touchStartX.current = e.targetTouches[0].clientX;
+    }, []);
+
+    const onTouchEnd = (e: TouchEvent) => {
+        triggerSwipe(e.changedTouches[0].clientX);
+    };
+
+    const onMouseDown = useCallback((e: MouseEvent) => {
+        touchStartX.current = e.clientX;
+    }, []);
+
+    const onMouseUp = (e: MouseEvent) => {
+        triggerSwipe(e.clientX);
+    };
+
+    return { onTouchStart, onTouchEnd, onMouseDown, onMouseUp };
 }
