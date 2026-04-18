@@ -2,11 +2,11 @@ import type React from 'react';
 import { Discipline, Level, Type } from '~/data/formations';
 import {
     containsQuestionSet,
+    Difficulty,
     DivePool,
     QuestionSet,
     type QuizAction,
     type QuizState,
-    Difficulty,
     QuizType,
     slots,
 } from '~/state/quiz-reducer';
@@ -259,12 +259,18 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
 
     const DifficultyConfig = () => {
         if (
-            !(quizState.quizType === QuizType.NAME_TO_PICTURE || quizState.quizType === QuizType.PICTURE_TO_NAME)
+            !(
+                quizState.quizType === QuizType.NAME_TO_PICTURE ||
+                quizState.quizType === QuizType.PICTURE_TO_NAME
+            )
         ) {
             return null;
         }
 
-        if (quizState.questionSets.length === 0 || quizState.questionSets.every((qs) => qs.type === Type.BLOCK )) {
+        if (
+            quizState.questionSets.length === 0 ||
+            quizState.questionSets.every((qs) => qs.type === Type.BLOCK)
+        ) {
             return null;
         }
 
@@ -276,9 +282,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         type="radio"
                         name="quiz-difficulty"
                         className="btn text-white"
-                        checked={
-                            quizState.difficulty === Difficulty.EASY
-                        }
+                        checked={quizState.difficulty === Difficulty.EASY}
                         aria-label="Easy (with formation names)"
                         autoComplete="off"
                         onChange={() =>
@@ -292,9 +296,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         type="radio"
                         name="quiz-difficulty"
                         className="btn text-white"
-                        checked={
-                            quizState.difficulty === Difficulty.HARD
-                        }
+                        checked={quizState.difficulty === Difficulty.HARD}
                         aria-label="Hard: (Letters/Numbers only)"
                         autoComplete="off"
                         onChange={() =>

@@ -8,8 +8,8 @@ import {
     Difficulty,
     type FormationQuestion,
     initialState,
-    quizReducer,
     QuizType,
+    quizReducer,
     type Slot,
     type SlotQuestion,
     slots,
@@ -87,9 +87,10 @@ export default function QuizPage() {
                                 : {}
                         }
                     >
-                        <FormationImage formation={choice}
-                                        key={`img-${choice.id}`}
-                                        className={`w-full h-full h-max max-h-[calc(50vh-35px)] mx-auto`}
+                        <FormationImage
+                            formation={choice}
+                            key={`img-${choice.id}`}
+                            className={`w-full h-full h-max max-h-[calc(50vh-35px)] mx-auto`}
                         />
                     </button>
                 ))}

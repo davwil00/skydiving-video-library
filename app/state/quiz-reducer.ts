@@ -41,7 +41,7 @@ export enum DivePool {
 
 export enum Difficulty {
     EASY,
-    HARD
+    HARD,
 }
 
 export class QuestionSet {
@@ -125,7 +125,7 @@ export const initialState: QuizState = {
     divePool: [],
     numberOfQuestions: 10,
     slots: [],
-    difficulty: undefined
+    difficulty: undefined,
 };
 
 export const quizReducer = (
@@ -216,7 +216,7 @@ export const quizReducer = (
         case 'setDifficulty':
             return {
                 ...state,
-                difficulty: action.value
+                difficulty: action.value,
             };
 
         case 'answerQuestion':
