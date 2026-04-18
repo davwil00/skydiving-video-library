@@ -47,6 +47,7 @@ import { getFormationImageUrl } from '~/utils/utils';
 
 interface Props extends SVGProps<SVGSVGElement> {
     formation: Formation;
+    showTooltip: boolean;
 }
 
 function getFormationImage(props: Props): ReactNode {
@@ -172,7 +173,7 @@ export default function FormationImage(props: Props) {
 
     return (
         <>
-            <div className="h-1">{tooltip}</div>
+            {props.showTooltip ? <div className="h-1">{tooltip}</div> : null}
             <div onClick={(e) => showTooltip(e)}>{image}</div>
         </>
     );

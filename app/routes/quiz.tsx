@@ -91,6 +91,7 @@ export default function QuizPage() {
                             formation={choice}
                             key={`img-${choice.id}`}
                             className={`w-full h-full h-max max-h-[calc(50vh-35px)] mx-auto`}
+                            showTooltip={false}
                         />
                     </button>
                 ))}
@@ -158,7 +159,8 @@ export default function QuizPage() {
                 <figure>
                     <FormationImage
                         formation={currentQuestion.answer}
-                        className="max-h-[50vh]"
+                        className="w-full max-h-[50vh]"
+                        showTooltip={false}
                     />
                 </figure>
                 <div className="card-body">
@@ -259,9 +261,10 @@ export default function QuizPage() {
                     }
                 >
                     <FormationImage
-                        className="max-h-[75vh]"
+                        className="w-full max-h-[75vh]"
                         formation={currentQuestion.formation}
                         onClick={(e) => handleClick(e)}
+                        showTooltip={false}
                     />
                 </figure>
                 {quizState.selectedAnswer ? (

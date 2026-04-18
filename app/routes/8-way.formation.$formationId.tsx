@@ -68,6 +68,7 @@ export default function EightWayFormation() {
             <FormationImage
                 formation={formation}
                 className="max-h-[100vh] mx-auto mt-8 pb-50"
+                showTooltip={true}
             />
         </div>
     );

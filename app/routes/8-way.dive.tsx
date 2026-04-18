@@ -86,6 +86,7 @@ export default function EightWayDive() {
                         <FormationImage
                             formation={currentFormation}
                             className="max-h-[80vh] mx-auto mt-8 pb-50"
+                            showTooltip={true}
                         />
                     </>
                 )}
