@@ -10,9 +10,9 @@ export default function EightWayFormation() {
             if (prev.includes(id)) {
                 return prev.filter((formation) => formation !== id);
             }
-            return [...prev, id]
+            return [...prev, id];
         });
-    }
+    };
     return (
         <div>
             <h1 className="text-2xl mb-4">8 Way Dive Builder</h1>
@@ -46,9 +46,7 @@ export default function EightWayFormation() {
                 type="button"
                 className="btn btn-neutral"
                 onClick={() =>
-                    navigate(
-                        `/8-way/dive?dive=${selectedFormations.join(',')}`,
-                    )
+                    navigate(`/8-way/dive?dive=${selectedFormations.join(',')}`)
                 }
             >
                 Generate

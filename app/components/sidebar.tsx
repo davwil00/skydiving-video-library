@@ -3,10 +3,10 @@ import type { Competition } from 'prisma/generated/client';
 import type React from 'react';
 import type { RefObject } from 'react';
 import { Link } from 'react-router';
+import { SearchIcon } from '~/components/icons';
 import { usePageStateContext } from '~/contexts/page-state';
 import { useSiteStateContext } from '~/contexts/site-state';
 import { SiteType } from '~/utils/site-utils';
-import { SearchIcon } from '~/components/icons'
 
 export type SidebarSession = { id: string; date: Date; name?: string | null };
 type SidebarProps = {
@@ -25,8 +25,8 @@ function Divider() {
 }
 
 export default function Sidebar(props: SidebarProps) {
-    const {sessions, competitions, isLocal, drawerRef} = props;
-    const {siteType} = useSiteStateContext();
+    const { sessions, competitions, isLocal, drawerRef } = props;
+    const { siteType } = useSiteStateContext();
     const sessionsByYear = Object.groupBy(sessions, (session) =>
         new Date(session.date).getFullYear().toString(),
     );
@@ -35,7 +35,7 @@ export default function Sidebar(props: SidebarProps) {
             drawerRef.current.checked = false;
         }
     };
-    const {isFullScreen} = usePageStateContext();
+    const { isFullScreen } = usePageStateContext();
 
     if (isFullScreen) {
         return null;
@@ -49,7 +49,7 @@ export default function Sidebar(props: SidebarProps) {
     function makeLink(letter: string, type: FormationLinkType) {
         return (
             <Link
-                to={{pathname: `${type}/${letter}`}}
+                to={{ pathname: `${type}/${letter}` }}
                 onClick={clickCallback}
                 key={letter}
             >
@@ -95,7 +95,7 @@ export default function Sidebar(props: SidebarProps) {
                 <ul>
                     {Object.entries(sessionsByYear).map(([year, sessions]) => (
                         <div className="collapse" key={`year-${year}`}>
-                            <input type="checkbox"/>
+                            <input type="checkbox" />
                             <div className="collapse-title">{year}</div>
                             <div className="collapse-content">
                                 {sessions?.map((session) => (
@@ -158,7 +158,7 @@ export default function Sidebar(props: SidebarProps) {
         formations: string[][];
         linkType: FormationLinkType;
     }) {
-        const {title, formations, linkType} = props;
+        const { title, formations, linkType } = props;
         return (
             <li className="items-start">
                 <h2 className="menu-title">{title}</h2>
@@ -180,7 +180,7 @@ export default function Sidebar(props: SidebarProps) {
         requiredSiteType?: SiteType;
         children: React.ReactNode;
     }) {
-        const {requiresLocal, requiredSiteType, children} = props;
+        const { requiresLocal, requiredSiteType, children } = props;
         if (
             requiresLocal &&
             isLocal &&
@@ -199,13 +199,13 @@ export default function Sidebar(props: SidebarProps) {
             <div className="min-h-full bg-base-200 w-80">
                 <ul className="menu w-80 px-4 pt-4 text-base-content flex-nowrap">
                     <li>
-                        <Link to={{pathname: '/'}} onClick={clickCallback}>
+                        <Link to={{ pathname: '/' }} onClick={clickCallback}>
                             Home
                         </Link>
                     </li>
-                    <SessionLinks/>
-                    <CompetitionLinks/>
-                    <Divider/>
+                    <SessionLinks />
+                    <CompetitionLinks />
+                    <Divider />
                 </ul>
 
                 {siteType === SiteType.SOLO ? (
@@ -213,7 +213,7 @@ export default function Sidebar(props: SidebarProps) {
                         <li>
                             {isLocal ? (
                                 <Link
-                                    to={{pathname: '/solo/add'}}
+                                    to={{ pathname: '/solo/add' }}
                                     onClick={clickCallback}
                                 >
                                     Add solo session
@@ -225,14 +225,14 @@ export default function Sidebar(props: SidebarProps) {
                 <ul className="menu p-4 pt-0 text-base-content flex-nowrap">
                     <li>
                         <Link
-                            to={{pathname: '/quiz'}}
+                            to={{ pathname: '/quiz' }}
                             onClick={clickCallback}
                         >
                             Quiz
                         </Link>
                         <LinkWithGuard requiresLocal={true}>
                             <Link
-                                to={{pathname: '/tag'}}
+                                to={{ pathname: '/tag' }}
                                 onClick={clickCallback}
                             >
                                 Tag
@@ -240,7 +240,7 @@ export default function Sidebar(props: SidebarProps) {
                         </LinkWithGuard>
                         <LinkWithGuard requiresLocal={true}>
                             <Link
-                                to={{pathname: '/trim-pending'}}
+                                to={{ pathname: '/trim-pending' }}
                                 onClick={clickCallback}
                             >
                                 Trim Pending
@@ -251,7 +251,7 @@ export default function Sidebar(props: SidebarProps) {
                             requiredSiteType={SiteType.COOKIES}
                         >
                             <Link
-                                to={{pathname: '/logos'}}
+                                to={{ pathname: '/logos' }}
                                 onClick={clickCallback}
                             >
                                 Logos
@@ -262,7 +262,7 @@ export default function Sidebar(props: SidebarProps) {
                             requiredSiteType={SiteType.COOKIES}
                         >
                             <Link
-                                to={{pathname: '/customise-logo'}}
+                                to={{ pathname: '/customise-logo' }}
                                 onClick={clickCallback}
                             >
                                 Customise Logo
@@ -273,14 +273,14 @@ export default function Sidebar(props: SidebarProps) {
                             requiredSiteType={SiteType.COOKIES}
                         >
                             <Link
-                                to={{pathname: '/8-way-nationals-2024'}}
+                                to={{ pathname: '/8-way-nationals-2024' }}
                                 onClick={clickCallback}
                             >
                                 8 Way (Nationals 2024) 🥈
                             </Link>
                         </LinkWithGuard>
                         <Link
-                            to={{pathname: '/8-way/dive-builder'}}
+                            to={{ pathname: '/8-way/dive-builder' }}
                             onClick={clickCallback}
                         >
                             8 Way Dive Builder
@@ -298,7 +298,7 @@ export default function Sidebar(props: SidebarProps) {
                                 ]}
                                 linkType={FormationLinkType.FOUR_WAY}
                             />
-                            <Divider/>
+                            <Divider />
                             <FormationLinks
                                 title="A Blocks"
                                 formations={[
@@ -325,7 +325,7 @@ export default function Sidebar(props: SidebarProps) {
                             />
                         </>
                     ) : null}
-                    <Divider/>
+                    <Divider />
                     <FormationLinks
                         title="8 Way Randoms"
                         formations={[
@@ -348,10 +348,14 @@ export default function Sidebar(props: SidebarProps) {
                         ]}
                         linkType={FormationLinkType.EIGHT_WAY}
                     />
-                    <Divider/>
+                    <Divider />
                     {siteType === SiteType.COOKIES ? (
                         <ul>
-                            <form className="join" action="/search" method="GET">
+                            <form
+                                className="join"
+                                action="/search"
+                                method="GET"
+                            >
                                 <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
                                     <input
                                         type="text"
@@ -364,7 +368,7 @@ export default function Sidebar(props: SidebarProps) {
                                     className="btn btn-neutral join-item"
                                     type="submit"
                                 >
-                                    <SearchIcon className="h-4 w-4 opacity-70"/>
+                                    <SearchIcon className="h-4 w-4 opacity-70" />
                                 </button>
                             </form>
                         </ul>
