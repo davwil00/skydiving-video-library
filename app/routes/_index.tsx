@@ -42,10 +42,20 @@ export default function Index() {
                 <img
                     src={'images/logos/tunnel-vision.jpeg'}
                     alt="Tunnel Vision"
-                    className="mb-4"
+                    className="mb-4 max-h-64 mx-auto"
                 />
                 <div className="text-black text-3xl mb-3">
-                    Dive of the day - {diveLinks}
+                    <a
+                        href={`/8-way/dive?dive=${diveOfTheDay.join(',')}`}
+                        className="flex gap-2 items-center cursor-pointer"
+                    >
+                        Dive of the day -{' '}
+                        {diveOfTheDay.map((formation) => (
+                            <kbd className="kbd text-white" key={formation}>
+                                {formation}
+                            </kbd>
+                        ))}
+                    </a>
                 </div>
                 <ul>
                     <a className="btn" href="/quiz">
