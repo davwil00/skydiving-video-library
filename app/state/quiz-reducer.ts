@@ -302,6 +302,7 @@ function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
             formation.type === actualAnswer.type &&
             formation !== actualAnswer,
     );
+    shuffle(possibleAlternateAnswers);
     const answers = possibleAlternateAnswers.slice(0, 3).concat(actualAnswer);
     shuffle(answers);
     return answers;
