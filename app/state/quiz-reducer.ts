@@ -135,12 +135,9 @@ export const quizReducer = (
     switch (action.type) {
         case 'startQuiz':
             return {
-                ...initialState,
+                ...state,
                 questionNo: 0,
-                quizType: state.quizType,
-                questionSets: state.questionSets,
-                slots: state.slots,
-                divePool: state.divePool,
+                score: 0,
                 started: true,
                 questions:
                     state.quizType === QuizType.FIND_YOUR_SLOT
