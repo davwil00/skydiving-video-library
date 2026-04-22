@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useLoaderData, useNavigate } from 'react-router';
 import invariant from 'tiny-invariant';
 import FormationImage from '~/components/formations/formation-images';
