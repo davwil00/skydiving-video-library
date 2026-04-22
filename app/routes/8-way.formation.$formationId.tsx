@@ -25,7 +25,6 @@ const orderedFormations = [...EIGHT_WAY_RANDOMS, ...EIGHT_WAY_BLOCKS];
 export default function EightWayFormation() {
     const { formation } = useLoaderData<typeof loader>();
     const navigate = useNavigate();
-    const [altColours, setAltColours] = useState<boolean>(false);
 
     const currentIndex = orderedFormations.findIndex(
         (f) => f.id === formation.id,
@@ -49,7 +48,7 @@ export default function EightWayFormation() {
 
     return (
         <div
-            className={`relative ${altColours ? 'alt' : ''}`}
+            className={`relative`}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
         >
@@ -57,13 +56,6 @@ export default function EightWayFormation() {
                 <h1 className="text-2xl">
                     {formation.id} - {getDisplayName(formation)}
                 </h1>
-                <button
-                    type="button"
-                    className="btn btn-neutral"
-                    onClick={() => setAltColours((prev) => !prev)}
-                >
-                    Toggle colours
-                </button>
             </div>
             <FormationImage
                 formation={formation}

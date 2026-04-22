@@ -38,7 +38,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     const sessions = await getSessions(siteType);
     const competitions = await getAllCompetitions();
     const isLocal = isLocalRequest(request);
-    return { sessions, competitions, isLocal, siteType };
+    const title =
+        siteType === SiteType.COOKIES
+            ? 'Chocolate Chip Cookies Video Library'
+            : 'Tunnel Vision';
+    return { sessions, competitions, isLocal, siteType, title };
 };
 
 export const meta = () => {
@@ -65,7 +69,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 />
                 <Meta />
                 <Links />
-                <title>Chocolate Chip Cookies Video Library</title>
+                <title>{data?.title}</title>
             </head>
 
             <body className="h-full">

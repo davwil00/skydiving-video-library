@@ -5,7 +5,10 @@ import type { RefObject } from 'react';
 import { Link } from 'react-router';
 import { SearchIcon } from '~/components/icons';
 import { usePageStateContext } from '~/contexts/page-state';
-import { useSiteStateContext } from '~/contexts/site-state';
+import {
+    useSiteStateContext,
+    useSiteStateDispatchContext,
+} from '~/contexts/site-state';
 import { SiteType } from '~/utils/site-utils';
 
 export type SidebarSession = { id: string; date: Date; name?: string | null };
@@ -27,6 +30,7 @@ function Divider() {
 export default function Sidebar(props: SidebarProps) {
     const { sessions, competitions, isLocal, drawerRef } = props;
     const { siteType } = useSiteStateContext();
+    const dispatch = useSiteStateDispatchContext();
     const sessionsByYear = Object.groupBy(sessions, (session) =>
         new Date(session.date).getFullYear().toString(),
     );
@@ -372,6 +376,17 @@ export default function Sidebar(props: SidebarProps) {
                                 </button>
                             </form>
                         </ul>
+                    ) : null}
+                    {siteType === SiteType.TUNNEL_VISION ? (
+                        <button
+                            type="button"
+                            className="btn btn-neutral"
+                            onClick={() =>
+                                dispatch({ type: 'toggleAltColours' })
+                            }
+                        >
+                            Toggle colours
+                        </button>
                     ) : null}
                 </ul>
             </div>

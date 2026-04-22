@@ -19,13 +19,13 @@ export default function Main({
     };
 }) {
     const drawerRef = useRef<HTMLInputElement>(null);
-    const { siteType, theme } = useSiteStateContext();
+    const { siteType, theme, altColours } = useSiteStateContext();
     const { isFullScreen } = usePageStateContext();
 
     return (
         <main
             data-theme={theme}
-            className={`relative min-h-screen bg-white sm:flex sm:justify-center ${isFullScreen ? 'fullscreen' : ''}`}
+            className={`relative min-h-screen bg-white sm:flex sm:justify-center ${isFullScreen ? 'fullscreen' : ''} ${altColours ? 'alt' : ''}`}
         >
             <div className="drawer md:drawer-open">
                 <input
