@@ -17,6 +17,6 @@ export default defineConfig({
         copyPublicDir: false,
     },
     server: {
-        allowedHosts: ['localhost', 'skydiving-solo'],
+        allowedHosts: ['localhost', 'skydiving-solo', 'tunnel.vision'],
     },
 });

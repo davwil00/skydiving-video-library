@@ -62,12 +62,16 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         className="btn text-white"
                         aria-label="Find your slot"
                         autoComplete="off"
-                        onChange={() =>
+                        onChange={() => {
                             dispatch({
                                 type: 'setQuizType',
                                 value: QuizType.FIND_YOUR_SLOT,
-                            })
-                        }
+                            });
+                            dispatch({
+                                type: 'setDivePool',
+                                value: DivePool.EIGHT_WAY,
+                            });
+                        }}
                     />
                 </div>
             </>
@@ -75,7 +79,10 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
     };
 
     const DivePoolConfig = () => {
-        if (quizState.quizType == null) {
+        if (
+            quizState.quizType == null ||
+            quizState.quizType === QuizType.FIND_YOUR_SLOT
+        ) {
             return null;
         }
         return (
@@ -312,12 +319,15 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
     };
 
     function canStart() {
-        return (
-            quizState.questionSets.length > 0 &&
-            quizState.quizType !== undefined &&
-            (quizState.quizType !== QuizType.FIND_YOUR_SLOT ||
-                quizState.slots.length > 0)
-        );
+        if (!quizState.quizType || quizState.questionSets.length === 0) {
+            return false;
+        }
+        switch (quizState.quizType) {
+            case QuizType.FIND_YOUR_SLOT:
+                return quizState.slots.length > 0;
+            default:
+                return !!quizState.divePool;
+        }
     }
 
     return (
