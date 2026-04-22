@@ -40,7 +40,7 @@ export default function Index() {
         return (
             <div className="mx-auto w-fit">
                 <img
-                    src={'images/logos/tunnel-vision.jpeg'}
+                    src={'/images/logos/tunnel-vision.jpeg'}
                     alt="Tunnel Vision"
                     className="mb-4 max-h-64 mx-auto"
                 />
