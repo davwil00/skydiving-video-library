@@ -1,12 +1,12 @@
 import { shuffle } from '~/utils/utils';
 
 export enum Level {
-    ROOKIE,
-    A,
-    AA,
-    AAA,
-    INTERMEDIATE,
-    SENIOR,
+    ROOKIE = 'rookie',
+    A = 'a',
+    AA = 'aa',
+    AAA = 'aaa',
+    INTERMEDIATE = 'intermediate',
+    SENIOR = 'senior',
 }
 
 export enum Discipline {

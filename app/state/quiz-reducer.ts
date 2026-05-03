@@ -1,6 +1,6 @@
 import {
     allFormations,
-    type Discipline,
+    Discipline,
     type Formation,
     type Level,
     type Type,
@@ -14,7 +14,7 @@ export type QuizAction =
     | { type: 'answerQuestion'; answer: Formation | Slot; isCorrect: boolean }
     | { type: 'setQuestionSet'; value: QuestionSet }
     | { type: 'setQuizType'; value: QuizType }
-    | { type: 'setDivePool'; value: DivePool }
+    | { type: 'setDivePool'; value: Discipline }
     | { type: 'setNumberOfQuestions'; value: number }
     | { type: 'setSlot'; value: Slot }
     | { type: 'setDifficulty'; value: Difficulty };
@@ -29,19 +29,14 @@ export type SlotQuestion = {
 };
 
 export enum QuizType {
-    NAME_TO_PICTURE,
-    PICTURE_TO_NAME,
-    FIND_YOUR_SLOT,
-}
-
-export enum DivePool {
-    FOUR_WAY,
-    EIGHT_WAY,
+    NAME_TO_PICTURE = 'name_to_picture',
+    PICTURE_TO_NAME = 'picture_to_name',
+    FIND_YOUR_SLOT = 'find_your_slot',
 }
 
 export enum Difficulty {
-    EASY,
-    HARD,
+    EASY = 'easy',
+    HARD = 'hard',
 }
 
 export class QuestionSet {
@@ -68,36 +63,48 @@ export function containsQuestionSet(
 }
 
 export const slots: Slot[] = [
-    { name: 'Inside Front', className: 'IF', divePools: [DivePool.EIGHT_WAY] },
-    { name: 'Outside Front', className: 'OF', divePools: [DivePool.EIGHT_WAY] },
-    { name: 'Inside Rear', className: 'IR', divePools: [DivePool.EIGHT_WAY] },
-    { name: 'Outside Rear', className: 'OR', divePools: [DivePool.EIGHT_WAY] },
+    {
+        name: 'Inside Front',
+        className: 'IF',
+        divePools: [Discipline.EIGHT_WAY],
+    },
+    {
+        name: 'Outside Front',
+        className: 'OF',
+        divePools: [Discipline.EIGHT_WAY],
+    },
+    { name: 'Inside Rear', className: 'IR', divePools: [Discipline.EIGHT_WAY] },
+    {
+        name: 'Outside Rear',
+        className: 'OR',
+        divePools: [Discipline.EIGHT_WAY],
+    },
     {
         name: 'Point',
         className: 'P',
-        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+        divePools: [Discipline.FOUR_WAY, Discipline.EIGHT_WAY],
     },
     {
         name: 'Inside Centre',
         className: 'IC',
-        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+        divePools: [Discipline.FOUR_WAY, Discipline.EIGHT_WAY],
     },
     {
         name: 'Outside Centre',
         className: 'OC',
-        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+        divePools: [Discipline.FOUR_WAY, Discipline.EIGHT_WAY],
     },
     {
         name: 'Tail',
         className: 'T',
-        divePools: [DivePool.FOUR_WAY, DivePool.EIGHT_WAY],
+        divePools: [Discipline.FOUR_WAY, Discipline.EIGHT_WAY],
     },
 ];
 
 export type Slot = {
     name: string;
     className: string;
-    divePools: DivePool[];
+    divePools: Discipline[];
 };
 
 export type QuizState = {
@@ -108,7 +115,7 @@ export type QuizState = {
     selectedAnswer?: Formation | Slot;
     quizType?: QuizType;
     questionSets: QuestionSet[];
-    divePool: DivePool[];
+    divePool: Discipline[];
     numberOfQuestions: number;
     slots: Slot[];
     difficulty?: Difficulty;

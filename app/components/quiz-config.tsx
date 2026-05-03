@@ -3,7 +3,6 @@ import { Discipline, Level, Type } from '~/data/formations';
 import {
     containsQuestionSet,
     Difficulty,
-    DivePool,
     QuestionSet,
     type QuizAction,
     type QuizState,
@@ -69,7 +68,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                             });
                             dispatch({
                                 type: 'setDivePool',
-                                value: DivePool.EIGHT_WAY,
+                                value: Discipline.EIGHT_WAY,
                             });
                         }}
                     />
@@ -94,14 +93,14 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         name="quiz-question-set"
                         className="text-white btn"
                         checked={quizState.divePool?.includes(
-                            DivePool.FOUR_WAY,
+                            Discipline.FOUR_WAY,
                         )}
                         aria-label="4 Way"
                         autoComplete="off"
                         onChange={() =>
                             dispatch({
                                 type: 'setDivePool',
-                                value: DivePool.FOUR_WAY,
+                                value: Discipline.FOUR_WAY,
                             })
                         }
                     />
@@ -110,14 +109,14 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         name="quiz-question-set"
                         className=" text-white btn"
                         checked={quizState.divePool?.includes(
-                            DivePool.EIGHT_WAY,
+                            Discipline.EIGHT_WAY,
                         )}
                         aria-label="8 Way"
                         autoComplete="off"
                         onChange={() =>
                             dispatch({
                                 type: 'setDivePool',
-                                value: DivePool.EIGHT_WAY,
+                                value: Discipline.EIGHT_WAY,
                             })
                         }
                     />
@@ -148,11 +147,12 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                     onChange={() =>
                         dispatch({ type: 'setQuestionSet', value: questionSet })
                     }
+                    key={label}
                 />
             );
         };
         const formationOptions = [];
-        if (quizState.divePool.includes(DivePool.FOUR_WAY)) {
+        if (quizState.divePool.includes(Discipline.FOUR_WAY)) {
             formationOptions.push(
                 {
                     label: 'Randoms',
@@ -188,7 +188,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                 },
             );
         }
-        if (quizState.divePool.includes(DivePool.EIGHT_WAY)) {
+        if (quizState.divePool.includes(Discipline.EIGHT_WAY)) {
             formationOptions.push(
                 {
                     label: 'Intermediate Randoms',
@@ -326,7 +326,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
             case QuizType.FIND_YOUR_SLOT:
                 return quizState.slots.length > 0;
             default:
-                return !!quizState.divePool;
+                return quizState.divePool.length > 0;
         }
     }
 
@@ -340,6 +340,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                     <select
                         className="text-white select"
                         autoComplete="off"
+                        defaultValue={quizState.numberOfQuestions}
                         onChange={(e) =>
                             dispatch({
                                 type: 'setNumberOfQuestions',
@@ -348,12 +349,7 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                         }
                     >
                         {[5, 10, 15, 20].map((num) => (
-                            <option
-                                key={`numberOfQs-${num}`}
-                                selected={quizState.numberOfQuestions === num}
-                            >
-                                {num}
-                            </option>
+                            <option key={`numberOfQs-${num}`}>{num}</option>
                         ))}
                     </select>
                 </div>
@@ -361,7 +357,6 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                 <FormationsConfig />
                 <DifficultyConfig />
                 <SlotConfig />
-
                 <button
                     className="btn text-white mt-4"
                     disabled={!canStart()}
