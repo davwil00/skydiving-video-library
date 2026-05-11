@@ -15,6 +15,7 @@ model Session {
   Competition   Competition? @relation(fields: [competitionId], references: [id])
   competitionId String?
   total_score   Int?
+  team          String?
 }
 
 model Flight {

@@ -24,7 +24,8 @@ import type { Route } from './+types/root';
 function getSessions(siteType: SiteType): Promise<SidebarSession[]> {
     switch (siteType) {
         case SiteType.COOKIES:
-            return getAllNonCompetitionSessionDates();
+        case SiteType.TUNNEL_VISION:
+            return getAllNonCompetitionSessionDates(siteType);
         case SiteType.SOLO:
             return getAllSoloSessions();
         default:
@@ -33,8 +34,7 @@ function getSessions(siteType: SiteType): Promise<SidebarSession[]> {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-    const hostName = new URL(request.url).hostname;
-    const siteType = getSiteType(hostName);
+    const siteType = getSiteType(request);
     const sessions = await getSessions(siteType);
     const competitions = await getAllCompetitions();
     const isLocal = isLocalRequest(request);

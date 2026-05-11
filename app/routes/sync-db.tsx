@@ -9,6 +9,7 @@ import {
 } from 'react-router';
 import { createFlight } from '~/models/flights.server';
 import { getOrCreateSession } from '~/models/sessions.server';
+import { getSiteType, SiteType } from '~/utils/site-utils';
 import { extractIdFromFileName, processFile } from '~/utils/tagUtils';
 import { formatDate } from '~/utils/utils';
 
@@ -53,13 +54,27 @@ async function groupAndLabelFiles(pendingDir: Dirent[]) {
     return labelledFileData;
 }
 
+function getLibraryFolder(siteType: SiteType) {
+    switch (siteType) {
+        case SiteType.COOKIES:
+            return 'library';
+        case SiteType.TUNNEL_VISION:
+            return 'tv-library';
+    }
+}
 async function processFlightFiles(
+    siteType: SiteType,
     flight: LabelledDirEnt,
     sessionName: string | null,
 ) {
-    const sessionId = await getOrCreateSession(flight.date, sessionName);
+    const sessionId = await getOrCreateSession(
+        siteType,
+        flight.date,
+        sessionName,
+    );
     const dateStr = format(flight.date, 'yyyy-MM-dd');
-    const path = `/video-data/library/${dateStr}`;
+    const libraryFolder = getLibraryFolder(siteType);
+    const path = `/video-data/${libraryFolder}/${dateStr}`;
     await createFlight({
         sessionId,
         ...flight,
@@ -70,7 +85,7 @@ async function processFlightFiles(
             ? `${path}/${flight.topFileName}`
             : undefined,
     });
-    const newPath = `${VIDEO_DATA_PATH}/library/${dateStr}`;
+    const newPath = `${VIDEO_DATA_PATH}/${libraryFolder}/${dateStr}`;
     await mkdir(newPath, { recursive: true });
     if (flight.sideFileName) {
         await rename(
@@ -103,11 +118,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const errors = [];
     const formData = await request.formData();
     const sessionName = (formData.get('name') as string) || null;
+    const siteType = getSiteType(request);
 
     try {
         const labelledFileData = await groupAndLabelFiles(pendingDir);
         for (const flight of labelledFileData.values()) {
-            await processFlightFiles(flight, sessionName);
+            await processFlightFiles(siteType, flight, sessionName);
         }
     } catch (error) {
         console.error('Error processing file', error);

@@ -6,7 +6,7 @@ import { useSiteStateContext } from '~/contexts/site-state';
 import { generateRandomDive } from '~/data/formations';
 import { getLatestSession } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import { SiteType } from '~/utils/site-utils';
+import { getSiteType, SiteType } from '~/utils/site-utils';
 import type { Route } from './+types/_index';
 
 export const meta: MetaFunction = () => [
@@ -14,7 +14,8 @@ export const meta: MetaFunction = () => [
 ];
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-    const latestSession = await getLatestSession();
+    const siteType = getSiteType(request);
+    const latestSession = await getLatestSession(siteType);
     const isLocal = isLocalRequest(request);
     const seed = parseInt(format(new Date(), 'yyyyMMdd'), 10);
     const diveOfTheDay = generateRandomDive(seed);

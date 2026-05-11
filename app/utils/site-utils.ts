@@ -1,10 +1,11 @@
 export enum SiteType {
-    COOKIES = 'Team',
+    COOKIES = 'Cookies',
     SOLO = 'Solo',
     TUNNEL_VISION = 'TunnelVision',
 }
 
-export function getSiteType(hostname?: string): SiteType {
+export function getSiteType(request: Request): SiteType {
+    const hostname = new URL(request.url).hostname;
     switch (hostname) {
         case 'tunnel-vision.davwil00.co.uk':
         case 'tunnel.vision':

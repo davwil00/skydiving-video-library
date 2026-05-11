@@ -1,10 +1,11 @@
 import { Prisma } from 'prisma/generated/client';
 import { prisma } from '~/db.server';
+import type { SiteType } from '~/utils/site-utils';
 
-export function getAllNonCompetitionSessionDates() {
+export function getAllNonCompetitionSessionDates(siteType: SiteType) {
     return prisma.session.findMany({
         select: { id: true, date: true, name: true },
-        where: { competitionId: null },
+        where: { team: siteType, competitionId: null },
         orderBy: { date: Prisma.SortOrder.asc },
     });
 }
@@ -29,8 +30,11 @@ export function getSession(sessionId: string) {
     });
 }
 
-export function getLatestSession() {
+export function getLatestSession(siteType: SiteType) {
     return prisma.session.findFirst({
+        where: {
+            team: siteType,
+        },
         orderBy: [
             {
                 date: 'desc',
@@ -42,14 +46,19 @@ export function getLatestSession() {
     });
 }
 
-export async function getOrCreateSession(date: Date, name: string | null) {
+export async function getOrCreateSession(
+    siteType: SiteType,
+    date: Date,
+    name: string | null,
+) {
     const existingSession = await prisma.session.findFirst({
-        where: { date, name },
+        where: { team: siteType, date, name },
     });
 
     if (!existingSession) {
         const session = await prisma.session.create({
             data: {
+                team: siteType,
                 date: date,
                 name: name,
             },

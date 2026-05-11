@@ -109,7 +109,7 @@ export async function updateFlightScores(flightId: string, scores: Score[]) {
     });
 }
 
-export function getFlight(flightId: string) {
+export function getFlight(flightId: string, includeNotes: boolean = false) {
     return prisma.flight.findUnique({
         where: { id: flightId },
         include: {
@@ -117,6 +117,7 @@ export function getFlight(flightId: string) {
             flyers: true,
             formations: { orderBy: { order: 'asc' } },
             scores: true,
+            notes: includeNotes
         },
     });
 }

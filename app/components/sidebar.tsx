@@ -188,8 +188,7 @@ export default function Sidebar(props: SidebarProps) {
         if (
             requiresLocal &&
             isLocal &&
-            requiredSiteType &&
-            requiredSiteType === siteType
+            (!requiredSiteType || requiredSiteType === siteType)
         ) {
             return children;
         }

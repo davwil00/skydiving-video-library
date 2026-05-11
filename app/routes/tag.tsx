@@ -4,6 +4,7 @@ import { data, redirect, useLoaderData } from 'react-router';
 import { ErrorIcon, PlayIcon, SuccessIcon } from '~/components/icons';
 import { VIDEO_DATA_PATH } from '~/routes/sync-db';
 import { type FileToTag, type TagState, tagReducer } from '~/state/tag-reducer';
+import { getSiteType, SiteType } from '~/utils/site-utils';
 import {
     determineViewFromFilename,
     extractIdFromFileName,
@@ -12,13 +13,14 @@ import {
 } from '~/utils/tagUtils';
 import type { Route } from './+types/tag';
 
-export const loader = async () => {
+export const loader = async ({ request }: { request: Request }) => {
     const videoDataPath = `${VIDEO_DATA_PATH}/pending`;
     const pendingDir = await readdir(`${videoDataPath}`, {
         withFileTypes: true,
     });
 
     const filesToTag = new Map<string, FileToTag>();
+    const showFlyers = getSiteType(request) === SiteType.COOKIES;
 
     for (const file of pendingDir) {
         if (file.name.endsWith('.mp4')) {
@@ -41,7 +43,9 @@ export const loader = async () => {
                     [`${viewProp}FileName`]: file.name,
                     [`${viewProp}Path`]: `video-data/pending/${file.name}`,
                     date: tagData.date,
-                    flyers: tagData.artist || 'David F/Karen/David W/Nick',
+                    flyers:
+                        tagData.artist ||
+                        (showFlyers ? 'David F/Karen/David W/Nick' : ''),
                     formations: tagData.title?.startsWith('Power Punch')
                         ? ''
                         : tagData.title || '',
@@ -50,7 +54,7 @@ export const loader = async () => {
         }
     }
 
-    return { filesToTag };
+    return { filesToTag, showFlyers };
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -164,21 +168,23 @@ export default function TagDir() {
                         />
                     </div>
                 </td>
-                <td>
-                    <input
-                        type="text"
-                        className="input input-bordered"
-                        value={fileToTag.flyers}
-                        onChange={(e) =>
-                            dispatch({
-                                type: 'formElementChange',
-                                id: fileToTag.id,
-                                field: 'flyers',
-                                value: e.currentTarget.value,
-                            })
-                        }
-                    />
-                </td>
+                {loaderData.showFlyers ? (
+                    <td>
+                        <input
+                            type="text"
+                            className="input input-bordered"
+                            value={fileToTag.flyers}
+                            onChange={(e) =>
+                                dispatch({
+                                    type: 'formElementChange',
+                                    id: fileToTag.id,
+                                    field: 'flyers',
+                                    value: e.currentTarget.value,
+                                })
+                            }
+                        />
+                    </td>
+                ) : null}
                 <td>
                     <input
                         type="text"
@@ -267,7 +273,7 @@ export default function TagDir() {
                     <tr>
                         <th>File</th>
                         <th>Date</th>
-                        <th>Flyers</th>
+                        {loaderData.showFlyers ? <th>Flyers</th> : null}
                         <th>Formations</th>
                         <th>View</th>
                     </tr>
