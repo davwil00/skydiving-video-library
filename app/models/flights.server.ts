@@ -1,9 +1,13 @@
 import type { Prisma } from 'prisma/generated/client';
 import { prisma } from '~/db.server';
+import {SiteType} from "~/utils/site-utils";
 
-export function getByFormationId(formationId: string) {
+export function getByFormationId(formationId: string, siteType: SiteType) {
     return prisma.flight.findMany({
         where: {
+            session: {
+                team: siteType
+            },
             formations: {
                 some: {
                     formationId: formationId,
@@ -130,9 +134,12 @@ export type FlightCreateInput = {
     topVideoUrl?: string;
 };
 
-export function findFlightsWithFormations(formations: string[]) {
+export function findFlightsWithFormations(formations: string[], siteType: SiteType) {
     return prisma.flight.findMany({
         where: {
+            session: {
+                team: siteType
+            },
             AND: formations.map((formationId) => ({
                 formations: {
                     some: {

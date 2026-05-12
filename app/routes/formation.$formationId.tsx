@@ -16,15 +16,14 @@ import { getByFormationId } from '~/models/flights.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { getFormationImageUrl } from '~/utils/utils';
 import type { Route } from './+types/formation.$formationId';
+import {getSiteType} from "~/utils/site-utils";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
     const isLocal = isLocalRequest(request);
     const formation = FORMATIONS[params.formationId];
-    const flights = await getByFormationId(params.formationId);
-    if (!flights) {
-        throw new Response('Not Found', { status: 404 });
-    }
+    const siteType = getSiteType(request)
+    const flights = await getByFormationId(params.formationId, siteType);
 
     return { flights, formation, isLocal };
 };

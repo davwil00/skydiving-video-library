@@ -3,9 +3,11 @@ import invariant from 'tiny-invariant';
 import FlightCard from '~/components/flight-card';
 import { findFlightsWithFormations } from '~/models/flights.server';
 import type { Route } from './+types/search';
+import {getSiteType} from "~/utils/site-utils";
 
 export async function loader({ request }: Route.LoaderArgs) {
     const searchParams = new URL(request.url).searchParams;
+    const siteType = getSiteType(request)
     const query = searchParams.get('query');
     invariant(query, 'Please specify a search query');
     let formationIds: string[];
@@ -15,7 +17,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         formationIds = query.split('');
     }
 
-    const results = await findFlightsWithFormations(formationIds);
+    const results = await findFlightsWithFormations(formationIds, siteType);
     return { results, formationIds };
 }
 

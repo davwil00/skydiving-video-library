@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useLoaderData, useNavigate } from 'react-router';
+import {useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import invariant from 'tiny-invariant';
 import FormationImage from '~/components/formations/formation-images';
 import {
@@ -11,19 +11,27 @@ import {
 import { useSwipe } from '~/hooks/useSwipe';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import type { Route } from './+types/formation.$formationId';
+import {ViewSwitcher} from "~/components/view-switcher";
+import FlightCard from "~/components/flight-card";
+import {getByFormationId} from "~/models/flights.server";
+import {getSiteType} from "~/utils/site-utils";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
     const isLocal = isLocalRequest(request);
     const formation = EIGHT_WAY_FORMATIONS[params.formationId];
+    const siteType = getSiteType(request)
+    const flights = await getByFormationId(params.formationId, siteType);
 
-    return { formation, isLocal };
+    return { flights, formation, isLocal };
 };
 
 const orderedFormations = [...EIGHT_WAY_RANDOMS, ...EIGHT_WAY_BLOCKS];
 
 export default function EightWayFormation() {
-    const { formation } = useLoaderData<typeof loader>();
+    const { flights, formation, isLocal } = useLoaderData<typeof loader>();
+    const [searchParams] = useSearchParams();
+    const activeView = searchParams.get('view') || 'diagram';
     const navigate = useNavigate();
 
     const currentIndex = orderedFormations.findIndex(
@@ -57,11 +65,33 @@ export default function EightWayFormation() {
                     {formation.id} - {getDisplayName(formation)}
                 </h1>
             </div>
+            <ViewSwitcher
+                views={[
+                    { view: 'diagram', name: 'Diagram' },
+                    { view: 'videos', name: 'Videos' },
+                ]}
+                activeView={activeView}
+            />
+            {activeView === 'diagram' ? (
             <FormationImage
                 formation={formation}
-                className="max-h-[100vh] mx-auto mt-8 pb-50"
+                className="max-h-screen mx-auto mt-8 pb-50"
                 showTooltip={true}
             />
+            ) : (
+                <div className="flex flex-wrap justify-center">
+                    {flights.map((flight) => (
+                        <FlightCard
+                            key={flight.id}
+                            flight={flight}
+                            session={flight.session}
+                            showDate={true}
+                            isLocal={isLocal}
+                            allowSelection={false}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

@@ -352,34 +352,32 @@ export default function Sidebar(props: SidebarProps) {
                         linkType={FormationLinkType.EIGHT_WAY}
                     />
                     <Divider />
-                    {siteType === SiteType.COOKIES ? (
-                        <ul>
-                            <form
-                                className="join"
-                                action="/search"
-                                method="GET"
+                    <ul>
+                        <form
+                            className="join"
+                            action="/search"
+                            method="GET"
+                        >
+                            <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
+                                <input
+                                    type="text"
+                                    className=""
+                                    placeholder="Search"
+                                    name="query"
+                                />
+                            </label>
+                            <button
+                                className="btn btn-neutral join-item"
+                                type="submit"
                             >
-                                <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
-                                    <input
-                                        type="text"
-                                        className=""
-                                        placeholder="Search"
-                                        name="query"
-                                    />
-                                </label>
-                                <button
-                                    className="btn btn-neutral join-item"
-                                    type="submit"
-                                >
-                                    <SearchIcon className="h-4 w-4 opacity-70" />
-                                </button>
-                            </form>
-                        </ul>
-                    ) : null}
+                                <SearchIcon className="h-4 w-4 opacity-70" />
+                            </button>
+                        </form>
+                    </ul>
                     {siteType === SiteType.TUNNEL_VISION ? (
                         <button
                             type="button"
-                            className="btn btn-neutral"
+                            className="btn btn-neutral mt-4"
                             onClick={() =>
                                 dispatch({ type: 'toggleAltColours' })
                             }
