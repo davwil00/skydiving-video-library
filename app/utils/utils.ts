@@ -5,7 +5,7 @@ import {
     isRandom,
     type Random,
 } from '~/data/formations';
-import {SiteType} from "~/utils/site-utils";
+import { SiteType } from '~/utils/site-utils';
 
 export function getFormationImageUrl(formation: Formation): string {
     if (formation.discipline === Discipline.FOUR_WAY) {
@@ -82,7 +82,7 @@ export function formatDate(date: Date | null): string {
 export function getVideoUrl(
     url: string | null,
     isLocal: boolean,
-    siteType: SiteType
+    siteType: SiteType,
 ): string | null {
     if (!url) {
         return null;
@@ -92,7 +92,7 @@ export function getVideoUrl(
     }
     switch (siteType) {
         case SiteType.TUNNEL_VISION:
-            return `https://d3dpqultn5q15i.cloudfront.net/${url.substring(23)}`
+            return `https://d3dpqultn5q15i.cloudfront.net/${url.substring(23)}`;
         default:
             return `https://d3sblpf3xfzlw7.cloudfront.net/${url.substring(20)}`;
     }

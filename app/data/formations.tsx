@@ -1,5 +1,5 @@
+import { SiteType } from '~/utils/site-utils';
 import { shuffle } from '~/utils/utils';
-import {SiteType} from "~/utils/site-utils";
 
 export enum Level {
     ROOKIE = 'rookie',
@@ -678,12 +678,15 @@ export const getDisplayName = (formation: Formation) => {
     }
 };
 
-export function generateRandomDive(siteType: SiteType, seed?: number): string[] {
+export function generateRandomDive(
+    siteType: SiteType,
+    seed?: number,
+): string[] {
     const pool = [...RANDOMS, ...A_BLOCKS];
     shuffle(pool, seed);
     let points = 0;
     const dive = [];
-    const maxPoints = siteType === SiteType.TUNNEL_VISION ? 5 : 3
+    const maxPoints = siteType === SiteType.TUNNEL_VISION ? 5 : 3;
     while (points < maxPoints) {
         const formation = pool.pop();
         if (formation) {

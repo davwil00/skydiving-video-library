@@ -1,13 +1,13 @@
 import { format } from 'date-fns';
 import type { FlightFormation, Flyer, Score } from 'prisma/generated/client';
-import {type ChangeEvent, type MouseEvent, useState} from 'react';
+import { type ChangeEvent, type MouseEvent, useState } from 'react';
 import { CameraSwitchIcon, EditIcon, ScoresIcon } from '~/components/icons';
+import { useSiteStateContext } from '~/contexts/site-state';
 import {
     calculateScoresPerRound,
     getVideoUrl,
     isRandomFormation,
 } from '~/utils/utils';
-import {useSiteStateContext} from "~/contexts/site-state";
 
 type FlightCardProps = {
     flight: {
@@ -36,7 +36,7 @@ export default function FlightCard(props: FlightCardProps) {
         onSelect = () => {},
         isSelected = false,
     } = props;
-    const {siteType} = useSiteStateContext()
+    const { siteType } = useSiteStateContext();
     const sideVideoUrl = getVideoUrl(flight.sideVideoUrl, isLocal, siteType);
     const topVideoUrl = getVideoUrl(flight.topVideoUrl, isLocal, siteType);
     const [view, setView] = useState<'SIDE' | 'TOP'>(

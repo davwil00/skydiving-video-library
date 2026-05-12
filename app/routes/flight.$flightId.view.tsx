@@ -12,10 +12,10 @@ import { usePageStateDispatchContext } from '~/contexts/page-state';
 import { getFlight } from '~/models/flights.server';
 import { addNote } from '~/models/notes.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { getSiteType } from '~/utils/site-utils';
 import { formatDate, getVideoUrl } from '~/utils/utils';
 import type { Route } from '../../.react-router/types/app/routes/+types/flight.$flightId._index';
 import type { Note } from '../../prisma/generated/client';
-import {getSiteType} from "~/utils/site-utils";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');
