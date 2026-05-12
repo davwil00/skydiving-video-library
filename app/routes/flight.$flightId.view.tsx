@@ -15,17 +15,19 @@ import { isLocalRequest } from '~/utils/localGuardUtils';
 import { formatDate, getVideoUrl } from '~/utils/utils';
 import type { Route } from '../../.react-router/types/app/routes/+types/flight.$flightId._index';
 import type { Note } from '../../prisma/generated/client';
+import {getSiteType} from "~/utils/site-utils";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');
     const flight = await getFlight(params.flightId, true);
     invariant(flight, 'Flight not found');
     const isLocal = isLocalRequest(request);
+    const siteType = getSiteType(request);
 
     return {
         date: flight.session.date,
-        topVideoUrl: getVideoUrl(flight.topVideoUrl, isLocal),
-        sideVideoUrl: getVideoUrl(flight.sideVideoUrl, isLocal),
+        topVideoUrl: getVideoUrl(flight.topVideoUrl, isLocal, siteType),
+        sideVideoUrl: getVideoUrl(flight.sideVideoUrl, isLocal, siteType),
         formations: flight.formations
             .map((formation) => formation.formationId)
             .join(','),

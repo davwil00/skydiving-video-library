@@ -18,7 +18,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     const latestSession = await getLatestSession(siteType);
     const isLocal = isLocalRequest(request);
     const seed = parseInt(format(new Date(), 'yyyyMMdd'), 10);
-    const diveOfTheDay = generateRandomDive(seed);
+    const diveOfTheDay = generateRandomDive(siteType, seed);
     return { latestSession, isLocal, diveOfTheDay };
 };
 
