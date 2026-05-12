@@ -353,11 +353,7 @@ export default function Sidebar(props: SidebarProps) {
                     />
                     <Divider />
                     <ul>
-                        <form
-                            className="join"
-                            action="/search"
-                            method="GET"
-                        >
+                        <form className="join" action="/search" method="GET">
                             <label className="input input-bordered flex items-center gap-2 join-item w-[75%]">
                                 <input
                                     type="text"

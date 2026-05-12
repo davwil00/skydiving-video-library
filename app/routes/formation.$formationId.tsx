@@ -14,15 +14,15 @@ import {
 import { useSwipe } from '~/hooks/useSwipe';
 import { getByFormationId } from '~/models/flights.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { getSiteType } from '~/utils/site-utils';
 import { getFormationImageUrl } from '~/utils/utils';
 import type { Route } from './+types/formation.$formationId';
-import {getSiteType} from "~/utils/site-utils";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
     const isLocal = isLocalRequest(request);
     const formation = FORMATIONS[params.formationId];
-    const siteType = getSiteType(request)
+    const siteType = getSiteType(request);
     const flights = await getByFormationId(params.formationId, siteType);
 
     return { flights, formation, isLocal };

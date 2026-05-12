@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
-import {useLoaderData, useNavigate, useSearchParams} from 'react-router';
+import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import invariant from 'tiny-invariant';
+import FlightCard from '~/components/flight-card';
 import FormationImage from '~/components/formations/formation-images';
+import { ViewSwitcher } from '~/components/view-switcher';
 import {
     EIGHT_WAY_BLOCKS,
     EIGHT_WAY_FORMATIONS,
@@ -9,18 +11,16 @@ import {
     getDisplayName,
 } from '~/data/formations';
 import { useSwipe } from '~/hooks/useSwipe';
+import { getByFormationId } from '~/models/flights.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { getSiteType } from '~/utils/site-utils';
 import type { Route } from './+types/formation.$formationId';
-import {ViewSwitcher} from "~/components/view-switcher";
-import FlightCard from "~/components/flight-card";
-import {getByFormationId} from "~/models/flights.server";
-import {getSiteType} from "~/utils/site-utils";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');
     const isLocal = isLocalRequest(request);
     const formation = EIGHT_WAY_FORMATIONS[params.formationId];
-    const siteType = getSiteType(request)
+    const siteType = getSiteType(request);
     const flights = await getByFormationId(params.formationId, siteType);
 
     return { flights, formation, isLocal };
@@ -73,11 +73,11 @@ export default function EightWayFormation() {
                 activeView={activeView}
             />
             {activeView === 'diagram' ? (
-            <FormationImage
-                formation={formation}
-                className="max-h-screen mx-auto mt-8 pb-50"
-                showTooltip={true}
-            />
+                <FormationImage
+                    formation={formation}
+                    className="max-h-screen mx-auto mt-8 pb-50"
+                    showTooltip={true}
+                />
             ) : (
                 <div className="flex flex-wrap justify-center">
                     {flights.map((flight) => (

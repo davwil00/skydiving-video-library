@@ -2,12 +2,12 @@ import { useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
 import FlightCard from '~/components/flight-card';
 import { findFlightsWithFormations } from '~/models/flights.server';
+import { getSiteType } from '~/utils/site-utils';
 import type { Route } from './+types/search';
-import {getSiteType} from "~/utils/site-utils";
 
 export async function loader({ request }: Route.LoaderArgs) {
     const searchParams = new URL(request.url).searchParams;
-    const siteType = getSiteType(request)
+    const siteType = getSiteType(request);
     const query = searchParams.get('query');
     invariant(query, 'Please specify a search query');
     let formationIds: string[];
