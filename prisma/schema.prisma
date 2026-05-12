@@ -27,6 +27,7 @@ model Flight {
   sideVideoUrl String?
   topVideoUrl  String?
   scores       Score[]
+  notes        Note[]
 }
 
 model Score {
@@ -76,4 +77,13 @@ model Competition {
   location  String
   sessions  Session[]
   rank      Int?
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  flight    Flight   @relation(fields: [flightId], references: [id])
+  flightId  String
+  addedBy   String
+  note      String
+  dateAdded DateTime
 }

@@ -117,7 +117,7 @@ export function getFlight(flightId: string, includeNotes: boolean = false) {
             flyers: true,
             formations: { orderBy: { order: 'asc' } },
             scores: true,
-            notes: includeNotes
+            notes: includeNotes,
         },
     });
 }

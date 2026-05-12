@@ -58,7 +58,8 @@ export const ModelName = {
   FlightFormation: 'FlightFormation',
   SoloSession: 'SoloSession',
   SoloFlight: 'SoloFlight',
-  Competition: 'Competition'
+  Competition: 'Competition',
+  Note: 'Note'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -153,6 +154,17 @@ export const CompetitionScalarFieldEnum = {
 } as const
 
 export type CompetitionScalarFieldEnum = (typeof CompetitionScalarFieldEnum)[keyof typeof CompetitionScalarFieldEnum]
+
+
+export const NoteScalarFieldEnum = {
+  id: 'id',
+  flightId: 'flightId',
+  addedBy: 'addedBy',
+  note: 'note',
+  dateAdded: 'dateAdded'
+} as const
+
+export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
 
 
 export const SortOrder = {

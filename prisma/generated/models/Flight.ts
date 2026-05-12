@@ -178,6 +178,7 @@ export type FlightWhereInput = {
   flyers?: Prisma.FlyerListRelationFilter
   formations?: Prisma.FlightFormationListRelationFilter
   scores?: Prisma.ScoreListRelationFilter
+  notes?: Prisma.NoteListRelationFilter
 }
 
 export type FlightOrderByWithRelationInput = {
@@ -189,6 +190,7 @@ export type FlightOrderByWithRelationInput = {
   flyers?: Prisma.FlyerOrderByRelationAggregateInput
   formations?: Prisma.FlightFormationOrderByRelationAggregateInput
   scores?: Prisma.ScoreOrderByRelationAggregateInput
+  notes?: Prisma.NoteOrderByRelationAggregateInput
 }
 
 export type FlightWhereUniqueInput = Prisma.AtLeast<{
@@ -203,6 +205,7 @@ export type FlightWhereUniqueInput = Prisma.AtLeast<{
   flyers?: Prisma.FlyerListRelationFilter
   formations?: Prisma.FlightFormationListRelationFilter
   scores?: Prisma.ScoreListRelationFilter
+  notes?: Prisma.NoteListRelationFilter
 }, "id">
 
 export type FlightOrderByWithAggregationInput = {
@@ -233,6 +236,7 @@ export type FlightCreateInput = {
   flyers?: Prisma.FlyerCreateNestedManyWithoutFlightsInput
   formations?: Prisma.FlightFormationCreateNestedManyWithoutFlightInput
   scores?: Prisma.ScoreCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteCreateNestedManyWithoutFlightInput
 }
 
 export type FlightUncheckedCreateInput = {
@@ -243,6 +247,7 @@ export type FlightUncheckedCreateInput = {
   flyers?: Prisma.FlyerUncheckedCreateNestedManyWithoutFlightsInput
   formations?: Prisma.FlightFormationUncheckedCreateNestedManyWithoutFlightInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFlightInput
 }
 
 export type FlightUpdateInput = {
@@ -253,6 +258,7 @@ export type FlightUpdateInput = {
   flyers?: Prisma.FlyerUpdateManyWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateInput = {
@@ -263,6 +269,7 @@ export type FlightUncheckedUpdateInput = {
   flyers?: Prisma.FlyerUncheckedUpdateManyWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUncheckedUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightCreateManyInput = {
@@ -429,6 +436,20 @@ export type FlightUpdateOneRequiredWithoutFormationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.FlightUpdateToOneWithWhereWithoutFormationsInput, Prisma.FlightUpdateWithoutFormationsInput>, Prisma.FlightUncheckedUpdateWithoutFormationsInput>
 }
 
+export type FlightCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<Prisma.FlightCreateWithoutNotesInput, Prisma.FlightUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.FlightCreateOrConnectWithoutNotesInput
+  connect?: Prisma.FlightWhereUniqueInput
+}
+
+export type FlightUpdateOneRequiredWithoutNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.FlightCreateWithoutNotesInput, Prisma.FlightUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.FlightCreateOrConnectWithoutNotesInput
+  upsert?: Prisma.FlightUpsertWithoutNotesInput
+  connect?: Prisma.FlightWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FlightUpdateToOneWithWhereWithoutNotesInput, Prisma.FlightUpdateWithoutNotesInput>, Prisma.FlightUncheckedUpdateWithoutNotesInput>
+}
+
 export type FlightCreateWithoutSessionInput = {
   id?: string
   sideVideoUrl?: string | null
@@ -436,6 +457,7 @@ export type FlightCreateWithoutSessionInput = {
   flyers?: Prisma.FlyerCreateNestedManyWithoutFlightsInput
   formations?: Prisma.FlightFormationCreateNestedManyWithoutFlightInput
   scores?: Prisma.ScoreCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteCreateNestedManyWithoutFlightInput
 }
 
 export type FlightUncheckedCreateWithoutSessionInput = {
@@ -445,6 +467,7 @@ export type FlightUncheckedCreateWithoutSessionInput = {
   flyers?: Prisma.FlyerUncheckedCreateNestedManyWithoutFlightsInput
   formations?: Prisma.FlightFormationUncheckedCreateNestedManyWithoutFlightInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFlightInput
 }
 
 export type FlightCreateOrConnectWithoutSessionInput = {
@@ -489,6 +512,7 @@ export type FlightCreateWithoutScoresInput = {
   session: Prisma.SessionCreateNestedOneWithoutFlightsInput
   flyers?: Prisma.FlyerCreateNestedManyWithoutFlightsInput
   formations?: Prisma.FlightFormationCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteCreateNestedManyWithoutFlightInput
 }
 
 export type FlightUncheckedCreateWithoutScoresInput = {
@@ -498,6 +522,7 @@ export type FlightUncheckedCreateWithoutScoresInput = {
   topVideoUrl?: string | null
   flyers?: Prisma.FlyerUncheckedCreateNestedManyWithoutFlightsInput
   formations?: Prisma.FlightFormationUncheckedCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFlightInput
 }
 
 export type FlightCreateOrConnectWithoutScoresInput = {
@@ -523,6 +548,7 @@ export type FlightUpdateWithoutScoresInput = {
   session?: Prisma.SessionUpdateOneRequiredWithoutFlightsNestedInput
   flyers?: Prisma.FlyerUpdateManyWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateWithoutScoresInput = {
@@ -532,6 +558,7 @@ export type FlightUncheckedUpdateWithoutScoresInput = {
   topVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flyers?: Prisma.FlyerUncheckedUpdateManyWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUncheckedUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightCreateWithoutFlyersInput = {
@@ -541,6 +568,7 @@ export type FlightCreateWithoutFlyersInput = {
   session: Prisma.SessionCreateNestedOneWithoutFlightsInput
   formations?: Prisma.FlightFormationCreateNestedManyWithoutFlightInput
   scores?: Prisma.ScoreCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteCreateNestedManyWithoutFlightInput
 }
 
 export type FlightUncheckedCreateWithoutFlyersInput = {
@@ -550,6 +578,7 @@ export type FlightUncheckedCreateWithoutFlyersInput = {
   topVideoUrl?: string | null
   formations?: Prisma.FlightFormationUncheckedCreateNestedManyWithoutFlightInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFlightInput
 }
 
 export type FlightCreateOrConnectWithoutFlyersInput = {
@@ -580,6 +609,7 @@ export type FlightCreateWithoutFormationsInput = {
   session: Prisma.SessionCreateNestedOneWithoutFlightsInput
   flyers?: Prisma.FlyerCreateNestedManyWithoutFlightsInput
   scores?: Prisma.ScoreCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteCreateNestedManyWithoutFlightInput
 }
 
 export type FlightUncheckedCreateWithoutFormationsInput = {
@@ -589,6 +619,7 @@ export type FlightUncheckedCreateWithoutFormationsInput = {
   topVideoUrl?: string | null
   flyers?: Prisma.FlyerUncheckedCreateNestedManyWithoutFlightsInput
   scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutFlightInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFlightInput
 }
 
 export type FlightCreateOrConnectWithoutFormationsInput = {
@@ -614,6 +645,7 @@ export type FlightUpdateWithoutFormationsInput = {
   session?: Prisma.SessionUpdateOneRequiredWithoutFlightsNestedInput
   flyers?: Prisma.FlyerUpdateManyWithoutFlightsNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateWithoutFormationsInput = {
@@ -622,6 +654,63 @@ export type FlightUncheckedUpdateWithoutFormationsInput = {
   sideVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   topVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flyers?: Prisma.FlyerUncheckedUpdateManyWithoutFlightsNestedInput
+  scores?: Prisma.ScoreUncheckedUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutFlightNestedInput
+}
+
+export type FlightCreateWithoutNotesInput = {
+  id?: string
+  sideVideoUrl?: string | null
+  topVideoUrl?: string | null
+  session: Prisma.SessionCreateNestedOneWithoutFlightsInput
+  flyers?: Prisma.FlyerCreateNestedManyWithoutFlightsInput
+  formations?: Prisma.FlightFormationCreateNestedManyWithoutFlightInput
+  scores?: Prisma.ScoreCreateNestedManyWithoutFlightInput
+}
+
+export type FlightUncheckedCreateWithoutNotesInput = {
+  id?: string
+  sessionId: string
+  sideVideoUrl?: string | null
+  topVideoUrl?: string | null
+  flyers?: Prisma.FlyerUncheckedCreateNestedManyWithoutFlightsInput
+  formations?: Prisma.FlightFormationUncheckedCreateNestedManyWithoutFlightInput
+  scores?: Prisma.ScoreUncheckedCreateNestedManyWithoutFlightInput
+}
+
+export type FlightCreateOrConnectWithoutNotesInput = {
+  where: Prisma.FlightWhereUniqueInput
+  create: Prisma.XOR<Prisma.FlightCreateWithoutNotesInput, Prisma.FlightUncheckedCreateWithoutNotesInput>
+}
+
+export type FlightUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.FlightUpdateWithoutNotesInput, Prisma.FlightUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.FlightCreateWithoutNotesInput, Prisma.FlightUncheckedCreateWithoutNotesInput>
+  where?: Prisma.FlightWhereInput
+}
+
+export type FlightUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.FlightWhereInput
+  data: Prisma.XOR<Prisma.FlightUpdateWithoutNotesInput, Prisma.FlightUncheckedUpdateWithoutNotesInput>
+}
+
+export type FlightUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sideVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  topVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  session?: Prisma.SessionUpdateOneRequiredWithoutFlightsNestedInput
+  flyers?: Prisma.FlyerUpdateManyWithoutFlightsNestedInput
+  formations?: Prisma.FlightFormationUpdateManyWithoutFlightNestedInput
+  scores?: Prisma.ScoreUpdateManyWithoutFlightNestedInput
+}
+
+export type FlightUncheckedUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.StringFieldUpdateOperationsInput | string
+  sideVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  topVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flyers?: Prisma.FlyerUncheckedUpdateManyWithoutFlightsNestedInput
+  formations?: Prisma.FlightFormationUncheckedUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutFlightNestedInput
 }
 
@@ -638,6 +727,7 @@ export type FlightUpdateWithoutSessionInput = {
   flyers?: Prisma.FlyerUpdateManyWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateWithoutSessionInput = {
@@ -647,6 +737,7 @@ export type FlightUncheckedUpdateWithoutSessionInput = {
   flyers?: Prisma.FlyerUncheckedUpdateManyWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUncheckedUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateManyWithoutSessionInput = {
@@ -662,6 +753,7 @@ export type FlightUpdateWithoutFlyersInput = {
   session?: Prisma.SessionUpdateOneRequiredWithoutFlightsNestedInput
   formations?: Prisma.FlightFormationUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateWithoutFlyersInput = {
@@ -671,6 +763,7 @@ export type FlightUncheckedUpdateWithoutFlyersInput = {
   topVideoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   formations?: Prisma.FlightFormationUncheckedUpdateManyWithoutFlightNestedInput
   scores?: Prisma.ScoreUncheckedUpdateManyWithoutFlightNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutFlightNestedInput
 }
 
 export type FlightUncheckedUpdateManyWithoutFlyersInput = {
@@ -689,12 +782,14 @@ export type FlightCountOutputType = {
   flyers: number
   formations: number
   scores: number
+  notes: number
 }
 
 export type FlightCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   flyers?: boolean | FlightCountOutputTypeCountFlyersArgs
   formations?: boolean | FlightCountOutputTypeCountFormationsArgs
   scores?: boolean | FlightCountOutputTypeCountScoresArgs
+  notes?: boolean | FlightCountOutputTypeCountNotesArgs
 }
 
 /**
@@ -728,6 +823,13 @@ export type FlightCountOutputTypeCountScoresArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.ScoreWhereInput
 }
 
+/**
+ * FlightCountOutputType without action
+ */
+export type FlightCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NoteWhereInput
+}
+
 
 export type FlightSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -738,6 +840,7 @@ export type FlightSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   flyers?: boolean | Prisma.Flight$flyersArgs<ExtArgs>
   formations?: boolean | Prisma.Flight$formationsArgs<ExtArgs>
   scores?: boolean | Prisma.Flight$scoresArgs<ExtArgs>
+  notes?: boolean | Prisma.Flight$notesArgs<ExtArgs>
   _count?: boolean | Prisma.FlightCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["flight"]>
 
@@ -770,6 +873,7 @@ export type FlightInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   flyers?: boolean | Prisma.Flight$flyersArgs<ExtArgs>
   formations?: boolean | Prisma.Flight$formationsArgs<ExtArgs>
   scores?: boolean | Prisma.Flight$scoresArgs<ExtArgs>
+  notes?: boolean | Prisma.Flight$notesArgs<ExtArgs>
   _count?: boolean | Prisma.FlightCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FlightIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -786,6 +890,7 @@ export type $FlightPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     flyers: Prisma.$FlyerPayload<ExtArgs>[]
     formations: Prisma.$FlightFormationPayload<ExtArgs>[]
     scores: Prisma.$ScorePayload<ExtArgs>[]
+    notes: Prisma.$NotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1190,6 +1295,7 @@ export interface Prisma__FlightClient<T, Null = never, ExtArgs extends runtime.T
   flyers<T extends Prisma.Flight$flyersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flight$flyersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FlyerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   formations<T extends Prisma.Flight$formationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flight$formationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FlightFormationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scores<T extends Prisma.Flight$scoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flight$scoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notes<T extends Prisma.Flight$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Flight$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1691,6 +1797,30 @@ export type Flight$scoresArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ScoreScalarFieldEnum | Prisma.ScoreScalarFieldEnum[]
+}
+
+/**
+ * Flight.notes
+ */
+export type Flight$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Note
+   */
+  select?: Prisma.NoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Note
+   */
+  omit?: Prisma.NoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NoteInclude<ExtArgs> | null
+  where?: Prisma.NoteWhereInput
+  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[]
+  cursor?: Prisma.NoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
 }
 
 /**

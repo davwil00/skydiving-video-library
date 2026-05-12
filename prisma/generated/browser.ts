@@ -57,3 +57,8 @@ export type SoloFlight = Prisma.SoloFlightModel
  * 
  */
 export type Competition = Prisma.CompetitionModel
+/**
+ * Model Note
+ * 
+ */
+export type Note = Prisma.NoteModel
