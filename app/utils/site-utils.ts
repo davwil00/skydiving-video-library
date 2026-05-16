@@ -10,7 +10,7 @@ export function getSiteType(request: Request): SiteType {
         case 'tunnel-vision.davwil00.co.uk':
         case 'tunnel.vision':
             return SiteType.TUNNEL_VISION;
-        case 'solo.davwil00.co.uk':
+        case 'skydiving-solo.davwil00.co.uk':
             return SiteType.SOLO;
         default:
             return SiteType.COOKIES;
