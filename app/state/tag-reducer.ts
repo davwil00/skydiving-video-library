@@ -20,6 +20,7 @@ export type TagAction =
     | { type: 'closeVideoPreview' }
     | { type: 'setOverrideDate'; value: string }
     | { type: 'setSubmissionState'; value?: 'submitting' | 'success' | 'error' }
+    | { type: 'setError'; value: string }
     | { type: 'copy'; value: string };
 
 export type TagState = {
@@ -27,6 +28,7 @@ export type TagState = {
     filesToTag: Map<string, FileToTag>;
     showModal: boolean;
     submissionState?: 'submitting' | 'success' | 'error';
+    error?: string;
 };
 
 export const tagReducer = (state: TagState, action: TagAction) => {
@@ -59,6 +61,11 @@ export const tagReducer = (state: TagState, action: TagAction) => {
             return {
                 ...state,
                 submissionState: action.value,
+            };
+        case 'setError':
+            return {
+                ...state,
+                error: action.value,
             };
         default:
             return state;

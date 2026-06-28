@@ -111,7 +111,7 @@ export default function TagDir() {
         showModal: false,
     };
     const [
-        { showModal, videoPreviewPath, filesToTag, submissionState },
+        { showModal, videoPreviewPath, filesToTag, submissionState, error },
         dispatch,
     ] = useReducer(tagReducer, initialState);
 
@@ -120,10 +120,21 @@ export default function TagDir() {
             (file) => file.date === '' || !file.date,
         );
         if (missingDates) {
-            dispatch({ type: 'setSubmissionState', value: 'error' });
+            dispatch({ type: 'setError', value: 'Missing dates' });
             return false;
         }
 
+        const formationRegex = /^([A-Q]|[1-9]|1\d|2[0-2]|,)+$/;
+        const misTaggedFlights = Array.from(filesToTag.values()).find(
+            (file) => file.formations && !formationRegex.test(file.formations),
+        );
+        if (misTaggedFlights) {
+            dispatch({
+                type: 'setError',
+                value: `Mistagged flight ${misTaggedFlights.id} ${misTaggedFlights.formations}`,
+            });
+            return false;
+        }
         dispatch({ type: 'setSubmissionState', value: 'submitting' });
         fetch('', {
             method: 'POST',
@@ -241,18 +252,23 @@ export default function TagDir() {
 
     return (
         <div className="form-light">
-            {submissionState === 'success' && (
+            {submissionState === 'success' ? (
                 <div role="alert" className="alert alert-success mb-4">
                     <SuccessIcon />
                     <span>Tags saved</span>
                 </div>
-            )}
-            {submissionState === 'error' && (
+            ) : submissionState === 'error' ? (
                 <div role="alert" className="alert alert-error mb-4">
                     <ErrorIcon />
                     <span>Error saving tags</span>
                 </div>
-            )}
+            ) : null}
+            {error ? (
+                <div role="alert" className="alert alert-error mb-4">
+                    <ErrorIcon />
+                    <span>{error}</span>
+                </div>
+            ) : null}
             <div>
                 <label>
                     Set Date:
