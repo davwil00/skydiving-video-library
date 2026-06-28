@@ -73,6 +73,7 @@ export async function updateSession(data: {
     id: string;
     name: string;
     date: Date;
+    team: SiteType;
 }) {
     await prisma.session.update({
         where: {

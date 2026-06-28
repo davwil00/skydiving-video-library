@@ -26,12 +26,13 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
     const name = formData.get('name') as string;
     const dateStr = formData.get('date') as string;
     const date = new Date(dateStr);
+    const team = formData.get('team') as string;
 
     invariant(dateStr, 'Date is required');
 
     const sessionId = params.sessionId;
 
-    await updateSession({ id: sessionId, name, date });
+    await updateSession({ id: sessionId, name, date, team });
 
     return new Response(null, {
         status: 200,
@@ -42,6 +43,7 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
 export default function SessionDetailsPage() {
     const { session } = useLoaderData<typeof loader>();
     const [name, setName] = useState<string>(session.name ?? '');
+    const [team, setTeam] = useState<string>(session.team ?? '');
     const [date, setDate] = useState<string>(
         format(session.date, 'yyyy-MM-dd'),
     );
@@ -72,6 +74,18 @@ export default function SessionDetailsPage() {
                         name="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
+                    />
+                </label>
+                <label className="form-control w-full max-w-xs">
+                    <div className="label">
+                        <span className="label-text">Team</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="input input-bordered"
+                        name="team"
+                        value={team}
+                        onChange={(e) => setTeam(e.target.value)}
                     />
                 </label>
                 <button className="btn mt-4 max-w-xs" type="submit">
