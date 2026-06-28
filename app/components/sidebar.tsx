@@ -233,6 +233,12 @@ export default function Sidebar(props: SidebarProps) {
                         >
                             Quiz
                         </Link>
+                        <Link
+                            to={{ pathname: '/stats' }}
+                            onClick={clickCallback}
+                        >
+                            Stats
+                        </Link>
                         <LinkWithGuard requiresLocal={true}>
                             <Link
                                 to={{ pathname: '/tag' }}

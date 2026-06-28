@@ -80,6 +80,10 @@
     --card-p: 1em;
 }
 
+@theme {
+    --breakpoint-xs: 30rem;
+}
+
 .btn {
     &:is(:disabled, [disabled], .btn-disabled) {
         &:not(.btn-link, .btn-ghost) {
@@ -124,6 +128,10 @@
     table.dark th,
     table.dark td {
         color: var(--color-base-content);
+    }
+
+    table.mixed {
+        --color-base-200: oklch(97.807% 0.029 256.847);
     }
 }
 
