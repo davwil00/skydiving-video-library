@@ -7,10 +7,10 @@ const adapter = new PrismaBetterSqlite3({
     url: process.env.DATABASE_URL,
 });
 
-export const prisma = singleton(
-    'prisma',
-    () =>
-        new PrismaClient({
-            adapter,
-        }),
-);
+export const prisma = singleton('prisma', () => {
+    const client = new PrismaClient({
+        adapter,
+    });
+    client.$executeRaw`PRAGMA foreign_keys = ON;`;
+    return client;
+});
