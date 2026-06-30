@@ -1,5 +1,10 @@
 import { intervalToDuration } from 'date-fns';
-import { FORMATIONS, type Formation, Level, Type } from '~/data/formations';
+import {
+    type Formation,
+    getAllFormations,
+    type Level,
+    Type,
+} from '~/data/formations';
 import { prisma } from '~/db.server';
 import type { SiteType } from '~/utils/site-utils';
 
@@ -17,7 +22,7 @@ export type PersonFlightStats = {
     totalFlightTime: string;
 };
 
-export type FormationStats = {
+export type FormationStat = {
     formation: Formation;
     count: number;
 };
@@ -25,10 +30,8 @@ export type FormationStats = {
 export type SiteStats = {
     totalSessions: number;
     flightsPerPerson: PersonFlightStats[];
-    randomCounts: FormationStats[];
-    aBlockCounts: FormationStats[];
-    aaBlockCounts: FormationStats[];
-    aaaBlockCounts: FormationStats[];
+    randomCounts: FormationStat[];
+    blockCounts: Map<Level, FormationStat[]>;
 };
 
 function sortCountThenName<
@@ -46,9 +49,11 @@ function sortCountThenName<
 export function calculateSiteStats(
     totalSessions: number,
     flights: StatsFlight[],
+    siteType: SiteType,
 ): SiteStats {
     const flightsByFlyer = new Map<string, number>();
     const formationCounts = new Map<Formation, number>();
+    const allFormations = getAllFormations(siteType);
 
     for (const flight of flights) {
         flight.flyers
@@ -61,7 +66,7 @@ export function calculateSiteStats(
             });
 
         for (const formation of flight.formations) {
-            const formationKey = FORMATIONS[formation.formationId];
+            const formationKey = allFormations[formation.formationId];
             formationCounts.set(
                 formationKey,
                 (formationCounts.get(formationKey) ?? 0) + 1,
@@ -85,25 +90,27 @@ export function calculateSiteStats(
         };
     });
 
-    const sortedFormations: FormationStats[] = sortCountThenName([
+    const sortedFormations: FormationStat[] = sortCountThenName([
         ...formationCounts.entries(),
     ]).map(([formation, count]) => ({ formation, count }));
+    const randomCounts: FormationStat[] = [];
+    const blockCounts = new Map<Level, FormationStat[]>();
+    sortedFormations.forEach((formationStat) => {
+        if (formationStat.formation?.type === Type.RANDOM) {
+            randomCounts.push(formationStat);
+        } else {
+            if (!blockCounts.has(formationStat.formation.level)) {
+                blockCounts.set(formationStat.formation.level, []);
+            }
+            blockCounts.get(formationStat.formation.level)?.push(formationStat);
+        }
+    });
 
     return {
         totalSessions,
         flightsPerPerson,
-        randomCounts: sortedFormations.filter(
-            (formation) => formation.formation?.type === Type.RANDOM,
-        ),
-        aBlockCounts: sortedFormations.filter(
-            (formation) => formation.formation?.level === Level.A,
-        ),
-        aaBlockCounts: sortedFormations.filter(
-            (formation) => formation.formation?.level === Level.AA,
-        ),
-        aaaBlockCounts: sortedFormations.filter(
-            (formation) => formation.formation?.level === Level.AAA,
-        ),
+        randomCounts,
+        blockCounts,
     };
 }
 
@@ -131,5 +138,5 @@ export async function getSiteStats(siteType: SiteType): Promise<SiteStats> {
         }),
     ]);
 
-    return calculateSiteStats(totalSessions, flights);
+    return calculateSiteStats(totalSessions, flights, siteType);
 }

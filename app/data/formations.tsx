@@ -2,12 +2,12 @@ import { SiteType } from '~/utils/site-utils';
 import { shuffle } from '~/utils/utils';
 
 export enum Level {
-    ROOKIE = 'rookie',
-    A = 'a',
-    AA = 'aa',
-    AAA = 'aaa',
-    INTERMEDIATE = 'intermediate',
-    SENIOR = 'senior',
+    ROOKIE = 'Rookie',
+    A = 'A',
+    AA = 'AA',
+    AAA = 'AAA',
+    INTERMEDIATE = 'Intermediate',
+    SENIOR = 'Senior',
 }
 
 export enum Discipline {
@@ -696,4 +696,12 @@ export function generateRandomDive(
     }
 
     return dive;
+}
+
+export function getAllFormations(siteType: SiteType) {
+    if (siteType === SiteType.TUNNEL_VISION) {
+        return EIGHT_WAY_FORMATIONS;
+    } else {
+        return FORMATIONS;
+    }
 }
