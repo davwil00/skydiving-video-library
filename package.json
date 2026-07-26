@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.3",
-    "@react-router/dev": "^7.17.0",
+    "@react-router/dev": "^8.3.0",
     "@svgr/cli": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
     "@svgr/plugin-prettier": "^8.1.0",
