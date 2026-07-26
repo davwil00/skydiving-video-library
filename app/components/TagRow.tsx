@@ -1,5 +1,6 @@
 import { type Dispatch, use } from 'react';
 import { PlayIcon, SuccessIcon } from '~/components/icons';
+import SuggestInputTags from '~/components/suggest-input-tags';
 import type { FileToTag, TagAction } from '~/state/tag-reducer';
 
 function isTagged(fileToTag: FileToTag, progressCompleted: string[]): boolean {
@@ -57,16 +58,21 @@ export default function Row({
             </td>
             {showFlyers ? (
                 <td>
-                    <input
-                        type="text"
-                        className="input input-bordered"
-                        value={fileToTag.flyers}
-                        onChange={(e) =>
+                    <SuggestInputTags
+                        allowedValues={[
+                            'David F',
+                            'Karen',
+                            'David W',
+                            'Nick',
+                            'Cath',
+                        ]}
+                        selectedValues={fileToTag.flyers?.split('/') || []}
+                        onChange={(selectedFlyers) =>
                             dispatch({
                                 type: 'formElementChange',
                                 id: fileToTag.id,
                                 field: 'flyers',
-                                value: e.currentTarget.value,
+                                value: selectedFlyers.join('/'),
                             })
                         }
                     />
