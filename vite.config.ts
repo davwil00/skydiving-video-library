@@ -19,4 +19,8 @@ export default defineConfig({
     server: {
         allowedHosts: ['localhost', 'skydiving-solo', 'tunnel.vision'],
     },
+    test: {
+        include: ['app/**/*.test.ts'],
+        setupFiles: ['test.setup.ts'],
+    },
 });

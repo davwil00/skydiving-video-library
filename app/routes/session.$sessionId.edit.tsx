@@ -4,6 +4,7 @@ import { useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
 import { getSession, updateSession } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { SiteType } from '~/utils/site-utils';
 import type { Route } from './+types/session.$sessionId.edit';
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
@@ -26,7 +27,7 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
     const name = formData.get('name') as string;
     const dateStr = formData.get('date') as string;
     const date = new Date(dateStr);
-    const team = formData.get('team') as string;
+    const team = formData.get('team') as SiteType;
 
     invariant(dateStr, 'Date is required');
 
@@ -80,13 +81,18 @@ export default function SessionDetailsPage() {
                     <div className="label">
                         <span className="label-text">Team</span>
                     </div>
-                    <input
-                        type="text"
-                        className="input input-bordered"
+                    <select
+                        className="select"
                         name="team"
                         value={team}
                         onChange={(e) => setTeam(e.target.value)}
-                    />
+                    >
+                        {Object.values(SiteType).map((team) => (
+                            <option key={team} value={team}>
+                                {team}
+                            </option>
+                        ))}
+                    </select>
                 </label>
                 <button className="btn mt-4 max-w-xs" type="submit">
                     Save

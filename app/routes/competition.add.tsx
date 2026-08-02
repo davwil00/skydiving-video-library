@@ -4,12 +4,14 @@ import { data, redirect, useLoaderData } from 'react-router';
 import { createCompetition } from '~/models/competitions.server';
 import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { getSiteType } from '~/utils/site-utils';
 import { formatDate } from '~/utils/utils';
 import type { Route } from '../../.react-router/types/app/routes/+types/competition.add';
 
 type SessionIdAndDate = Pick<Session, 'id' | 'date'>;
-export const loader = async () => {
-    const sessions = await getAllNonCompetitionSessionDates();
+export const loader = async ({ request }: Route.LoaderArgs) => {
+    const siteType = getSiteType(request);
+    const sessions = await getAllNonCompetitionSessionDates(siteType);
     sessions.reverse();
     return data({ sessions });
 };

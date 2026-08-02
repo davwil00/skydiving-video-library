@@ -82,6 +82,7 @@ export async function updateSession(data: {
         data: {
             name: data.name,
             date: data.date,
+            team: data.team,
         },
     });
 }

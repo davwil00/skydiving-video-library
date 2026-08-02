@@ -9,13 +9,15 @@ import {
 import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { competitionReducer } from '~/state/competition-reducer';
 import { isLocalRequest } from '~/utils/localGuardUtils';
+import { getSiteType } from '~/utils/site-utils';
 import { formatDate } from '~/utils/utils';
 import type { Route } from '../../.react-router/types/app/routes/+types/competition.$competitionId.edit';
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
     const competition = await getCompetition(params.competitionId);
+    const siteType = getSiteType(request);
     invariant(competition, 'Competition not found');
-    const sessions = await getAllNonCompetitionSessionDates();
+    const sessions = await getAllNonCompetitionSessionDates(siteType);
     return { competition, sessions };
 }
 

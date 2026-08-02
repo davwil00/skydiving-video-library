@@ -13,7 +13,7 @@ type FlightCardProps = {
     flight: {
         id: string;
         flyers: Pick<Flyer, 'name'>[];
-        formations: Pick<FlightFormation, 'formationId'>[];
+        formations: FlightFormation[];
         sideVideoUrl: string | null;
         topVideoUrl: string | null;
         scores: Score[];
@@ -121,7 +121,7 @@ export default function FlightCard(props: FlightCardProps) {
                         <div>
                             {flight.formations.map((formation) => (
                                 <kbd
-                                    key={formation.formationId}
+                                    key={`${formation.formationId}-${formation.order}`}
                                     className="kbd m-1 text-white"
                                 >
                                     {formation.formationId}

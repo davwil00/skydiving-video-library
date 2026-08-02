@@ -6,6 +6,7 @@ import {
     getFlight,
     updateFlight,
 } from '~/models/flights.server';
+import { SiteType } from '~/utils/site-utils';
 
 describe('flights model', () => {
     beforeEach(async () => {
@@ -29,8 +30,7 @@ describe('flights model', () => {
         await prisma.flight.create({
             data: {
                 sessionId: sessionId,
-                videoUrl: '/video-data/2024-01-01/flight1.mp4',
-                view: 'TOP',
+                sideVideoUrl: '/video-data/2024-01-01/flight1.mp4',
                 flyers: {
                     connect: [{ name: 'David W' }, { name: 'Nick' }],
                 },
@@ -47,8 +47,7 @@ describe('flights model', () => {
         await prisma.flight.create({
             data: {
                 sessionId: sessionId,
-                videoUrl: '/video-data/2024-01-01/flight2.mp4',
-                view: 'SIDE',
+                sideVideoUrl: '/video-data/2024-01-01/flight2.mp4',
                 flyers: {
                     connect: [{ name: 'David F' }, { name: 'Karen' }],
                 },
@@ -65,8 +64,7 @@ describe('flights model', () => {
         await prisma.flight.create({
             data: {
                 sessionId: sessionId,
-                videoUrl: '/video-data/2024-01-01/flight2.mp4',
-                view: 'SIDE',
+                topVideoUrl: '/video-data/2024-01-01/flight2.mp4',
                 flyers: {
                     connect: [{ name: 'David F' }, { name: 'Karen' }],
                 },
@@ -81,13 +79,12 @@ describe('flights model', () => {
             },
         });
 
-        const actual = await getByFormationId('B');
+        const actual = await getByFormationId('B', SiteType.COOKIES);
         expect(actual).toHaveLength(2);
         expect(actual[0].session.id).toEqual(sessionId);
-        expect(actual[0].videoUrl).toEqual(
+        expect(actual[0].sideVideoUrl).toEqual(
             '/video-data/2024-01-01/flight1.mp4',
         );
-        expect(actual[0].view).toEqual('TOP');
         expect(actual[0].flyers).toHaveLength(2);
         expect(actual[0].flyers[0].name).toEqual('David W');
         expect(actual[0].flyers[1].name).toEqual('Nick');
@@ -95,10 +92,9 @@ describe('flights model', () => {
         expect(actual[0].formations[0].formationId).toEqual('A');
         expect(actual[0].formations[1].formationId).toEqual('B');
 
-        expect(actual[1].videoUrl).toEqual(
+        expect(actual[1].sideVideoUrl).toEqual(
             '/video-data/2024-01-01/flight2.mp4',
         );
-        expect(actual[1].view).toEqual('SIDE');
         expect(actual[1].flyers).toHaveLength(2);
         expect(actual[1].flyers[0].name).toEqual('David F');
         expect(actual[1].flyers[1].name).toEqual('Karen');
@@ -113,18 +109,18 @@ describe('flights model', () => {
             sessionId: sessionId,
             formationIds: ['B', 'A'],
             flyers: ['David W', 'Nick'],
-            videoUrl: '/video-data/2020-01-01/video.mp4',
-            view: 'TOP',
+            sideVideoUrl: '/video-data/2020-01-01/video.mp4',
         });
 
         const actual = await getFlight(created.id);
-        expect(actual.sessionId).toEqual(sessionId);
-        expect(actual.formations[0].formationId).toEqual('B');
-        expect(actual.formations[1].formationId).toEqual('A');
-        expect(actual.flyers[0].name).toEqual('David W');
-        expect(actual.flyers[1].name).toEqual('Nick');
-        expect(actual.videoUrl).toEqual('/video-data/2020-01-01/video.mp4');
-        expect(actual.view).toEqual('TOP');
+        expect(actual?.sessionId).toEqual(sessionId);
+        expect(actual?.formations[0].formationId).toEqual('B');
+        expect(actual?.formations[1].formationId).toEqual('A');
+        expect(actual?.flyers[0].name).toEqual('David W');
+        expect(actual?.flyers[1].name).toEqual('Nick');
+        expect(actual?.sideVideoUrl).toEqual(
+            '/video-data/2020-01-01/video.mp4',
+        );
     });
 
     test('should update formations and flyers for flight when there is overlap', async () => {
@@ -134,19 +130,18 @@ describe('flights model', () => {
             sessionId: sessionId,
             formationIds: ['B', 'A'],
             flyers: ['David W', 'Nick'],
-            videoUrl: '/video-data/2020-01-01/video.mp4',
-            view: 'TOP',
+            sideVideoUrl: '/video-data/2020-01-01/video.mp4',
         });
 
         await updateFlight(created.id, ['B', 'C'], ['David W', 'Karen']);
         const updated = await getFlight(created.id);
 
-        expect(updated.flyers).toHaveLength(2);
-        expect(updated.flyers[0].name).toEqual('David W');
-        expect(updated.flyers[1].name).toEqual('Karen');
-        expect(updated.formations).toHaveLength(2);
-        expect(updated.formations[0].formationId).toEqual('B');
-        expect(updated.formations[1].formationId).toEqual('C');
+        expect(updated?.flyers).toHaveLength(2);
+        expect(updated?.flyers[0].name).toEqual('David W');
+        expect(updated?.flyers[1].name).toEqual('Karen');
+        expect(updated?.formations).toHaveLength(2);
+        expect(updated?.formations[0].formationId).toEqual('B');
+        expect(updated?.formations[1].formationId).toEqual('C');
     });
 
     test('should update formations and flyers for flight when there is no overlap', async () => {
@@ -156,19 +151,18 @@ describe('flights model', () => {
             sessionId: sessionId,
             formationIds: ['B', 'A'],
             flyers: ['David W', 'Nick'],
-            videoUrl: '/video-data/2020-01-01/video.mp4',
-            view: 'TOP',
+            sideVideoUrl: '/video-data/2020-01-01/video.mp4',
         });
 
         await updateFlight(created.id, ['C', 'D'], ['David F', 'Karen']);
         const updated = await getFlight(created.id);
 
-        expect(updated.flyers).toHaveLength(2);
-        expect(updated.flyers[0].name).toEqual('David F');
-        expect(updated.flyers[1].name).toEqual('Karen');
-        expect(updated.formations).toHaveLength(2);
-        expect(updated.formations[0].formationId).toEqual('C');
-        expect(updated.formations[1].formationId).toEqual('D');
+        expect(updated?.flyers).toHaveLength(2);
+        expect(updated?.flyers[0].name).toEqual('David F');
+        expect(updated?.flyers[1].name).toEqual('Karen');
+        expect(updated?.formations).toHaveLength(2);
+        expect(updated?.formations[0].formationId).toEqual('C');
+        expect(updated?.formations[1].formationId).toEqual('D');
 
         const flyers = await prisma.flyer.findMany();
         expect(flyers).toHaveLength(4);
@@ -178,6 +172,7 @@ describe('flights model', () => {
         const session = await prisma.session.create({
             data: {
                 date: new Date('2024-01-01'),
+                team: SiteType.COOKIES,
             },
         });
 

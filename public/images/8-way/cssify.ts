@@ -38,7 +38,7 @@ export async function transformSvgFile(svgFileName: string): Promise<void> {
             `^\\s*fill:#${colour}(?:\\s*;|$)`,
             'i',
         );
-        content = content.replace(pathTagRegex, (tag) => {
+        content = content.replace(pathTagRegex, (tag: string) => {
             const styleMatch = tag.match(styleAttributeRegex);
 
             if (
@@ -49,7 +49,7 @@ export async function transformSvgFile(svgFileName: string): Promise<void> {
             }
 
             if (tag.includes(`class=${className}`)) {
-                return;
+                return tag;
             }
 
             return tag.replace('/>', `class="${className}" />`);
