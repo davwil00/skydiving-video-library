@@ -1,7 +1,9 @@
 import { readdir } from 'node:fs/promises';
-import { useReducer } from 'react';
-import { data, redirect, useLoaderData } from 'react-router';
-import { ErrorIcon, PlayIcon, SuccessIcon } from '~/components/icons';
+import { Suspense, useReducer } from 'react';
+import { useLoaderData } from 'react-router';
+import { ErrorIcon, SuccessIcon } from '~/components/icons';
+import TagRow from '~/components/TagRow';
+import type { TagProgressEvent } from '~/routes/async-tag';
 import { VIDEO_DATA_PATH } from '~/routes/sync-db';
 import { type FileToTag, type TagState, tagReducer } from '~/state/tag-reducer';
 import { getSiteType, SiteType } from '~/utils/site-utils';
@@ -9,9 +11,21 @@ import {
     determineViewFromFilename,
     extractIdFromFileName,
     readTag,
-    writeTag,
 } from '~/utils/tagUtils';
-import type { Route } from './+types/tag';
+
+type FilesById = {
+    id: string;
+    sideVideoFileName?: string;
+    sideVideoPath?: string;
+    topVideoFileName?: string;
+    topVideoPath?: string;
+    fullFilePath: string;
+};
+
+type PromiseAndId = {
+    id: string;
+    promise: Promise<FileToTag>;
+};
 
 export const loader = async ({ request }: { request: Request }) => {
     const videoDataPath = `${VIDEO_DATA_PATH}/pending`;
@@ -19,256 +33,198 @@ export const loader = async ({ request }: { request: Request }) => {
         withFileTypes: true,
     });
 
-    const filesToTag = new Map<string, FileToTag>();
     const showFlyers = getSiteType(request) === SiteType.COOKIES;
 
-    for (const file of pendingDir) {
-        if (file.name.endsWith('.mp4')) {
-            const id = extractIdFromFileName(file.name);
-            const viewProp =
-                determineViewFromFilename(file.name) === 'SIDE'
-                    ? 'sideVideo'
-                    : 'topVideo';
-            if (filesToTag.has(id)) {
-                // biome-ignore lint/style/noNonNullAssertion: just did a has check
-                const existing = filesToTag.get(id)!;
-                existing[`${viewProp}FileName`] = file.name;
-                existing[`${viewProp}Path`] = `video-data/pending/${file.name}`;
-            } else {
-                const tagData = await readTag(
-                    `${file.parentPath}/${file.name}`,
-                );
-                filesToTag.set(id, {
-                    id,
-                    [`${viewProp}FileName`]: file.name,
-                    [`${viewProp}Path`]: `video-data/pending/${file.name}`,
-                    date: tagData.date,
-                    flyers:
-                        tagData.artist ||
-                        (showFlyers ? 'David F/Karen/David W/Nick' : ''),
-                    formations: tagData.title?.startsWith('Power Punch')
-                        ? ''
-                        : tagData.title || '',
-                });
-            }
-        }
-    }
+    const filesById = pendingDir
+        .filter((file) => file.name.endsWith('.mp4'))
+        .reduce(
+            (groupedFiles, file) => {
+                const id = extractIdFromFileName(file.name);
+                const viewProp =
+                    determineViewFromFilename(file.name) === 'SIDE'
+                        ? 'sideVideo'
+                        : 'topVideo';
+                if (groupedFiles[id]) {
+                    groupedFiles[id][`${viewProp}FileName`] = file.name;
+                    groupedFiles[id][`${viewProp}Path`] =
+                        `video-data/pending/${file.name}`;
+                    return groupedFiles;
+                } else {
+                    return {
+                        ...groupedFiles,
+                        [id]: {
+                            id,
+                            [`${viewProp}FileName`]: file.name,
+                            [`${viewProp}Path`]: `video-data/pending/${file.name}`,
+                            fullFilePath: `${file.parentPath}/${file.name}`,
+                        } as FilesById,
+                    };
+                }
+            },
+            {} as Record<string, FilesById>,
+        );
+
+    const filesToTag: Array<PromiseAndId> = Object.values(filesById).map(
+        (file) => {
+            const promise = readTag(file.fullFilePath).then(
+                (tagData) =>
+                    ({
+                        id: file.id,
+                        topVideoFileName: file.topVideoFileName,
+                        topVideoPath: file.topVideoPath,
+                        sideVideoFileName: file.sideVideoFileName,
+                        sideVideoPath: file.sideVideoPath,
+                        date: tagData.date,
+                        flyers:
+                            tagData.artist ||
+                            (showFlyers ? 'David F/Karen/David W/Nick' : ''),
+                        formations: tagData.title?.startsWith('Power Punch')
+                            ? ''
+                            : tagData.title || '',
+                    }) as FileToTag,
+            );
+            return { promise, id: file.id };
+        },
+    );
 
     return { filesToTag, showFlyers };
 };
 
-export const action = async ({ request }: Route.ActionArgs) => {
-    if (request.method !== 'POST') {
-        return data({ message: 'Method not allowed', status: 405 });
-    }
-
-    const url = new URL(request.url);
-    const videoDataPath =
-        url.searchParams.get('dir') || `${VIDEO_DATA_PATH}/pending`;
-
-    const formData: { filesToTag: FileToTag[] } = await request.json();
-    try {
-        for (const fileToTag of formData.filesToTag) {
-            if (fileToTag.sideVideoFileName) {
-                await writeTag(
-                    `${videoDataPath}/${fileToTag.sideVideoFileName}`,
-                    {
-                        title: fileToTag.formations || '',
-                        artist: fileToTag.flyers || '',
-                        date: fileToTag.date || '',
-                        comment: determineViewFromFilename(
-                            fileToTag.sideVideoFileName,
-                        ),
-                    },
-                );
-            }
-            if (fileToTag.topVideoFileName) {
-                await writeTag(
-                    `${videoDataPath}/${fileToTag.topVideoFileName}`,
-                    {
-                        title: fileToTag.formations || '',
-                        artist: fileToTag.flyers || '',
-                        date: fileToTag.date || '',
-                        comment: determineViewFromFilename(
-                            fileToTag.topVideoFileName,
-                        ),
-                    },
-                );
-            }
-        }
-    } catch (error) {
-        console.error(error);
-        return data({ message: error, status: 500 });
-    }
-
-    return redirect('/sync-db');
-};
-
 export default function TagDir() {
-    const loaderData = useLoaderData<typeof loader>();
+    const { filesToTag, showFlyers } = useLoaderData<typeof loader>();
     const initialState: TagState = {
-        filesToTag: loaderData.filesToTag,
+        progressCompleted: [],
+        progressErrors: [],
+        progressTotal: 0,
+        filesToTag: new Map(),
         showModal: false,
     };
-    const [
-        { showModal, videoPreviewPath, filesToTag, submissionState, error },
-        dispatch,
-    ] = useReducer(tagReducer, initialState);
+    const [state, dispatch] = useReducer(tagReducer, initialState);
 
-    function submitForm() {
-        const missingDates = Array.from(filesToTag.values()).some(
+    async function submitForm() {
+        const yieldToBrowser = () =>
+            new Promise<void>((resolve) =>
+                window.requestAnimationFrame(() => resolve()),
+            );
+
+        const missingDates = Array.from(state.filesToTag.values()).some(
             (file) => file.date === '' || !file.date,
         );
         if (missingDates) {
-            dispatch({ type: 'setError', value: 'Missing dates' });
+            dispatch({ type: 'setSubmissionState', value: 'error' });
             return false;
         }
 
-        const formationRegex = /^([A-Q]|[1-9]|1\d|2[0-2]|,)+$/;
-        const misTaggedFlights = Array.from(filesToTag.values()).find(
-            (file) => file.formations && !formationRegex.test(file.formations),
-        );
-        if (misTaggedFlights) {
-            dispatch({
-                type: 'setError',
-                value: `Mistagged flight ${misTaggedFlights.id} ${misTaggedFlights.formations}`,
-            });
-            return false;
-        }
         dispatch({ type: 'setSubmissionState', value: 'submitting' });
-        fetch('', {
-            method: 'POST',
-            body: JSON.stringify({
-                filesToTag: Array.from(filesToTag.values()),
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then((response) => {
-            if (response.ok) {
-                if (response.redirected) {
-                    window.location.href = response.url;
-                } else {
-                    window.scrollTo(0, 0);
-                    dispatch({ type: 'setSubmissionState', value: 'success' });
-                }
-            } else {
-                dispatch({ type: 'setSubmissionState', value: 'error' });
-            }
-        });
-    }
+        dispatch({ type: 'resetProgress' });
 
-    function row(fileToTag: FileToTag, idx: number) {
-        return (
-            <tr key={idx}>
-                <td>{fileToTag.id}</td>
-                <td>
-                    <div className="join">
-                        <input
-                            type="date"
-                            className="input input-bordered join-item tag-date"
-                            value={fileToTag.date}
-                            onChange={(e) =>
-                                dispatch({
-                                    type: 'formElementChange',
-                                    id: fileToTag.id,
-                                    field: 'date',
-                                    value: e.currentTarget.value,
-                                })
-                            }
-                        />
-                    </div>
-                </td>
-                {loaderData.showFlyers ? (
-                    <td>
-                        <input
-                            type="text"
-                            className="input input-bordered"
-                            value={fileToTag.flyers}
-                            onChange={(e) =>
-                                dispatch({
-                                    type: 'formElementChange',
-                                    id: fileToTag.id,
-                                    field: 'flyers',
-                                    value: e.currentTarget.value,
-                                })
-                            }
-                        />
-                    </td>
-                ) : null}
-                <td>
-                    <input
-                        type="text"
-                        pattern="[A-HJ-Q0-9]+"
-                        className="input input-bordered"
-                        onChange={(e) =>
+        try {
+            const response = await fetch('async-tag', {
+                method: 'POST',
+                body: JSON.stringify({
+                    filesToTag: Array.from(state.filesToTag.values()),
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok || !response.body) {
+                dispatch({ type: 'setSubmissionState', value: 'error' });
+                return false;
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let done = false;
+
+            while (!done) {
+                const chunk = await reader.read();
+                done = chunk.done;
+                if (chunk.value) {
+                    buffer += decoder.decode(chunk.value, { stream: true });
+                }
+
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                for (const line of lines) {
+                    if (!line.trim()) {
+                        continue;
+                    }
+
+                    const event = JSON.parse(line) as TagProgressEvent;
+                    switch (event.type) {
+                        case 'started':
                             dispatch({
-                                type: 'formElementChange',
-                                id: fileToTag.id,
-                                field: 'formations',
-                                value: e.currentTarget.value,
-                            })
-                        }
-                        value={fileToTag.formations}
-                    />
-                </td>
-                <td>
-                    <div className="flex gap-2">
-                        {fileToTag.sideVideoPath ? (
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-primary"
-                                onClick={() =>
-                                    dispatch({
-                                        type: 'openVideoPreview',
-                                        // biome-ignore lint/style/noNonNullAssertion: null checked above
-                                        value: fileToTag.sideVideoPath!,
-                                    })
-                                }
-                            >
-                                Side <PlayIcon />
-                            </button>
-                        ) : null}
-                        {fileToTag.topVideoPath ? (
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-primary"
-                                onClick={() =>
-                                    dispatch({
-                                        type: 'openVideoPreview',
-                                        // biome-ignore lint/style/noNonNullAssertion: null checked above
-                                        value: fileToTag.topVideoPath!,
-                                    })
-                                }
-                            >
-                                Top <PlayIcon />
-                            </button>
-                        ) : null}
-                    </div>
-                </td>
-            </tr>
-        );
+                                type: 'setProgressStart',
+                                total: event.total,
+                            });
+                            await yieldToBrowser();
+                            break;
+                        case 'progress':
+                            dispatch({
+                                type: 'setProgressUpdate',
+                                completed: event.completed,
+                                total: event.total,
+                                currentFile: event.currentFile,
+                            });
+                            await yieldToBrowser();
+                            break;
+                        case 'error':
+                            dispatch({
+                                type: 'setProgressUpdate',
+                                completed: event.completed,
+                                total: event.total,
+                                currentFile: event.currentFile,
+                            });
+                            dispatch({
+                                type: 'addProgressError',
+                                message: `${event.currentFile}: ${event.message}`,
+                            });
+                            await yieldToBrowser();
+                            break;
+                        case 'done':
+                            dispatch({
+                                type: 'setProgressDone',
+                                completed: event.completed,
+                                total: event.total,
+                            });
+                            dispatch({
+                                type: 'setSubmissionState',
+                                value: event.hasErrors ? 'error' : 'success',
+                            });
+                            await yieldToBrowser();
+                            if (!event.hasErrors) {
+                                window.location.href = '/sync-db';
+                            }
+                            break;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch({ type: 'setSubmissionState', value: 'error' });
+        }
+
+        return true;
     }
 
     return (
         <div className="form-light">
-            {submissionState === 'success' ? (
+            {state.submissionState === 'success' && (
                 <div role="alert" className="alert alert-success mb-4">
                     <SuccessIcon />
                     <span>Tags saved</span>
                 </div>
-            ) : submissionState === 'error' ? (
+            )}
+            {state.submissionState === 'error' && (
                 <div role="alert" className="alert alert-error mb-4">
                     <ErrorIcon />
                     <span>Error saving tags</span>
                 </div>
-            ) : null}
-            {error ? (
-                <div role="alert" className="alert alert-error mb-4">
-                    <ErrorIcon />
-                    <span>{error}</span>
-                </div>
-            ) : null}
+            )}
             <div>
                 <label>
                     Set Date:
@@ -289,21 +245,43 @@ export default function TagDir() {
                     <tr>
                         <th>File</th>
                         <th>Date</th>
-                        {loaderData.showFlyers ? <th>Flyers</th> : null}
+                        {showFlyers ? <th>Flyers</th> : null}
                         <th>Formations</th>
                         <th>View</th>
                     </tr>
                 </thead>
-                <tbody>{Array.from(filesToTag.values()).map(row)}</tbody>
+                <tbody>
+                    {filesToTag.map(({ promise, id }) => (
+                        <Suspense
+                            key={id}
+                            fallback={
+                                <tr>
+                                    <td colSpan={showFlyers ? 5 : 4}>
+                                        Loading...
+                                    </td>
+                                </tr>
+                            }
+                        >
+                            <TagRow
+                                fileToTagPromise={promise}
+                                showFlyers={showFlyers}
+                                dispatch={dispatch}
+                                filesToTag={state.filesToTag}
+                                submissionState={state.submissionState}
+                                progressCompleted={state.progressCompleted}
+                            />
+                        </Suspense>
+                    ))}
+                </tbody>
             </table>
 
-            {showModal && (
+            {state.showModal && (
                 <dialog className="modal modal-open">
                     <div className="modal-box max-w-full">
                         <h3 className="font-bold text-lg">
-                            {videoPreviewPath}
+                            {state.videoPreviewPath}
                         </h3>
-                        <video src={videoPreviewPath} controls muted />
+                        <video src={state.videoPreviewPath} controls muted />
                         <div className="modal-action">
                             <button
                                 className="btn"
@@ -321,7 +299,7 @@ export default function TagDir() {
 
             <button className="btn" type="button" onClick={() => submitForm()}>
                 Save
-                {submissionState === 'submitting' ? (
+                {state.submissionState === 'submitting' ? (
                     <span className="loading loading-spinner"></span>
                 ) : null}
             </button>

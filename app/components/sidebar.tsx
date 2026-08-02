@@ -241,7 +241,7 @@ export default function Sidebar(props: SidebarProps) {
                         </Link>
                         <LinkWithGuard requiresLocal={true}>
                             <Link
-                                to={{ pathname: '/tag-v2' }}
+                                to={{ pathname: '/tag' }}
                                 onClick={clickCallback}
                             >
                                 Tag
