@@ -291,7 +291,9 @@ export default function QuizPage() {
                                 document.getElementsByName(
                                     'answer',
                                 ) as NodeListOf<HTMLInputElement>,
-                            ).map((input: HTMLInputElement) => input.value);
+                            ).map((input: HTMLInputElement) =>
+                                input.value.toUpperCase(),
+                            );
                             const isCorrect = isEqual(
                                 currentQuestion.answer.map((answer) => answer),
                                 answers,
