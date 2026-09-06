@@ -42,12 +42,9 @@ if (viteDevServer) {
         "/video-data",
         express.static("public/video-data", { immutable: true, maxAge: "1y" })
     );
-    ["favicon.ico", "*.png"].forEach(file => {
-        app.use(
-            `/${file}`,
-            express.static(`public/${file}`, { immutable: true, maxAge: "1y" })
-        );
-    })
+    app.use(
+        express.static("public", { immutable: true, maxAge: "1y" })
+    );
 }
 
 // Everything else (like favicon.ico) is cached for an hour. You may want to be
@@ -57,7 +54,7 @@ app.use(express.static("build/client", { maxAge: "1h" }));
 app.use(morgan("tiny"));
 
 // handle SSR requests
-app.all("*", remixHandler);
+app.all("/{*splat}", remixHandler);
 
 const port = process.env.PORT || 8300;
 app.listen(port, () =>
