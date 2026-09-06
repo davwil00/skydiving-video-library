@@ -3,6 +3,7 @@ import { Discipline, Level, Type } from '~/data/formations';
 import {
     containsQuestionSet,
     Difficulty,
+    type Question,
     QuestionSet,
     type QuizAction,
     type QuizState,
@@ -69,6 +70,20 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                             dispatch({
                                 type: 'setDivePool',
                                 value: Discipline.EIGHT_WAY,
+                            });
+                        }}
+                    />
+                    <input
+                        type="radio"
+                        name="quiz-type"
+                        checked={quizState.quizType === QuizType.VIDEO}
+                        className="btn text-white"
+                        aria-label="Identify the formations from the video"
+                        autoComplete="off"
+                        onChange={() => {
+                            dispatch({
+                                type: 'setQuizType',
+                                value: QuizType.VIDEO,
                             });
                         }}
                     />
@@ -360,7 +375,16 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
                 <button
                     className="btn text-white mt-4"
                     disabled={!canStart()}
-                    onClick={() => dispatch({ type: 'startQuiz' })}
+                    onClick={async () => {
+                        const questions: Question[] = await fetch(
+                            '/api/generate-quiz-questions',
+                            {
+                                method: 'POST',
+                                body: JSON.stringify(quizState),
+                            },
+                        ).then((res) => res.json());
+                        dispatch({ type: 'startQuiz', questions });
+                    }}
                     type="button"
                 >
                     Start

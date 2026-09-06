@@ -166,3 +166,28 @@ export function findFlightsWithFormations(
         },
     });
 }
+
+export function findFlightsWithFormationsIn(
+    formations: string[],
+    siteType: SiteType,
+) {
+    return prisma.flight.findMany({
+        where: {
+            session: {
+                team: siteType,
+            },
+            AND: {
+                formations: {
+                    every: {
+                        formationId: {
+                            in: formations,
+                        },
+                    },
+                },
+            },
+        },
+        include: {
+            formations: { orderBy: { order: 'asc' } },
+        },
+    });
+}

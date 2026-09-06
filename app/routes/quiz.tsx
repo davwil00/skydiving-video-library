@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash-es';
 import type React from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 import FormationImage from '~/components/formations/formation-images';
@@ -8,11 +9,13 @@ import {
     Difficulty,
     type FormationQuestion,
     initialState,
+    type Question,
     QuizType,
     quizReducer,
     type Slot,
     type SlotQuestion,
     slots,
+    type VideoQuestion,
 } from '~/state/quiz-reducer';
 
 export default function QuizPage() {
@@ -39,14 +42,23 @@ export default function QuizPage() {
 
     function gameEnd() {
         return (
-            <div className="">
+            <div>
                 <p className="text-center text-5xl text-black">
                     You scored {quizState.score}/{quizState.questions.length}
                 </p>
                 <div className="text-center mt-8 flex gap-4 justify-center">
                     <button
                         className="btn text-white"
-                        onClick={() => dispatch({ type: 'startQuiz' })}
+                        onClick={async () => {
+                            const questions: Question[] = await fetch(
+                                '/api/generate-quiz-questions',
+                                {
+                                    method: 'POST',
+                                    body: JSON.stringify(quizState),
+                                },
+                            ).then((res) => res.json());
+                            dispatch({ type: 'startQuiz', questions });
+                        }}
                         type="button"
                     >
                         Play again
@@ -73,7 +85,7 @@ export default function QuizPage() {
                         key={`button-${choice.id}`}
                         className={
                             quizState.selectedAnswer
-                                ? quizState.selectedAnswer === choice
+                                ? quizState.selectedAnswer.answer === choice
                                     ? 'ring-primary ring-offset-1 ring-4'
                                     : answer === choice
                                       ? 'ring-success ring-offset-1 ring-4'
@@ -124,7 +136,7 @@ export default function QuizPage() {
                 {quizState.selectedAnswer && (
                     <div className="card-actions justify-center">
                         <span className="leading-[3rem] text-2xl mr-4">
-                            {quizState.selectedAnswer === currentQuestion.answer
+                            {quizState.selectedAnswer.isCorrect
                                 ? 'Correct'
                                 : 'Incorrect'}
                         </span>
@@ -173,7 +185,8 @@ export default function QuizPage() {
                                 <button
                                     type="button"
                                     className={`btn grow no-animation ${
-                                        quizState.selectedAnswer === choice
+                                        quizState.selectedAnswer.answer ===
+                                        choice
                                             ? 'btn-primary'
                                             : currentQuestion.answer === choice
                                               ? 'btn-success'
@@ -214,8 +227,7 @@ export default function QuizPage() {
                     {quizState.selectedAnswer && (
                         <div className="card-actions justify-end">
                             <span className="leading-[3rem] text-2xl mr-4">
-                                {quizState.selectedAnswer ===
-                                currentQuestion.answer
+                                {quizState.selectedAnswer.isCorrect
                                     ? 'Correct'
                                     : 'Incorrect'}
                             </span>
@@ -231,6 +243,69 @@ export default function QuizPage() {
                         </div>
                     )}
                 </div>
+            </div>
+        );
+    }
+
+    function identifyFormationsFromVideo(currentQuestion: VideoQuestion) {
+        return (
+            <div className="w-full form-light">
+                <video
+                    src={currentQuestion.videoUrl}
+                    controls
+                    muted={true}
+                    className="w-full mb-4"
+                />
+                <span>Answer:</span>
+                <div className="flex gap-2 mt-4 items-center">
+                    {currentQuestion.answer.map((answer) => (
+                        <input
+                            type="text"
+                            key={answer}
+                            className="w-[3em] input input-bordered uppercase text-center"
+                            name="answer"
+                        />
+                    ))}
+                    {quizState.selectedAnswer ? (
+                        <span className="">
+                            {quizState.selectedAnswer.isCorrect
+                                ? 'Correct!'
+                                : `Incorrect, it was ${currentQuestion.answer.join(', ')}`}
+                        </span>
+                    ) : null}
+                </div>
+                {quizState.selectedAnswer ? (
+                    <button
+                        type="button"
+                        className="btn btn-primary mt-4"
+                        onClick={() => dispatch({ type: 'nextQuestion' })}
+                    >
+                        Next question
+                    </button>
+                ) : (
+                    <button
+                        type="button"
+                        className="btn btn-primary mt-4"
+                        onClick={() => {
+                            const answers = Array.from(
+                                document.getElementsByName(
+                                    'answer',
+                                ) as NodeListOf<HTMLInputElement>,
+                            ).map((input: HTMLInputElement) => input.value);
+                            const isCorrect = isEqual(
+                                currentQuestion.answer.map((answer) => answer),
+                                answers,
+                            );
+                            dispatch({
+                                type: 'answerQuestion',
+                                answer: answers.join(''),
+                                isCorrect,
+                            });
+                        }}
+                    >
+                        Check answer
+                    </button>
+                )}
             </div>
         );
     }
@@ -269,15 +344,16 @@ export default function QuizPage() {
                 </figure>
                 {quizState.selectedAnswer ? (
                     <div className="flex flex-col">
-                        {quizState.selectedAnswer ===
+                        {quizState.selectedAnswer.answer ===
                         currentQuestion.slotToIdentify ? (
                             <span>
-                                Correct, it was {quizState.selectedAnswer.name}
+                                Correct, it was{' '}
+                                {quizState.selectedAnswer.answer.name}
                             </span>
                         ) : (
                             <span>
                                 Incorrect, you found{' '}
-                                {(quizState.selectedAnswer as Slot).name}
+                                {(quizState.selectedAnswer.answer as Slot).name}
                             </span>
                         )}
                         <button
@@ -311,6 +387,10 @@ export default function QuizPage() {
                 );
             case QuizType.FIND_YOUR_SLOT:
                 return identifySlot(currentQuestion as SlotQuestion);
+            case QuizType.VIDEO:
+                return identifyFormationsFromVideo(
+                    currentQuestion as VideoQuestion,
+                );
         }
     } else {
         return <QuizConfig quizState={quizState} dispatch={dispatch} />;
