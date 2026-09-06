@@ -73,5 +73,5 @@ export function extractIdFromFileName(fileName: string) {
 }
 
 export function determineViewFromFilename(fileName: string) {
-    return fileName.startsWith('source01') ? 'SIDE' : 'TOP';
+    return fileName.startsWith('source02') ? 'TOP' : 'SIDE';
 }
