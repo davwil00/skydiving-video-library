@@ -1,17 +1,19 @@
 import {
-    allFormations,
     Discipline,
     type Formation,
     type Level,
     type Type,
 } from '~/data/formations';
-import { shuffle } from '~/utils/utils';
 
 export type QuizAction =
-    | { type: 'startQuiz' }
+    | { type: 'startQuiz'; questions: Question[] }
     | { type: 'reset' }
     | { type: 'nextQuestion' }
-    | { type: 'answerQuestion'; answer: Formation | Slot; isCorrect: boolean }
+    | {
+          type: 'answerQuestion';
+          answer: Formation | Slot | string;
+          isCorrect: boolean;
+      }
     | { type: 'setQuestionSet'; value: QuestionSet }
     | { type: 'setQuizType'; value: QuizType }
     | { type: 'setDivePool'; value: Discipline }
@@ -27,11 +29,17 @@ export type SlotQuestion = {
     formation: Formation;
     slotToIdentify: Slot;
 };
+export type VideoQuestion = {
+    answer: string[];
+    videoUrl: string;
+};
+export type Question = FormationQuestion | SlotQuestion | VideoQuestion;
 
 export enum QuizType {
     NAME_TO_PICTURE = 'name_to_picture',
     PICTURE_TO_NAME = 'picture_to_name',
     FIND_YOUR_SLOT = 'find_your_slot',
+    VIDEO = 'video',
 }
 
 export enum Difficulty {
@@ -111,8 +119,8 @@ export type QuizState = {
     started: boolean;
     questionNo: number;
     score: number;
-    questions: FormationQuestion[] | SlotQuestion[];
-    selectedAnswer?: Formation | Slot;
+    questions: Question[];
+    selectedAnswer?: { answer: Formation | Slot | string; isCorrect: boolean };
     quizType?: QuizType;
     questionSets: QuestionSet[];
     divePool: Discipline[];
@@ -146,17 +154,7 @@ export const quizReducer = (
                 questionNo: 0,
                 score: 0,
                 started: true,
-                questions:
-                    state.quizType === QuizType.FIND_YOUR_SLOT
-                        ? generateSlotQuestions(
-                              state.slots,
-                              state.questionSets,
-                              state.numberOfQuestions,
-                          )
-                        : generateFormationQuestions(
-                              state.questionSets,
-                              state.numberOfQuestions,
-                          ),
+                questions: action.questions,
             };
 
         case 'reset':
@@ -227,7 +225,10 @@ export const quizReducer = (
             return {
                 ...state,
                 score: action.isCorrect ? state.score + 1 : state.score,
-                selectedAnswer: action.answer,
+                selectedAnswer: {
+                    isCorrect: action.isCorrect,
+                    answer: action.answer,
+                },
             };
 
         case 'setNumberOfQuestions':
@@ -240,74 +241,3 @@ export const quizReducer = (
             return state;
     }
 };
-
-function getFormationsToIncludeFromQuestionSets(
-    questionSets: QuestionSet[],
-): Formation[] {
-    const formationsToInclude = allFormations.filter((formation) =>
-        questionSets.some(
-            (questionSet) =>
-                formation.discipline === questionSet.discipline &&
-                formation.level === questionSet.level &&
-                formation.type === questionSet.type,
-        ),
-    );
-    shuffle(formationsToInclude);
-    return formationsToInclude;
-}
-
-function generateFormationQuestions(
-    questionSets: QuestionSet[],
-    numberOfQuestions: number,
-): FormationQuestion[] {
-    const formationsToInclude =
-        getFormationsToIncludeFromQuestionSets(questionSets);
-    const numberOfQuestionsToGenerate =
-        formationsToInclude.length > numberOfQuestions
-            ? numberOfQuestions
-            : formationsToInclude.length;
-    return formationsToInclude
-        .slice(0, numberOfQuestionsToGenerate)
-        .map((formation) => ({
-            answer: formation,
-            choices: generateMultipleChoiceAnswers(formation),
-        }));
-}
-
-function generateSlotQuestions(
-    slots: Slot[],
-    questionSets: QuestionSet[],
-    numberOfQuestions: number,
-): SlotQuestion[] {
-    const slotsToInclude = [...slots];
-    const formationsToInclude =
-        getFormationsToIncludeFromQuestionSets(questionSets);
-    const numberOfQuestionsToGenerate =
-        formationsToInclude.length > numberOfQuestions
-            ? numberOfQuestions
-            : formationsToInclude.length;
-    return formationsToInclude
-        .slice(0, numberOfQuestionsToGenerate)
-        .map((formation) => {
-            shuffle(slotsToInclude);
-            const slotToIdentify = slotsToInclude[0];
-            return {
-                formation,
-                slotToIdentify,
-            };
-        });
-}
-
-function generateMultipleChoiceAnswers(actualAnswer: Formation): Formation[] {
-    const possibleAlternateAnswers: Formation[] = allFormations.filter(
-        (formation) =>
-            formation.level === actualAnswer.level &&
-            formation.discipline === actualAnswer.discipline &&
-            formation.type === actualAnswer.type &&
-            formation !== actualAnswer,
-    );
-    shuffle(possibleAlternateAnswers);
-    const answers = possibleAlternateAnswers.slice(0, 3).concat(actualAnswer);
-    shuffle(answers);
-    return answers;
-}
