@@ -51,84 +51,85 @@ interface Props extends SVGProps<SVGSVGElement> {
 }
 
 function getFormationImage(props: Props): ReactNode {
+    const { formation, showTooltip, ...rest } = props;
     if (props.formation.discipline === Discipline.EIGHT_WAY) {
         switch (props.formation.id) {
             case 'A':
-                return <A {...props} />;
+                return <A {...rest} />;
             case 'B':
-                return <B {...props} />;
+                return <B {...rest} />;
             case 'C':
-                return <C {...props} />;
+                return <C {...rest} />;
             case 'D':
-                return <D {...props} />;
+                return <D {...rest} />;
             case 'E':
-                return <E {...props} />;
+                return <E {...rest} />;
             case 'F':
-                return <F {...props} />;
+                return <F {...rest} />;
             case 'G':
-                return <G {...props} />;
+                return <G {...rest} />;
             case 'H':
-                return <H {...props} />;
+                return <H {...rest} />;
             case 'J':
-                return <J {...props} />;
+                return <J {...rest} />;
             case 'K':
-                return <K {...props} />;
+                return <K {...rest} />;
             case 'L':
-                return <L {...props} />;
+                return <L {...rest} />;
             case 'M':
-                return <M {...props} />;
+                return <M {...rest} />;
             case 'N':
-                return <N {...props} />;
+                return <N {...rest} />;
             case 'O':
-                return <O {...props} />;
+                return <O {...rest} />;
             case 'P':
-                return <P {...props} />;
+                return <P {...rest} />;
             case 'Q':
-                return <Q {...props} />;
+                return <Q {...rest} />;
             case '1':
-                return <Svg1 {...props} />;
+                return <Svg1 {...rest} />;
             case '2':
-                return <Svg2 {...props} />;
+                return <Svg2 {...rest} />;
             case '3':
-                return <Svg3 {...props} />;
+                return <Svg3 {...rest} />;
             case '4':
-                return <Svg4 {...props} />;
+                return <Svg4 {...rest} />;
             case '5':
-                return <Svg5 {...props} />;
+                return <Svg5 {...rest} />;
             case '6':
-                return <Svg6 {...props} />;
+                return <Svg6 {...rest} />;
             case '7':
-                return <Svg7 {...props} />;
+                return <Svg7 {...rest} />;
             case '8':
-                return <Svg8 {...props} />;
+                return <Svg8 {...rest} />;
             case '9':
-                return <Svg9 {...props} />;
+                return <Svg9 {...rest} />;
             case '10':
-                return <Svg10 {...props} />;
+                return <Svg10 {...rest} />;
             case '11':
-                return <Svg11 {...props} />;
+                return <Svg11 {...rest} />;
             case '12':
-                return <Svg12 {...props} />;
+                return <Svg12 {...rest} />;
             case '13':
-                return <Svg13 {...props} />;
+                return <Svg13 {...rest} />;
             case '14':
-                return <Svg14 {...props} />;
+                return <Svg14 {...rest} />;
             case '15':
-                return <Svg15 {...props} />;
+                return <Svg15 {...rest} />;
             case '16':
-                return <Svg16 {...props} />;
+                return <Svg16 {...rest} />;
             case '17':
-                return <Svg17 {...props} />;
+                return <Svg17 {...rest} />;
             case '18':
-                return <Svg18 {...props} />;
+                return <Svg18 {...rest} />;
             case '19':
-                return <Svg19 {...props} />;
+                return <Svg19 {...rest} />;
             case '20':
-                return <Svg20 {...props} />;
+                return <Svg20 {...rest} />;
             case '21':
-                return <Svg21 {...props} />;
+                return <Svg21 {...rest} />;
             case '22':
-                return <Svg22 {...props} />;
+                return <Svg22 {...rest} />;
         }
     } else if (props.formation.discipline === Discipline.FOUR_WAY) {
         return (
