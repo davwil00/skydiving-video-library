@@ -6,7 +6,7 @@ import { getAllNonCompetitionSessionDates } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { getSiteType } from '~/utils/site-utils';
 import { formatDate } from '~/utils/utils';
-import type { Route } from '../../.react-router/types/app/routes/+types/competition.add';
+import type { Route } from './+types/add';
 
 type SessionIdAndDate = Pick<Session, 'id' | 'date'>;
 export const loader = async ({ request }: Route.LoaderArgs) => {

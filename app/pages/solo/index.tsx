@@ -7,8 +7,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export const loader = async () => {
-    const sessions = await getAllSoloSessions();
-    return sessions;
+    return await getAllSoloSessions();
 };
 
 export default function Solo_index() {

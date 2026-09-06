@@ -2,9 +2,9 @@ import type { Dirent } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { useState } from 'react';
 import { useLoaderData } from 'react-router';
-import { VIDEO_DATA_PATH } from '~/routes/sync-db';
+import { VIDEO_DATA_PATH } from '~/pages/sync-db';
 import { getDuration, trim } from '~/utils/ffmpegUtils';
-import type { Route } from '../../.react-router/types/app/routes/+types/trim-pending';
+import type { Route } from './+types/trim-pending';
 
 export const action = async ({ request }: Route.ActionArgs) => {
     if (request.method !== 'POST') {

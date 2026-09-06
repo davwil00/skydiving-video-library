@@ -7,7 +7,7 @@ import {
     getDisplayName,
 } from '~/data/formations';
 import { useSwipe } from '~/hooks/useSwipe';
-import type { Route } from '../../.react-router/types/app/routes/+types/formation.$formationId';
+import type { Route } from './+types/dive';
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
     const url = new URL(request.url);

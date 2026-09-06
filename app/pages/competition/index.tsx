@@ -5,7 +5,7 @@ import { EditIcon } from '~/components/icons';
 import { getCompetition } from '~/models/competitions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { formatDate } from '~/utils/utils';
-import type { Route } from '../../.react-router/types/app/routes/+types/competition.$competitionId._index';
+import type { Route } from './+types/index';
 
 export async function loader({ request, params }: Route.LoaderArgs) {
     const competition = await getCompetition(params.competitionId);

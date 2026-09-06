@@ -14,7 +14,7 @@ import { useSwipe } from '~/hooks/useSwipe';
 import { getByFormationId } from '~/models/flights.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { getSiteType } from '~/utils/site-utils';
-import type { Route } from './+types/formation.$formationId';
+import type { Route } from './+types/formation';
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.formationId, 'formation not found');

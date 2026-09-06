@@ -4,7 +4,7 @@ import { useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
 import { getFlight } from '~/models/flights.server';
 import { formatDate } from '~/utils/utils';
-import type { Route } from './+types/flights.compare';
+import type { Route } from './+types/compare-flights';
 
 export async function loader({ request }: Route.LoaderArgs) {
     const searchParams = new URL(request.url).searchParams;

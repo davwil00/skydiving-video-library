@@ -11,7 +11,7 @@ import { competitionReducer } from '~/state/competition-reducer';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { getSiteType } from '~/utils/site-utils';
 import { formatDate } from '~/utils/utils';
-import type { Route } from '../../.react-router/types/app/routes/+types/competition.$competitionId.edit';
+import type { Route } from './+types/edit';
 
 export async function loader({ params, request }: Route.LoaderArgs) {
     const competition = await getCompetition(params.competitionId);

@@ -1,3 +1,4 @@
+import type { Note } from 'prisma/generated/client';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
@@ -14,8 +15,7 @@ import { addNote } from '~/models/notes.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { getSiteType } from '~/utils/site-utils';
 import { formatDate, getVideoUrl } from '~/utils/utils';
-import type { Route } from '../../.react-router/types/app/routes/+types/flight.$flightId._index';
-import type { Note } from '../../prisma/generated/client';
+import type { Route } from './+types/view';
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');

@@ -3,7 +3,7 @@ import { data, redirect, useActionData } from 'react-router';
 import invariant from 'tiny-invariant';
 import { trim } from '~/utils/ffmpegUtils';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import type { Route } from './+types/flight.$flightId.trim';
+import type { Route } from './+types/trim';
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
     if (request.method !== 'POST') {
