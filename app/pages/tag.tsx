@@ -3,8 +3,8 @@ import { Suspense, useReducer } from 'react';
 import { useLoaderData } from 'react-router';
 import { ErrorIcon, SuccessIcon } from '~/components/icons';
 import TagRow from '~/components/TagRow';
-import type { TagProgressEvent } from '~/routes/async-tag';
-import { VIDEO_DATA_PATH } from '~/routes/sync-db';
+import type { TagProgressEvent } from '~/pages/api/async-tag';
+import { VIDEO_DATA_PATH } from '~/pages/sync-db';
 import { type FileToTag, type TagState, tagReducer } from '~/state/tag-reducer';
 import { getSiteType, SiteType } from '~/utils/site-utils';
 import {

@@ -10,7 +10,7 @@ import {
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { readTag, writeTag } from '~/utils/tagUtils';
 import { calculateScoresPerRound, isRandomFormation } from '~/utils/utils';
-import type { Route } from './+types/flight.$flightId._index';
+import type { Route } from './+types/edit';
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
     if (!isLocalRequest(request)) {

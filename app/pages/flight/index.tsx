@@ -3,7 +3,7 @@ import invariant from 'tiny-invariant';
 import FlightCard from '~/components/flight-card';
 import { getFlight } from '~/models/flights.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import type { Route } from './+types/flight.$flightId._index';
+import type { Route } from './+types/index';
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
     invariant(params.flightId, 'flight not found');

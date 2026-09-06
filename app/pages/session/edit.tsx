@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { getSession, updateSession } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { SiteType } from '~/utils/site-utils';
-import type { Route } from './+types/session.$sessionId.edit';
+import type { Route } from './+types/edit';
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.sessionId, 'session not found');

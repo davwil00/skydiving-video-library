@@ -5,7 +5,7 @@ import FlightCard from '~/components/flight-card';
 import { EditIcon } from '~/components/icons';
 import { getSession } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import type { Route } from './+types/session.$sessionId._index';
+import type { Route } from './+types/index';
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
     invariant(params.sessionId, 'session not found');

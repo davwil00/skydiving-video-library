@@ -4,9 +4,9 @@ import { format } from 'date-fns';
 import type { Prisma } from 'prisma/generated/client';
 import { data, redirect, useLoaderData } from 'react-router';
 import { createSoloSession } from '~/models/solo-sessions.server';
-import { VIDEO_DATA_PATH } from '~/routes/sync-db';
+import { VIDEO_DATA_PATH } from '~/pages/sync-db';
 import { getDuration, trim } from '~/utils/ffmpegUtils';
-import type { Route } from './+types/solo.add';
+import type { Route } from './+types/add';
 
 async function getAllFiles() {
     const videoDataPath = `${VIDEO_DATA_PATH}/solo/pending`;

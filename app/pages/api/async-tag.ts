@@ -1,8 +1,8 @@
 import { data } from 'react-router';
-import { VIDEO_DATA_PATH } from '~/routes/sync-db';
+import { VIDEO_DATA_PATH } from '~/pages/sync-db';
 import type { FileToTag } from '~/state/tag-reducer';
 import { determineViewFromFilename, writeTag } from '~/utils/tagUtils';
-import type { Route } from './+types/tag';
+import type { Route } from './+types/async-tag';
 
 export type TagProgressEvent =
     | { type: 'started'; total: number }

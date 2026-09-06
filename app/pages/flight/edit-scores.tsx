@@ -2,7 +2,7 @@ import { data, redirect } from 'react-router';
 import invariant from 'tiny-invariant';
 import { type Score, updateFlightScores } from '~/models/flights.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
-import type { Route } from './+types/flight.$flightId._index';
+import type { Route } from './+types/edit-scores';
 
 function extractScores(formData: FormData): Score[] {
     return Array.from(formData.entries())

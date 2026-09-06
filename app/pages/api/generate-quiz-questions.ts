@@ -12,7 +12,7 @@ import {
 } from '~/state/quiz-reducer';
 import { getSiteType, type SiteType } from '~/utils/site-utils';
 import { shuffle } from '~/utils/utils';
-import type { Route } from '../../.react-router/types/app/routes/+types/tag';
+import type { Route } from './+types/generate-quiz-questions';
 
 export const action = async ({
     request,

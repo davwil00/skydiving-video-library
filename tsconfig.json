@@ -29,6 +29,8 @@
 
     // Vite takes care of building everything, not tsc.
     "noEmit": true,
-    "rootDirs": [".", "./.react-router/types"]
+    "rootDirs": [".", "./.react-router/types"],
+//    "rootDirs": [".", "./.react-router/types/app/pages"],
+    "verbatimModuleSyntax": true
   }
 }

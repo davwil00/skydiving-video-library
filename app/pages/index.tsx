@@ -7,7 +7,7 @@ import { generateRandomDive } from '~/data/formations';
 import { getLatestSession } from '~/models/sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { getSiteType, SiteType } from '~/utils/site-utils';
-import type { Route } from './+types/_index';
+import type { Route } from './+types/index';
 
 export const meta: MetaFunction = () => [
     { title: 'Chocolate Chip Cookies Video Library' },

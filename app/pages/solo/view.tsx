@@ -3,11 +3,11 @@ import invariant from 'tiny-invariant';
 import { getSoloSession } from '~/models/solo-sessions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { formatDate } from '~/utils/utils';
-import type { Route } from './+types/solo.$id';
+import type { Route } from './+types/view';
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
-    invariant(params.id, 'id not found');
-    const session = await getSoloSession(params.id);
+    invariant(params.soloId, 'solo session not found');
+    const session = await getSoloSession(params.soloId);
     const isLocal = isLocalRequest(request);
     if (!session) {
         throw new Response('Not Found', { status: 404 });
