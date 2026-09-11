@@ -39,6 +39,7 @@ export default function SessionDetailsPage() {
                         session={session}
                         showDate={false}
                         isLocal={isLocal}
+                        allowSelection={true}
                     />
                 ))}
             </div>

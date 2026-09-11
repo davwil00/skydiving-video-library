@@ -39,6 +39,7 @@ export default function Search() {
                         session={flight.session}
                         showDate={true}
                         key={flight.id}
+                        allowSelection={true}
                     />
                 ))}
             </div>
