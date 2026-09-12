@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash-es';
 import type React from 'react';
-import { useEffect, useReducer, useRef } from 'react';
+import { type KeyboardEvent, useEffect, useReducer, useRef } from 'react';
 import FormationImage from '~/components/formations/formation-images';
 import { CheckIcon, XIcon } from '~/components/icons';
 import QuizConfig from '~/components/quiz-config';
@@ -248,6 +248,40 @@ export default function QuizPage() {
     }
 
     function identifyFormationsFromVideo(currentQuestion: VideoQuestion) {
+        const isLetter = (value: string) => 'abcdefghjklmnopq'.includes(value);
+        const navigateAnswerInput = (
+            event: KeyboardEvent<HTMLInputElement>,
+        ) => {
+            const target = event.currentTarget;
+            if (event.key === 'Backspace') {
+                if (target.value.length <= 1) {
+                    target.value = '';
+                    (
+                        target.previousElementSibling as HTMLInputElement
+                    )?.focus();
+                    event.preventDefault();
+                }
+                return;
+            } else if (isLetter(event.key)) {
+                const nextElt = target.nextElementSibling as HTMLInputElement;
+                if (nextElt) {
+                    target.value = event.key;
+                    nextElt.focus();
+                    // nextElt.selectionStart = nextElt.value.length;
+                    event.preventDefault();
+                }
+            } else if ('0123456789'.includes(event.key)) {
+                if (target.value.length === 1) {
+                    target.value += event.key;
+                    (target.nextElementSibling as HTMLInputElement)?.focus();
+                    event.preventDefault();
+                } else if (isLetter(event.key)) {
+                    event.preventDefault();
+                }
+            } else {
+                event.preventDefault();
+            }
+        };
         return (
             <div className="w-full form-light">
                 <video
@@ -261,9 +295,11 @@ export default function QuizPage() {
                     {currentQuestion.answer.map((answer) => (
                         <input
                             type="text"
+                            maxLength={2}
                             key={answer}
                             className="w-[3em] input input-bordered uppercase text-center"
                             name="answer"
+                            onKeyDown={navigateAnswerInput}
                         />
                     ))}
                     {quizState.selectedAnswer ? (
