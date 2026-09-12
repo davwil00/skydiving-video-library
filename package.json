@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "npm run validate && react-router build",
+    "build": "npm run typegen && npm run validate && react-router build",
     "dev": "react-router dev --host",
     "lint": "react-router typegen && npx @biomejs/biome check .",
     "lint:fix": "npx @biomejs/biome check . --write",
