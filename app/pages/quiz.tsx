@@ -1,20 +1,16 @@
-import { isEqual } from 'lodash-es';
-import type React from 'react';
-import { type KeyboardEvent, useEffect, useReducer, useRef } from 'react';
-import FormationImage from '~/components/formations/formation-images';
-import { CheckIcon, XIcon } from '~/components/icons';
+import { useEffect, useReducer, useRef } from 'react';
+import FormationFromPicture from '~/components/quiz/formation-from-picture';
+import FormationFromVideo from '~/components/quiz/formation-from-video';
+import IdentifySlot from '~/components/quiz/IdentifySlot';
+import PictureFromFormation from '~/components/quiz/picture-from-formation';
 import QuizConfig from '~/components/quiz-config';
-import { type Formation, isRandom } from '~/data/formations';
 import {
-    Difficulty,
     type FormationQuestion,
     initialState,
     type Question,
     QuizType,
     quizReducer,
-    type Slot,
     type SlotQuestion,
-    slots,
     type VideoQuestion,
 } from '~/state/quiz-reducer';
 
@@ -31,14 +27,6 @@ export default function QuizPage() {
     useEffect(() => {
         questionNoRef?.current?.scrollIntoView();
     }, [quizState.questionNo]);
-
-    const checkAnswer = (
-        selectedAnswer: Formation,
-        actualAnswer: Formation,
-    ) => {
-        const isCorrect = selectedAnswer === actualAnswer;
-        dispatch({ type: 'answerQuestion', answer: selectedAnswer, isCorrect });
-    };
 
     function gameEnd() {
         return (
@@ -75,338 +63,6 @@ export default function QuizPage() {
         );
     }
 
-    function imageRow(choices: Formation[], answer: Formation) {
-        const disabled = !!quizState.selectedAnswer;
-        return (
-            <div className="flex justify-center gap-3 mb-3">
-                {choices.map((choice) => (
-                    <button
-                        type="button"
-                        key={`button-${choice.id}`}
-                        className={
-                            quizState.selectedAnswer
-                                ? quizState.selectedAnswer.answer === choice
-                                    ? 'ring-primary ring-offset-1 ring-4'
-                                    : answer === choice
-                                      ? 'ring-success ring-offset-1 ring-4'
-                                      : ''
-                                : ''
-                        }
-                        onClick={() => !disabled && checkAnswer(choice, answer)}
-                        onKeyUp={(e) =>
-                            !disabled && e.key === 'Enter'
-                                ? checkAnswer(choice, answer)
-                                : {}
-                        }
-                    >
-                        <FormationImage
-                            formation={choice}
-                            key={`img-${choice.id}`}
-                            className={`w-full h-full h-max max-h-[calc(50vh-35px)] mx-auto`}
-                            showTooltip={false}
-                        />
-                    </button>
-                ))}
-            </div>
-        );
-    }
-
-    function identifyPictureFromFormation(currentQuestion: FormationQuestion) {
-        return (
-            <div className="card text-black">
-                <div className="justify-between flex mb-4">
-                    <div>Question {quizState.questionNo + 1}</div>
-                    <div>Score: {quizState.score}</div>
-                </div>
-                <div className="card-body items-center">
-                    <h2 className="card-title text-center" ref={questionNoRef}>
-                        {getFormationDisplayName(currentQuestion.answer)}
-                    </h2>
-                    <div className="w-full">
-                        {imageRow(
-                            currentQuestion.choices.slice(0, 2),
-                            currentQuestion.answer,
-                        )}
-                        {imageRow(
-                            currentQuestion.choices.slice(2),
-                            currentQuestion.answer,
-                        )}
-                    </div>
-                </div>
-                {quizState.selectedAnswer && (
-                    <div className="card-actions justify-center">
-                        <span className="leading-[3rem] text-2xl mr-4">
-                            {quizState.selectedAnswer.isCorrect
-                                ? 'Correct'
-                                : 'Incorrect'}
-                        </span>
-                        <button
-                            className="btn text-white"
-                            onClick={() => dispatch({ type: 'nextQuestion' })}
-                            type="button"
-                        >
-                            Next
-                        </button>
-                    </div>
-                )}
-            </div>
-        );
-    }
-
-    function getFormationDisplayName(formation: Formation) {
-        if (isRandom(formation)) {
-            return `${formation.id}${quizState.difficulty === Difficulty.EASY ? `- ${formation.name}` : ''}`;
-        }
-
-        return `${formation.id}`;
-    }
-
-    function identifyFormationFromPicture(currentQuestion: FormationQuestion) {
-        return (
-            <div className="card text-black">
-                <div className="justify-between flex mb-4">
-                    <div>Question {quizState.questionNo + 1}</div>
-                    <div>Score: {quizState.score}</div>
-                </div>
-                <figure>
-                    <FormationImage
-                        formation={currentQuestion.answer}
-                        className="w-full max-h-[50vh]"
-                        showTooltip={false}
-                    />
-                </figure>
-                <div className="card-body">
-                    {currentQuestion.choices.map((choice, idx) => (
-                        <div
-                            className="flex flex-row gap-2"
-                            key={`answer-${choice.id}`}
-                        >
-                            {quizState.selectedAnswer ? (
-                                <button
-                                    type="button"
-                                    className={`btn grow no-animation ${
-                                        quizState.selectedAnswer.answer ===
-                                        choice
-                                            ? 'btn-primary'
-                                            : currentQuestion.answer === choice
-                                              ? 'btn-success'
-                                              : 'btn-disabled darker'
-                                    }`}
-                                >
-                                    {getFormationDisplayName(choice)}
-                                </button>
-                            ) : (
-                                <input
-                                    type="radio"
-                                    name={`answer-${idx}`}
-                                    className={`btn grow text-white ${choice === currentQuestion.answer ? 'radio-success' : ''}`}
-                                    disabled={!!quizState.selectedAnswer}
-                                    checked={
-                                        choice === quizState.selectedAnswer
-                                    }
-                                    aria-label={getFormationDisplayName(choice)}
-                                    onChange={() =>
-                                        checkAnswer(
-                                            choice,
-                                            currentQuestion.answer,
-                                        )
-                                    }
-                                />
-                            )}
-                            {quizState.selectedAnswer && (
-                                <span className="btn btn-square btn-outline text-black">
-                                    {choice === currentQuestion.answer ? (
-                                        <CheckIcon />
-                                    ) : (
-                                        <XIcon />
-                                    )}
-                                </span>
-                            )}
-                        </div>
-                    ))}
-                    {quizState.selectedAnswer && (
-                        <div className="card-actions justify-end">
-                            <span className="leading-[3rem] text-2xl mr-4">
-                                {quizState.selectedAnswer.isCorrect
-                                    ? 'Correct'
-                                    : 'Incorrect'}
-                            </span>
-                            <button
-                                type="button"
-                                className="btn text-white"
-                                onClick={() =>
-                                    dispatch({ type: 'nextQuestion' })
-                                }
-                            >
-                                Next
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
-    }
-
-    function identifyFormationsFromVideo(currentQuestion: VideoQuestion) {
-        const isLetter = (value: string) => 'abcdefghjklmnopq'.includes(value);
-        const navigateAnswerInput = (
-            event: KeyboardEvent<HTMLInputElement>,
-        ) => {
-            const target = event.currentTarget;
-            if (event.key === 'Backspace') {
-                if (target.value.length <= 1) {
-                    target.value = '';
-                    (
-                        target.previousElementSibling as HTMLInputElement
-                    )?.focus();
-                    event.preventDefault();
-                }
-                return;
-            } else if (isLetter(event.key)) {
-                const nextElt = target.nextElementSibling as HTMLInputElement;
-                if (nextElt) {
-                    target.value = event.key;
-                    nextElt.focus();
-                    // nextElt.selectionStart = nextElt.value.length;
-                    event.preventDefault();
-                }
-            } else if ('0123456789'.includes(event.key)) {
-                if (target.value.length === 1) {
-                    target.value += event.key;
-                    (target.nextElementSibling as HTMLInputElement)?.focus();
-                    event.preventDefault();
-                } else if (isLetter(event.key)) {
-                    event.preventDefault();
-                }
-            } else {
-                event.preventDefault();
-            }
-        };
-        return (
-            <div className="w-full form-light">
-                <video
-                    src={currentQuestion.videoUrl}
-                    controls
-                    muted={true}
-                    className="w-full mb-4"
-                />
-                <span>Answer:</span>
-                <div className="flex gap-2 mt-4 items-center">
-                    {currentQuestion.answer.map((answer) => (
-                        <input
-                            type="text"
-                            maxLength={2}
-                            key={answer} // need to clear this between questions somehow
-                            className="w-[3em] input input-bordered uppercase text-center"
-                            name="answer"
-                            onKeyDown={navigateAnswerInput}
-                        />
-                    ))}
-                    {quizState.selectedAnswer ? (
-                        <span className="">
-                            {quizState.selectedAnswer.isCorrect
-                                ? 'Correct!'
-                                : `Incorrect, it was ${currentQuestion.answer.join(', ')}`}
-                        </span>
-                    ) : null}
-                </div>
-                {quizState.selectedAnswer ? (
-                    <button
-                        type="button"
-                        className="btn btn-primary mt-4"
-                        onClick={() => dispatch({ type: 'nextQuestion' })}
-                    >
-                        Next question
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        className="btn btn-primary mt-4"
-                        onClick={() => {
-                            const answers = Array.from(
-                                document.getElementsByName(
-                                    'answer',
-                                ) as NodeListOf<HTMLInputElement>,
-                            ).map((input: HTMLInputElement) =>
-                                input.value.toUpperCase(),
-                            );
-                            const isCorrect = isEqual(
-                                currentQuestion.answer.map((answer) => answer),
-                                answers,
-                            );
-                            dispatch({
-                                type: 'answerQuestion',
-                                answer: answers.join(''),
-                                isCorrect,
-                            });
-                        }}
-                    >
-                        Check answer
-                    </button>
-                )}
-            </div>
-        );
-    }
-
-    function identifySlot(currentQuestion: SlotQuestion) {
-        const handleClick = (event: React.MouseEvent<SVGSVGElement>) => {
-            if (!(event.target instanceof SVGPathElement)) {
-                return;
-            }
-            const slotClass = event.target.getAttribute('class');
-            const isCorrect =
-                currentQuestion.slotToIdentify.className === slotClass;
-            const answer = slots.find((slot) => slot.className === slotClass);
-            if (!answer) {
-                return;
-            }
-            dispatch({ type: 'answerQuestion', answer, isCorrect });
-        };
-        return (
-            <div className="card text-black">
-                <div className="justify-between flex mb-4">
-                    <div>Question {quizState.questionNo + 1}</div>
-                    <div>Score: {quizState.score}</div>
-                </div>
-                <figure
-                    className={
-                        quizState.selectedAnswer === undefined ? 'quiz' : ''
-                    }
-                >
-                    <FormationImage
-                        className="w-full max-h-[75vh]"
-                        formation={currentQuestion.formation}
-                        onClick={(e) => handleClick(e)}
-                        showTooltip={false}
-                    />
-                </figure>
-                {quizState.selectedAnswer ? (
-                    <div className="flex flex-col">
-                        {quizState.selectedAnswer.answer ===
-                        currentQuestion.slotToIdentify ? (
-                            <span>
-                                Correct, it was{' '}
-                                {quizState.selectedAnswer.answer.name}
-                            </span>
-                        ) : (
-                            <span>
-                                Incorrect, you found{' '}
-                                {(quizState.selectedAnswer.answer as Slot).name}
-                            </span>
-                        )}
-                        <button
-                            type="button"
-                            className="btn text-white"
-                            onClick={() => dispatch({ type: 'nextQuestion' })}
-                        >
-                            Next
-                        </button>
-                    </div>
-                ) : null}
-            </div>
-        );
-    }
-
     if (
         quizState.started &&
         quizState.questionNo === quizState.questions.length
@@ -416,18 +72,37 @@ export default function QuizPage() {
         const currentQuestion = quizState.questions[quizState.questionNo];
         switch (quizState.quizType) {
             case QuizType.NAME_TO_PICTURE:
-                return identifyPictureFromFormation(
-                    currentQuestion as FormationQuestion,
+                return (
+                    <PictureFromFormation
+                        currentQuestion={currentQuestion as FormationQuestion}
+                        quizState={quizState}
+                        dispatch={dispatch}
+                        questionNoRef={questionNoRef}
+                    />
                 );
             case QuizType.PICTURE_TO_NAME:
-                return identifyFormationFromPicture(
-                    currentQuestion as FormationQuestion,
+                return (
+                    <FormationFromPicture
+                        currentQuestion={currentQuestion as FormationQuestion}
+                        quizState={quizState}
+                        dispatch={dispatch}
+                    />
                 );
             case QuizType.FIND_YOUR_SLOT:
-                return identifySlot(currentQuestion as SlotQuestion);
+                return (
+                    <IdentifySlot
+                        currentQuestion={currentQuestion as SlotQuestion}
+                        quizState={quizState}
+                        dispatch={dispatch}
+                    />
+                );
             case QuizType.VIDEO:
-                return identifyFormationsFromVideo(
-                    currentQuestion as VideoQuestion,
+                return (
+                    <FormationFromVideo
+                        currentQuestion={currentQuestion as VideoQuestion}
+                        quizState={quizState}
+                        dispatch={dispatch}
+                    />
                 );
         }
     } else {
