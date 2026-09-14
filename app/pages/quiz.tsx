@@ -296,7 +296,7 @@ export default function QuizPage() {
                         <input
                             type="text"
                             maxLength={2}
-                            key={answer}
+                            key={answer} // need to clear this between questions somehow
                             className="w-[3em] input input-bordered uppercase text-center"
                             name="answer"
                             onKeyDown={navigateAnswerInput}
