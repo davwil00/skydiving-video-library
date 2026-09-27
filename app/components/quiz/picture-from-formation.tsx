@@ -22,7 +22,7 @@ export default function PictureFromFormation(props: PictureFromFormationProps) {
         selectedAnswer: Formation,
         actualAnswer: Formation,
     ) => {
-        const isCorrect = selectedAnswer === actualAnswer;
+        const isCorrect = selectedAnswer.id === actualAnswer.id;
         dispatch({ type: 'answerQuestion', answer: selectedAnswer, isCorrect });
     };
 
@@ -53,7 +53,7 @@ export default function PictureFromFormation(props: PictureFromFormationProps) {
                         <FormationImage
                             formation={choice}
                             key={`img-${choice.id}`}
-                            className={`w-full h-full h-max max-h-[calc(50vh-35px)] mx-auto`}
+                            className={`w-full h-max max-h-[calc(50vh-35px)] mx-auto`}
                             showTooltip={false}
                         />
                     </button>
@@ -88,7 +88,7 @@ export default function PictureFromFormation(props: PictureFromFormationProps) {
             </div>
             {quizState.selectedAnswer && (
                 <div className="card-actions justify-center">
-                    <span className="leading-[3rem] text-2xl mr-4">
+                    <span className="leading-12 text-2xl mr-4">
                         {quizState.selectedAnswer.isCorrect
                             ? 'Correct'
                             : 'Incorrect'}

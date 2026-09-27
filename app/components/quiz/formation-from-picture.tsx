@@ -22,7 +22,7 @@ export default function FormationFromPicture(props: FormationFromPictureProps) {
         selectedAnswer: Formation,
         actualAnswer: Formation,
     ) => {
-        const isCorrect = selectedAnswer === actualAnswer;
+        const isCorrect = selectedAnswer.id === actualAnswer.id;
         dispatch({ type: 'answerQuestion', answer: selectedAnswer, isCorrect });
     };
 
@@ -76,7 +76,7 @@ export default function FormationFromPicture(props: FormationFromPictureProps) {
                         )}
                         {quizState.selectedAnswer && (
                             <span className="btn btn-square btn-outline text-black">
-                                {choice === currentQuestion.answer ? (
+                                {choice.id === currentQuestion.answer.id ? (
                                     <CheckIcon />
                                 ) : (
                                     <XIcon />
@@ -87,7 +87,7 @@ export default function FormationFromPicture(props: FormationFromPictureProps) {
                 ))}
                 {quizState.selectedAnswer && (
                     <div className="card-actions justify-end">
-                        <span className="leading-[3rem] text-2xl mr-4">
+                        <span className="leading-12 text-2xl mr-4">
                             {quizState.selectedAnswer.isCorrect
                                 ? 'Correct'
                                 : 'Incorrect'}
