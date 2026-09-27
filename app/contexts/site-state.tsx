@@ -3,9 +3,12 @@ import {
     type Dispatch,
     type ReactNode,
     useContext,
+    useEffect,
     useReducer,
 } from 'react';
 import { SiteType } from '~/utils/site-utils';
+
+const ALT_COLOURS_STORAGE_KEY = 'altColours';
 
 type SiteState = {
     siteType: SiteType;
@@ -46,6 +49,19 @@ export function SiteStateProvider({
         altColours: siteType === SiteType.TUNNEL_VISION,
     });
 
+    useEffect(() => {
+        const storedAltColours = window.localStorage.getItem(
+            ALT_COLOURS_STORAGE_KEY,
+        );
+
+        if (storedAltColours) {
+            dispatch({
+                type: 'setAltColours',
+                value: storedAltColours === 'true',
+            });
+        }
+    }, []);
+
     return (
         <SiteStateContext.Provider value={siteState}>
             <SiteStateDispatchContext.Provider value={dispatch}>
@@ -67,9 +83,18 @@ const siteStateReducer = (
                 theme: getTheme(action.value),
             };
         case 'toggleAltColours':
+            window.localStorage.setItem(
+                ALT_COLOURS_STORAGE_KEY,
+                `${!state.altColours}`,
+            );
             return {
                 ...state,
                 altColours: !state.altColours,
+            };
+        case 'setAltColours':
+            return {
+                ...state,
+                altColours: action.value,
             };
         default:
             return state;
@@ -78,6 +103,7 @@ const siteStateReducer = (
 
 type SiteStateAction =
     | { type: 'setSiteState'; value: SiteType }
+    | { type: 'setAltColours'; value: boolean }
     | { type: 'toggleAltColours' };
 
 export const useSiteStateContext = () => useContext(SiteStateContext);
