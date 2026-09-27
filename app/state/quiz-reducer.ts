@@ -14,6 +14,11 @@ export type QuizAction =
           answer: Formation | Slot | string;
           isCorrect: boolean;
       }
+    | {
+          type: 'setVideoQuestionAnswerPart';
+          answerIndex: number;
+          answer: string;
+      }
     | { type: 'setQuestionSet'; value: QuestionSet }
     | { type: 'setQuizType'; value: QuizType }
     | { type: 'setDivePool'; value: Discipline }
@@ -30,7 +35,8 @@ export type SlotQuestion = {
     slotToIdentify: Slot;
 };
 export type VideoQuestion = {
-    answer: string[];
+    correctAnswer: string[];
+    givenAnswer: string[];
     videoUrl: string;
 };
 export type Question = FormationQuestion | SlotQuestion | VideoQuestion;
@@ -230,6 +236,19 @@ export const quizReducer = (
                     answer: action.answer,
                 },
             };
+
+        case 'setVideoQuestionAnswerPart': {
+            const questions = [...state.questions];
+            const question = questions[state.questionNo] as VideoQuestion;
+            const answer = [...question.givenAnswer];
+            answer[action.answerIndex] = action.answer;
+            question.givenAnswer = answer;
+
+            return {
+                ...state,
+                questions: questions,
+            };
+        }
 
         case 'setNumberOfQuestions':
             return {

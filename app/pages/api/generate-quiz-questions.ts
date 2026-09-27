@@ -127,7 +127,10 @@ async function generateVideoQuestions(
         .slice(0, numberOfQuestionsToGenerate)
         .filter((flight) => flight.topVideoUrl && flight.formations.length > 0)
         .map((flight) => ({
-            answer: flight.formations.map((formation) => formation.formationId),
+            givenAnswer: flight.formations.map((_formation) => ''),
+            correctAnswer: flight.formations.map(
+                (formation) => formation.formationId,
+            ),
             // biome-ignore lint/style/noNonNullAssertion: filtered above
             videoUrl: flight.topVideoUrl!,
         }));
