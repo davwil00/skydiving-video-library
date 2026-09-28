@@ -1,4 +1,5 @@
 import type React from 'react';
+import { Link } from 'react-router';
 import { Discipline, Level, Type } from '~/data/formations';
 import {
     containsQuestionSet,
@@ -347,7 +348,12 @@ export default function QuizConfig(quizConfigProps: QuizConfigProps) {
 
     return (
         <div className="flex flex-col mx-auto">
-            <h1 className="text-5xl text-black block">Formations Quiz</h1>
+            <div className="flex justify-between">
+                <h1 className="text-5xl text-black block">Formations Quiz</h1>
+                <Link to={{ pathname: '/quiz-stats' }} className="underline">
+                    Quiz stats
+                </Link>
+            </div>
             <div className="mt-4 flex flex-col gap-4 ">
                 <QuizTypeConfig />
                 <h2>Number of questions</h2>
