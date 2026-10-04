@@ -41,6 +41,7 @@ export default [
     route('healthcheck', 'pages/healthcheck.tsx'),
     route('logos', 'pages/logos.tsx'),
     route('quiz', 'pages/quiz.tsx'),
+    route('quiz-stats', 'pages/quiz-stats.tsx'),
     route('search', 'pages/search.tsx'),
     route('stats', 'pages/stats.tsx'),
     route('tag', 'pages/tag.tsx'),

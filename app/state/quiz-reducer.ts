@@ -1,9 +1,5 @@
-import {
-    Discipline,
-    type Formation,
-    type Level,
-    type Type,
-} from '~/data/formations';
+import {Discipline, type Formation, type Level, type Type,} from '~/data/formations';
+import {recordStat} from "~/pages/quiz-stats";
 
 export type QuizAction =
     | { type: 'startQuiz'; questions: Question[] }
@@ -228,6 +224,7 @@ export const quizReducer = (
             };
 
         case 'answerQuestion':
+            recordStat(action.answer, action.isCorrect, state.siteType)
             return {
                 ...state,
                 score: action.isCorrect ? state.score + 1 : state.score,

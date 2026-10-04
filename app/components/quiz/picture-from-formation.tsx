@@ -91,7 +91,7 @@ export default function PictureFromFormation(props: PictureFromFormationProps) {
                     <span className="leading-12 text-2xl mr-4">
                         {quizState.selectedAnswer.isCorrect
                             ? 'Correct'
-                            : 'Incorrect'}
+                            : `Incorrect - that was ${(quizState.selectedAnswer.answer as Formation).id}`}
                     </span>
                     <button
                         className="btn text-white"
