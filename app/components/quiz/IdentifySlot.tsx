@@ -21,13 +21,15 @@ export default function IdentifySlot(props: IdentifySlotProps) {
             return;
         }
         const slotClass = event.target.getAttribute('class');
-        const isCorrect =
-            currentQuestion.slotToIdentify.className === slotClass;
         const answer = slots.find((slot) => slot.className === slotClass);
         if (!answer) {
             return;
         }
-        dispatch({ type: 'answerQuestion', answer, isCorrect });
+        dispatch({
+            type: 'answerQuestion',
+            givenAnswer: answer.name,
+            correctAnswer: currentQuestion.slotToIdentify.className,
+        });
     };
     return (
         <div className="card text-black">

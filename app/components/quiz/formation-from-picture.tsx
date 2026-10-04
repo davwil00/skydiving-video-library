@@ -18,12 +18,12 @@ type FormationFromPictureProps = {
 export default function FormationFromPicture(props: FormationFromPictureProps) {
     const { currentQuestion, quizState, dispatch } = props;
 
-    const checkAnswer = (
-        selectedAnswer: Formation,
-        actualAnswer: Formation,
-    ) => {
-        const isCorrect = selectedAnswer.id === actualAnswer.id;
-        dispatch({ type: 'answerQuestion', answer: selectedAnswer, isCorrect });
+    const checkAnswer = (givenAnswer: Formation, correctAnswer: Formation) => {
+        dispatch({
+            type: 'answerQuestion',
+            givenAnswer: givenAnswer,
+            correctAnswer: correctAnswer,
+        });
     };
 
     return (

@@ -1,20 +1,20 @@
 import type { MetaFunction } from 'react-router';
+import { useSiteStateContext } from '~/contexts/site-state';
 import {
-    getQuizFormationStatsKey,
-    type QuizFormationStats,
-    useSiteStateContext,
-} from '~/contexts/site-state';
-import type { Formation } from '~/data/formations';
-import { getAllFormations, getDisplayName } from '~/data/formations';
-import {SiteType} from "~/utils/site-utils";
+    Discipline,
+    type Formation,
+    getAllFormations,
+    getDisplayName,
+} from '~/data/formations';
+import { SiteType } from '~/utils/site-utils';
 
-export function getQuizStatsStorageKey(siteType: SiteType) {
-    return `${QUIZ_STATS_STORAGE_KEY}:${siteType}`;
+export function getQuizStatsStorageKey(discipline: Discipline) {
+    return `${QUIZ_STATS_STORAGE_KEY}:${discipline}`;
 }
 
-function loadQuizStats(siteType: SiteType): QuizStats {
+function loadQuizStats(discipline: Discipline): QuizStats {
     const storedQuizStats = window.localStorage.getItem(
-        getQuizStatsStorageKey(siteType),
+        getQuizStatsStorageKey(discipline),
     );
 
     if (!storedQuizStats) {
@@ -22,42 +22,46 @@ function loadQuizStats(siteType: SiteType): QuizStats {
     }
 
     try {
-        const parsedStats: unknown = JSON.parse(storedQuizStats);
-        return isQuizStats(parsedStats) ? parsedStats : {};
+        return JSON.parse(storedQuizStats);
     } catch (error) {
         console.error('Unable to parse quiz stats from local storage', error);
         return {};
     }
 }
 
-function saveQuizStats(siteType: SiteType, quizStats: QuizStats) {
+function saveQuizStats(quizStats: QuizStats, discipline: Discipline) {
     window.localStorage.setItem(
-        getQuizStatsStorageKey(siteType),
+        getQuizStatsStorageKey(discipline),
         JSON.stringify(quizStats),
     );
 }
 
-export function recordStat(formation: Formation, isCorrect: boolean, siteType: SiteType) {
-    const formationKey = getQuizFormationStatsKey(formation);
-    const currentStats = loadQuizStats(siteType)
-    const formationStat = currentStats[formationKey] ??
-    {
+export function recordStat(
+    correctAnswer: Formation,
+    givenAnswer: Formation,
+    isCorrect: boolean,
+) {
+    const formationKey = getQuizFormationStatsKey(correctAnswer);
+    const currentStats = loadQuizStats(correctAnswer.discipline);
+    const formationStat = currentStats[formationKey] ?? {
         correct: 0,
         incorrect: 0,
+        confusedWith: [],
     };
 
     if (isCorrect) {
-        formationStat.correct = formationStat.correct + 1
+        formationStat.correct = formationStat.correct + 1;
     } else {
-        formationStat.incorrect = formationStat.incorrect + 1
+        formationStat.incorrect = formationStat.incorrect + 1;
+        formationStat.confusedWith.push(givenAnswer.id);
     }
 
     const updatedStats = {
         ...currentStats,
-        [formationKey]: formationStat
-    }
+        [formationKey]: formationStat,
+    };
 
-    saveQuizStats(siteType, updatedStats);
+    saveQuizStats(updatedStats, correctAnswer.discipline);
 }
 
 export const QUIZ_STATS_STORAGE_KEY = 'quizStats';
@@ -65,13 +69,12 @@ export const QUIZ_STATS_STORAGE_KEY = 'quizStats';
 export type QuizFormationStats = {
     correct: number;
     incorrect: number;
+    confusedWith: string[];
 };
 
 export type QuizStats = Record<string, QuizFormationStats>;
 
-export function getQuizFormationStatsKey(
-    formation: Pick<Formation, 'discipline' | 'id'>,
-) {
+export function getQuizFormationStatsKey(formation: Formation) {
     return `${formation.discipline}:${formation.id}`;
 }
 
@@ -153,7 +156,12 @@ function FormationStatsTable({
 }
 
 export default function QuizStatsPage() {
-    const { quizStats, siteType } = useSiteStateContext();
+    const { siteType } = useSiteStateContext();
+    const quizStats: QuizStats = loadQuizStats(
+        siteType === SiteType.TUNNEL_VISION
+            ? Discipline.EIGHT_WAY
+            : Discipline.FOUR_WAY,
+    );
     const formations = getAllFormations(siteType);
     const formationStats = Object.entries(quizStats).flatMap(([key, stats]) => {
         const formation = Object.values(formations).find(

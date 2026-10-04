@@ -18,12 +18,8 @@ type PictureFromFormationProps = {
 export default function PictureFromFormation(props: PictureFromFormationProps) {
     const { currentQuestion, quizState, dispatch, questionNoRef } = props;
 
-    const checkAnswer = (
-        selectedAnswer: Formation,
-        actualAnswer: Formation,
-    ) => {
-        const isCorrect = selectedAnswer.id === actualAnswer.id;
-        dispatch({ type: 'answerQuestion', answer: selectedAnswer, isCorrect });
+    const checkAnswer = (givenAnswer: Formation, correctAnswer: Formation) => {
+        dispatch({ type: 'answerQuestion', givenAnswer, correctAnswer });
     };
 
     function imageRow(choices: Formation[], answer: Formation) {
@@ -36,9 +32,9 @@ export default function PictureFromFormation(props: PictureFromFormationProps) {
                         key={`button-${choice.id}`}
                         className={
                             quizState.selectedAnswer
-                                ? quizState.selectedAnswer.answer === choice
+                                ? (quizState.selectedAnswer.answer as Formation).id === choice.id
                                     ? 'ring-primary ring-offset-1 ring-4'
-                                    : answer === choice
+                                    : answer.id === choice.id
                                       ? 'ring-success ring-offset-1 ring-4'
                                       : ''
                                 : ''

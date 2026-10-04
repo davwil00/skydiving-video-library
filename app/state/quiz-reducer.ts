@@ -1,5 +1,10 @@
-import {Discipline, type Formation, type Level, type Type,} from '~/data/formations';
-import {recordStat} from "~/pages/quiz-stats";
+import {
+    Discipline,
+    type Formation,
+    type Level,
+    type Type,
+} from '~/data/formations';
+import { recordStat } from '~/pages/quiz-stats';
 
 export type QuizAction =
     | { type: 'startQuiz'; questions: Question[] }
@@ -7,8 +12,8 @@ export type QuizAction =
     | { type: 'nextQuestion' }
     | {
           type: 'answerQuestion';
-          answer: Formation | Slot | string;
-          isCorrect: boolean;
+          givenAnswer: Formation | string;
+          correctAnswer: Formation | string;
       }
     | {
           type: 'setVideoQuestionAnswerPart';
@@ -223,16 +228,27 @@ export const quizReducer = (
                 difficulty: action.value,
             };
 
-        case 'answerQuestion':
-            recordStat(action.answer, action.isCorrect, state.siteType)
+        case 'answerQuestion': {
+            let isCorrect: boolean;
+            if (
+                typeof action.givenAnswer !== 'string' &&
+                typeof action.correctAnswer !== 'string'
+            ) {
+                isCorrect = action.correctAnswer.id === action.givenAnswer.id;
+                recordStat(action.correctAnswer, action.givenAnswer, isCorrect);
+            } else {
+                isCorrect = action.correctAnswer === action.givenAnswer;
+            }
+
             return {
                 ...state,
-                score: action.isCorrect ? state.score + 1 : state.score,
+                score: isCorrect ? state.score + 1 : state.score,
                 selectedAnswer: {
-                    isCorrect: action.isCorrect,
-                    answer: action.answer,
+                    isCorrect: isCorrect,
+                    answer: action.givenAnswer,
                 },
             };
+        }
 
         case 'setVideoQuestionAnswerPart': {
             const questions = [...state.questions];

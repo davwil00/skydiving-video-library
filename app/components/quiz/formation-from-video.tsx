@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash-es';
 import type { Dispatch, KeyboardEvent } from 'react';
 import type {
     QuizAction,
@@ -124,14 +123,11 @@ export default function FormationFromVideo(props: FormationFromVideoProps) {
                     type="button"
                     className="btn btn-primary mt-4"
                     onClick={() => {
-                        const isCorrect = isEqual(
-                            currentQuestion.correctAnswer,
-                            currentQuestion.givenAnswer,
-                        );
                         dispatch({
                             type: 'answerQuestion',
-                            answer: currentQuestion.givenAnswer.join(''),
-                            isCorrect,
+                            givenAnswer: currentQuestion.givenAnswer.join(''),
+                            correctAnswer:
+                                currentQuestion.correctAnswer.join(''),
                         });
                     }}
                 >
