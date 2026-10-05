@@ -1,4 +1,4 @@
-import type { Dispatch, KeyboardEvent } from 'react';
+import type { Dispatch } from 'react';
 import type {
     QuizAction,
     QuizState,
@@ -13,64 +13,7 @@ type FormationFromVideoProps = {
 
 export default function FormationFromVideo(props: FormationFromVideoProps) {
     const { currentQuestion, quizState, dispatch } = props;
-    const isLetter = (value: string) => 'abcdefghjklmnopq'.includes(value);
-    const isNumber = (value: string) => '0123456789'.includes(value);
 
-    const keyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        const target = event.currentTarget;
-        if (
-            target.selectionStart !== target.selectionEnd &&
-            (isLetter(event.key) ||
-                isNumber(event.key) ||
-                event.key === 'backspace')
-        ) {
-            return;
-        }
-        if (event.key === 'Backspace') {
-            if (target.value.length === 0) {
-                const nextElt =
-                    target.previousElementSibling as HTMLInputElement;
-                nextElt?.focus();
-                nextElt.selectionStart = nextElt.value.length;
-            }
-            return;
-        } else if (isLetter(event.key)) {
-            if (target.value.length === 1) {
-                const nextElt = target.nextElementSibling as HTMLInputElement;
-                if (nextElt) {
-                    nextElt.focus();
-                } else {
-                    event.preventDefault();
-                }
-            }
-        } else if (isNumber(event.key)) {
-            if (target.value.length === 2) {
-                (target.nextElementSibling as HTMLInputElement)?.focus();
-            }
-        } else event.preventDefault();
-    };
-    const keyUp = (event: KeyboardEvent<HTMLInputElement>) => {
-        const target = event.currentTarget;
-        if (event.key === 'Backspace') {
-            if (target.value.length === 0) {
-                const nextElt =
-                    target.previousElementSibling as HTMLInputElement;
-                nextElt?.focus();
-                nextElt.selectionStart = nextElt.value.length;
-            }
-            return;
-        } else if (isLetter(event.key)) {
-            const nextElt = target.nextElementSibling as HTMLInputElement;
-            if (nextElt) {
-                nextElt.focus();
-                nextElt.selectionStart = nextElt.value.length;
-            }
-        } else if ('0123456789'.includes(event.key)) {
-            if (target.value.length === 1) {
-                (target.nextElementSibling as HTMLInputElement)?.focus();
-            }
-        }
-    };
     return (
         <div className="w-full form-light">
             <video
@@ -88,8 +31,6 @@ export default function FormationFromVideo(props: FormationFromVideoProps) {
                         key={`${quizState.questionNo}-answer-${index}`}
                         className="w-[3em] input input-bordered uppercase text-center"
                         name="answer"
-                        onKeyDown={keyDown}
-                        onKeyUp={keyUp}
                         onChange={(e) =>
                             dispatch({
                                 type: 'setVideoQuestionAnswerPart',
