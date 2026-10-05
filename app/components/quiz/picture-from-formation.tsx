@@ -32,7 +32,8 @@ export default function PictureFromFormation(props: PictureFromFormationProps) {
                         key={`button-${choice.id}`}
                         className={
                             quizState.selectedAnswer
-                                ? (quizState.selectedAnswer.answer as Formation).id === choice.id
+                                ? (quizState.selectedAnswer.answer as Formation)
+                                      .id === choice.id
                                     ? 'ring-primary ring-offset-1 ring-4'
                                     : answer.id === choice.id
                                       ? 'ring-success ring-offset-1 ring-4'
