@@ -125,9 +125,9 @@ export default function FormationFromVideo(props: FormationFromVideoProps) {
                     onClick={() => {
                         dispatch({
                             type: 'answerQuestion',
-                            givenAnswer: currentQuestion.givenAnswer.join(''),
+                            givenAnswer: currentQuestion.givenAnswer.join(',').toUpperCase(),
                             correctAnswer:
-                                currentQuestion.correctAnswer.join(''),
+                                currentQuestion.correctAnswer.join(',').toUpperCase(),
                         });
                     }}
                 >
