@@ -44,6 +44,7 @@ export default [
     route('quiz-stats', 'pages/quiz-stats.tsx'),
     route('search', 'pages/search.tsx'),
     route('stats', 'pages/stats.tsx'),
+    route('sync-db', 'pages/sync-db.tsx'),
     route('tag', 'pages/tag.tsx'),
     route('trim-pending', 'pages/trim-pending.tsx'),
 ];

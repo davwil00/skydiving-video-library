@@ -119,7 +119,7 @@ export default function TagDir() {
         dispatch({ type: 'resetProgress' });
 
         try {
-            const response = await fetch('async-tag', {
+            const response = await fetch('/api/async-tag', {
                 method: 'POST',
                 body: JSON.stringify({
                     filesToTag: Array.from(state.filesToTag.values()),
