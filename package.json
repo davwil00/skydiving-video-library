@@ -9,7 +9,7 @@
     "lint": "react-router typegen && npx @biomejs/biome check .",
     "lint:fix": "npx @biomejs/biome check . --write",
     "format:fix": "npx @biomejs/biome format . --write",
-    "setup": "prisma generate && prisma migrate deploy && tsx prisma/seed.ts",
+    "setup": "prisma generate && prisma migrate deploy && DATABASE_URL=file:prisma/data.db tsx prisma/seed.ts",
     "migrate-dev": "prisma generate && prisma migrate dev",
     "migrate-deploy": "prisma generate && prisma migrate deploy",
     "typecheck": "react-router typegen && tsc",
