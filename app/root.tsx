@@ -2,7 +2,6 @@ import {
     isRouteErrorResponse,
     Links,
     type LinksFunction,
-    Meta,
     Outlet,
     Scripts,
     ScrollRestoration,
@@ -41,15 +40,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     const title =
         siteType === SiteType.COOKIES
             ? 'Chocolate Chip Cookies Video Library'
-            : 'Tunnel Vision';
+            : 'Tunnel Vision Video Library';
     return { sessions, competitions, isLocal, siteType, title };
-};
-
-export const meta = () => {
-    return [
-        { title: 'Chocolate Chip Cookies Video Library' },
-        { name: 'description', content: '' },
-    ];
 };
 
 export const links: LinksFunction = () => [
@@ -67,7 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     name="viewport"
                     content="width=device-width, initial-scale=1"
                 />
-                <Meta />
+                <meta property="title" content={data?.title} />
                 <Links />
                 <title>{data?.title}</title>
             </head>
