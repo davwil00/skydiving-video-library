@@ -4,5 +4,6 @@ export default {
     allowedActionOrigins: [
         'skydiving.davwil00.co.uk',
         'skydiving-local.davwil00.co.uk',
+        'tunnel-vision.davwil00.co.uk',
     ],
 } satisfies Config;
