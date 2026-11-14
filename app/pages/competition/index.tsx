@@ -5,6 +5,7 @@ import { EditIcon } from '~/components/icons';
 import { getCompetition } from '~/models/competitions.server';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { formatDate } from '~/utils/utils';
+import type { FlightFormation, Score } from '../../../prisma/generated/client';
 import type { Route } from './+types/index';
 
 export async function loader({ request, params }: Route.LoaderArgs) {
@@ -30,6 +31,7 @@ export default function Competition() {
                 ) : null}
             </h1>
             <div className="mt-6">
+                <Scorecard sessions={competition.sessions} />
                 {competition.sessions.map((session) => (
                     <div key={`session-${session.id}`}>
                         <h2 className="text-xl flex items-center gap-2">
@@ -56,5 +58,63 @@ export default function Competition() {
                 ))}
             </div>
         </div>
+    );
+}
+
+type FlightWithScoresAndFormations = {
+    scores: Score[];
+    formations: FlightFormation[];
+};
+type SessionWithFlight = {
+    flights: FlightWithScoresAndFormations[];
+};
+
+function Scorecard({ sessions }: { sessions: SessionWithFlight[] }) {
+    const allFlights = sessions.flatMap((flight) => flight.flights);
+    const scoresByRound = allFlights.reduce(
+        (acc, flight: FlightWithScoresAndFormations, idx) => {
+            const score = flight.scores.reduce(
+                (total, score) => total + score.score,
+                0,
+            );
+            const formations = flight.formations
+                .map((formation) => formation.formationId)
+                .join(', ');
+            acc.set(idx, { score, formations });
+            return acc;
+        },
+        new Map<number, { score: number; formations: string }>(),
+    );
+    const totalScore = Array.from(scoresByRound.values()).reduce(
+        (total, score) => total + score.score,
+        0,
+    );
+    const average = (totalScore / allFlights.length).toFixed(2);
+
+    return (
+        <table className="table table-auto border-collapse border mb-4 border-black">
+            <thead>
+                <tr className="border-black">
+                    {Array.from(scoresByRound.entries()).map(
+                        ([roundNumber, round]) => (
+                            <th className="border">
+                                {roundNumber + 1} - {round.formations}
+                            </th>
+                        ),
+                    )}
+                    <th className="border">Total</th>
+                    <th className="border">Average</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr className="border-black">
+                    {Array.from(scoresByRound.values()).map((round) => (
+                        <td className="border">{round.score}</td>
+                    ))}
+                    <td className="border">{totalScore}</td>
+                    <td className="border">{average}</td>
+                </tr>
+            </tbody>
+        </table>
     );
 }

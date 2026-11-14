@@ -162,7 +162,7 @@ export default function AddCompetition() {
                         </select>
                         <button
                             type="button"
-                            className="btn btn-outline join-item"
+                            className="btn join-item"
                             onClick={addSession}
                         >
                             +
