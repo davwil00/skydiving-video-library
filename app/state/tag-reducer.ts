@@ -32,7 +32,8 @@ export type TagAction =
     | { type: 'setProgressDone'; completed: string[]; total: number }
     | { type: 'trackFile'; value: FileToTag }
     | { type: 'setError'; value: string }
-    | { type: 'copy'; value: string };
+    | { type: 'copy'; value: string }
+    | { type: 'toggleView' };
 
 export type TagState = {
     videoPreviewPath?: string;
@@ -128,6 +129,23 @@ export const tagReducer = (state: TagState, action: TagAction) => {
                 progressTotal: action.total,
                 progressCurrentFile: undefined,
             };
+        case 'toggleView': {
+            const updatedFilesToTag = new Map<string, FileToTag>();
+            state.filesToTag.forEach((file: FileToTag, key: string) => {
+                const newFileToTag = {
+                    ...file,
+                    sideVideoFileName: file.topVideoFileName,
+                    sideVideoPath: file.topVideoPath,
+                    topVideoFileName: file.sideVideoFileName,
+                    topVideoPath: file.sideVideoPath,
+                };
+                updatedFilesToTag.set(key, newFileToTag);
+            });
+            return {
+                ...state,
+                filesToTag: updatedFilesToTag,
+            };
+        }
         default:
             return state;
     }

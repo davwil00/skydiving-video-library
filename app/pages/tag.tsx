@@ -239,6 +239,13 @@ export default function TagDir() {
                         }
                     />
                 </label>
+                <button
+                    onClick={() => dispatch({ type: 'toggleView' })}
+                    type="button"
+                    className="btn btn-sm ml-4"
+                >
+                    Toggle view
+                </button>
             </div>
             <table className="table">
                 <thead>
