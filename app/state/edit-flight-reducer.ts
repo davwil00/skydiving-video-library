@@ -1,3 +1,5 @@
+import { FORMATIONS, isBlock } from '~/data/formations';
+
 export const editFlightReducer = (
     state: EditFlightState,
     action: EditFlightAction,
@@ -10,28 +12,51 @@ export const editFlightReducer = (
             };
         case 'addRound': {
             const newScores = [...state.scores];
-            for (let i = 0; i < action.scoresPerRound; i++) {
-                newScores.push(1);
-            }
+            const round: Score[] = state.formationIds.flatMap((formation) => {
+                if (isBlock(FORMATIONS[formation])) {
+                    return [
+                        { formationId: formation, score: 1, reason: null },
+                        { formationId: formation, score: 1, reason: null },
+                    ];
+                }
+                return [{ formationId: formation, score: 1, reason: null }];
+            });
+            newScores.push(round);
             return {
                 ...state,
-                rounds: state.rounds + 1,
                 scores: newScores,
             };
         }
         case 'removeLastRound':
             return {
                 ...state,
-                rounds: state.rounds - 1,
+                scores: state.scores.slice(0, -1),
             };
         case 'setScore': {
-            let newScores: number[];
-            if (action.score !== null) {
-                newScores = [...state.scores];
-                newScores[action.idx] = action.score;
+            const newScores = [...state.scores];
+            if (action.score != null) {
+                newScores[action.roundIdx][action.idx] = {
+                    ...state.scores[action.roundIdx][action.idx],
+                    score: action.score,
+                };
             } else {
-                newScores = state.scores.slice(0, action.idx);
+                newScores[action.roundIdx] = state.scores[
+                    action.roundIdx
+                ].slice(0, action.idx);
             }
+
+            return {
+                ...state,
+                scores: newScores,
+            };
+        }
+        case 'setReason': {
+            const newScores = [...state.scores];
+            newScores[action.roundIdx][action.idx] = {
+                ...state.scores[action.roundIdx][action.idx],
+                score: 0,
+                reason: action.reason,
+            };
             return {
                 ...state,
                 scores: newScores,
@@ -41,15 +66,26 @@ export const editFlightReducer = (
 };
 
 export type EditFlightState = {
-    formations: string;
+    formationIds: string[];
     flyers: string;
     date: string;
-    rounds: number;
-    scores: number[];
+    scores: Score[][];
+};
+
+export type Score = {
+    formationId: string;
+    score: number;
+    reason: string | null;
 };
 
 export type EditFlightAction =
     | { type: 'formElementChange'; field: string; value: string }
     | { type: 'addRound'; scoresPerRound: number }
     | { type: 'removeLastRound' }
-    | { type: 'setScore'; idx: number; score: number | null };
+    | { type: 'setScore'; roundIdx: number; idx: number; score: number | null }
+    | {
+          type: 'setReason';
+          roundIdx: number;
+          idx: number;
+          reason: string | null;
+      };

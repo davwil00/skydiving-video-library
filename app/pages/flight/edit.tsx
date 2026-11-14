@@ -1,11 +1,13 @@
 import { format } from 'date-fns';
-import { useReducer } from 'react';
+import { Fragment, useReducer } from 'react';
 import { data, redirect, useLoaderData } from 'react-router';
 import invariant from 'tiny-invariant';
+import ScoreInput from '~/components/score-input';
 import { getFlight, updateFlight } from '~/models/flights.server';
 import {
     type EditFlightState,
     editFlightReducer,
+    type Score,
 } from '~/state/edit-flight-reducer';
 import { isLocalRequest } from '~/utils/localGuardUtils';
 import { readTag, writeTag } from '~/utils/tagUtils';
@@ -71,119 +73,58 @@ export default function EditFlight() {
     );
     const initialState: EditFlightState = {
         flyers: flight.flyers?.map((flyer) => flyer.name).join('/') || '',
-        formations:
-            flight.formations
-                ?.map((formation) => formation.formationId)
-                .join(',') || '',
+        formationIds: flight.formations.map(
+            (formation) => formation.formationId,
+        ),
         date: format(new Date(flight.session?.date || ''), 'dd/MM/yyyy'),
-        rounds: flight.scores.length / scoresPerRound || 0,
-        scores: flight.scores.map((score) => score.score),
+        scores: flight.scores.reduce((scores, score, idx) => {
+            if (idx % scoresPerRound === 0) {
+                scores.push([]);
+            }
+            const round = Math.floor(idx / scoresPerRound);
+            scores[round].push({
+                formationId: score.formation,
+                score: score.score,
+                reason: score.reason,
+            });
+            return scores;
+        }, [] as Score[][]),
     };
 
-    function scoreIcon(
-        key: string,
-        id: string,
-        formationId: string,
-        scoreIdx: number,
-    ) {
-        const score = state.scores[scoreIdx] ?? '';
-        let icon: string;
-        let nextValue: number | null;
-        switch (score) {
-            case 0:
-                icon = '🔴';
-                nextValue = null;
-                break;
-            case 1:
-                icon = '🟢';
-                nextValue = 0;
-                break;
-            default:
-                icon = '⚪';
-                nextValue = 1;
-                break;
-        }
-        return (
-            <td key={key} className="border-black border-1">
-                <button
-                    type="button"
-                    className="btn btn-xs btn-outline"
-                    onClick={() =>
-                        dispatch({
-                            type: 'setScore',
-                            idx: scoreIdx,
-                            score: nextValue,
-                        })
-                    }
-                >
-                    {icon}
-                </button>
-                {icon ? (
-                    <input
-                        type="hidden"
-                        id={`score-${id}`}
-                        name={`score-${formationId}`}
-                        value={score}
-                    />
-                ) : null}
-            </td>
-        );
-    }
-
     function makeRounds() {
-        const roundElts = [];
-        let scoreIdx = 0;
-        for (let round = 0; round < state.rounds; round++) {
-            roundElts.push(
-                <tr key={`round-${round}`}>
-                    <td className="border-black border-1">{round + 1}</td>
-                    {flight.formations.map((formation, formationIdx) => {
-                        const id =
-                            round * flight.formations.length + formationIdx;
-                        if (isRandomFormation(formation.formationId)) {
-                            scoreIdx += 1;
-                            return scoreIcon(
-                                `formation-${formationIdx}-round-${round}`,
-                                `${id}`,
-                                formation.formationId,
-                                scoreIdx - 1,
-                            );
-                        }
-                        scoreIdx += 2;
-                        return (
-                            <>
-                                {scoreIcon(
-                                    `formation-${formationIdx}-round-${round}-A`,
-                                    `${id}-A`,
-                                    formation.formationId,
-                                    scoreIdx - 2,
-                                )}
-                                {scoreIcon(
-                                    `formation-${formationIdx}-round-${round}-B`,
-                                    `${id}-B`,
-                                    formation.formationId,
-                                    scoreIdx - 1,
-                                )}
-                            </>
-                        );
-                    })}
-                    <td className="border-black border-1">
-                        {round + 1 === state.rounds ? (
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-outline"
-                                onClick={() =>
-                                    dispatch({ type: 'removeLastRound' })
-                                }
-                            >
-                                x
-                            </button>
-                        ) : null}
+        return state.scores.map((round, roundIdx) => (
+            <tr>
+                <td className="border-black border">{roundIdx + 1}</td>
+                {round.map((score, scoreIdx) => {
+                    const idx = roundIdx * round.length + scoreIdx;
+                    return (
+                        <ScoreInput
+                            key={`formation-${score.formationId}-round-${roundIdx}`}
+                            idx={`${idx}`}
+                            roundIdx={roundIdx}
+                            scoreIdx={scoreIdx}
+                            score={score}
+                            dispatch={dispatch}
+                        />
+                    );
+                })}
+                {roundIdx === state.scores.length - 1 ? (
+                    <td className="border-black border border-t">
+                        <button
+                            type="button"
+                            className="btn btn-sm"
+                            onClick={() =>
+                                dispatch({ type: 'removeLastRound' })
+                            }
+                        >
+                            x
+                        </button>
                     </td>
-                </tr>,
-            );
-        }
-        return roundElts;
+                ) : (
+                    <td></td>
+                )}
+            </tr>
+        ));
     }
 
     const [state, dispatch] = useReducer(editFlightReducer, initialState);
@@ -209,7 +150,7 @@ export default function EditFlight() {
                             className="input input-bordered"
                             placeholder="Formations"
                             name="formations"
-                            value={state.formations}
+                            value={state.formationIds}
                             onChange={(event) =>
                                 dispatch({
                                     type: 'formElementChange',
@@ -248,36 +189,39 @@ export default function EditFlight() {
                     className="flex flex-col mt-8"
                 >
                     <div className="label-text">Scores</div>
-                    <table className="table table-auto border-1 border-black">
+                    <table className="table table-auto border-collapse">
                         <thead>
                             <tr className="border-black">
-                                <th className="border-black">Round</th>
+                                <th className="border-black border">Round</th>
                                 {flight.formations.map((formation) =>
                                     isRandomFormation(formation.formationId) ? (
                                         <th
                                             key={`formation-${formation.formationId}`}
-                                            className="border-black border-1"
+                                            className="border-black border"
                                         >
                                             {formation.formationId}
                                         </th>
                                     ) : (
-                                        <>
-                                            <th className="border-black border-1">
+                                        <Fragment
+                                            key={`formation-${formation.formationId}`}
+                                        >
+                                            <th className="border-black border">
                                                 {formation.formationId}
                                             </th>
-                                            <th className="border-black border-1">
+                                            <th className="border-black border">
                                                 {formation.formationId}
                                             </th>
-                                        </>
+                                        </Fragment>
                                     ),
                                 )}
+                                <th className=""></th>
                             </tr>
                         </thead>
                         <tbody>{makeRounds()}</tbody>
                     </table>
                     <button
                         type="button"
-                        className="btn btn-outline mt-2"
+                        className="btn mt-2 black"
                         onClick={() =>
                             dispatch({ type: 'addRound', scoresPerRound })
                         }

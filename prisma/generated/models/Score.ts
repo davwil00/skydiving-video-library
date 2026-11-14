@@ -41,6 +41,7 @@ export type ScoreMinAggregateOutputType = {
   flightId: string | null
   formation: string | null
   score: number | null
+  reason: string | null
   order: number | null
 }
 
@@ -49,6 +50,7 @@ export type ScoreMaxAggregateOutputType = {
   flightId: string | null
   formation: string | null
   score: number | null
+  reason: string | null
   order: number | null
 }
 
@@ -57,6 +59,7 @@ export type ScoreCountAggregateOutputType = {
   flightId: number
   formation: number
   score: number
+  reason: number
   order: number
   _all: number
 }
@@ -77,6 +80,7 @@ export type ScoreMinAggregateInputType = {
   flightId?: true
   formation?: true
   score?: true
+  reason?: true
   order?: true
 }
 
@@ -85,6 +89,7 @@ export type ScoreMaxAggregateInputType = {
   flightId?: true
   formation?: true
   score?: true
+  reason?: true
   order?: true
 }
 
@@ -93,6 +98,7 @@ export type ScoreCountAggregateInputType = {
   flightId?: true
   formation?: true
   score?: true
+  reason?: true
   order?: true
   _all?: true
 }
@@ -188,6 +194,7 @@ export type ScoreGroupByOutputType = {
   flightId: string
   formation: string
   score: number
+  reason: string | null
   order: number
   _count: ScoreCountAggregateOutputType | null
   _avg: ScoreAvgAggregateOutputType | null
@@ -219,6 +226,7 @@ export type ScoreWhereInput = {
   flightId?: Prisma.StringFilter<"Score"> | string
   formation?: Prisma.StringFilter<"Score"> | string
   score?: Prisma.IntFilter<"Score"> | number
+  reason?: Prisma.StringNullableFilter<"Score"> | string | null
   order?: Prisma.IntFilter<"Score"> | number
   flight?: Prisma.XOR<Prisma.FlightScalarRelationFilter, Prisma.FlightWhereInput>
 }
@@ -228,6 +236,7 @@ export type ScoreOrderByWithRelationInput = {
   flightId?: Prisma.SortOrder
   formation?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  reason?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   flight?: Prisma.FlightOrderByWithRelationInput
 }
@@ -240,6 +249,7 @@ export type ScoreWhereUniqueInput = Prisma.AtLeast<{
   flightId?: Prisma.StringFilter<"Score"> | string
   formation?: Prisma.StringFilter<"Score"> | string
   score?: Prisma.IntFilter<"Score"> | number
+  reason?: Prisma.StringNullableFilter<"Score"> | string | null
   order?: Prisma.IntFilter<"Score"> | number
   flight?: Prisma.XOR<Prisma.FlightScalarRelationFilter, Prisma.FlightWhereInput>
 }, "id">
@@ -249,6 +259,7 @@ export type ScoreOrderByWithAggregationInput = {
   flightId?: Prisma.SortOrder
   formation?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  reason?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   _count?: Prisma.ScoreCountOrderByAggregateInput
   _avg?: Prisma.ScoreAvgOrderByAggregateInput
@@ -265,6 +276,7 @@ export type ScoreScalarWhereWithAggregatesInput = {
   flightId?: Prisma.StringWithAggregatesFilter<"Score"> | string
   formation?: Prisma.StringWithAggregatesFilter<"Score"> | string
   score?: Prisma.IntWithAggregatesFilter<"Score"> | number
+  reason?: Prisma.StringNullableWithAggregatesFilter<"Score"> | string | null
   order?: Prisma.IntWithAggregatesFilter<"Score"> | number
 }
 
@@ -272,6 +284,7 @@ export type ScoreCreateInput = {
   id?: string
   formation: string
   score: number
+  reason?: string | null
   order: number
   flight: Prisma.FlightCreateNestedOneWithoutScoresInput
 }
@@ -281,6 +294,7 @@ export type ScoreUncheckedCreateInput = {
   flightId: string
   formation: string
   score: number
+  reason?: string | null
   order: number
 }
 
@@ -288,6 +302,7 @@ export type ScoreUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   flight?: Prisma.FlightUpdateOneRequiredWithoutScoresNestedInput
 }
@@ -297,6 +312,7 @@ export type ScoreUncheckedUpdateInput = {
   flightId?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -305,6 +321,7 @@ export type ScoreCreateManyInput = {
   flightId: string
   formation: string
   score: number
+  reason?: string | null
   order: number
 }
 
@@ -312,6 +329,7 @@ export type ScoreUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -320,6 +338,7 @@ export type ScoreUncheckedUpdateManyInput = {
   flightId?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -338,6 +357,7 @@ export type ScoreCountOrderByAggregateInput = {
   flightId?: Prisma.SortOrder
   formation?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  reason?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -351,6 +371,7 @@ export type ScoreMaxOrderByAggregateInput = {
   flightId?: Prisma.SortOrder
   formation?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  reason?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -359,6 +380,7 @@ export type ScoreMinOrderByAggregateInput = {
   flightId?: Prisma.SortOrder
   formation?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  reason?: Prisma.SortOrder
   order?: Prisma.SortOrder
 }
 
@@ -421,6 +443,7 @@ export type ScoreCreateWithoutFlightInput = {
   id?: string
   formation: string
   score: number
+  reason?: string | null
   order: number
 }
 
@@ -428,6 +451,7 @@ export type ScoreUncheckedCreateWithoutFlightInput = {
   id?: string
   formation: string
   score: number
+  reason?: string | null
   order: number
 }
 
@@ -464,6 +488,7 @@ export type ScoreScalarWhereInput = {
   flightId?: Prisma.StringFilter<"Score"> | string
   formation?: Prisma.StringFilter<"Score"> | string
   score?: Prisma.IntFilter<"Score"> | number
+  reason?: Prisma.StringNullableFilter<"Score"> | string | null
   order?: Prisma.IntFilter<"Score"> | number
 }
 
@@ -471,6 +496,7 @@ export type ScoreCreateManyFlightInput = {
   id?: string
   formation: string
   score: number
+  reason?: string | null
   order: number
 }
 
@@ -478,6 +504,7 @@ export type ScoreUpdateWithoutFlightInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -485,6 +512,7 @@ export type ScoreUncheckedUpdateWithoutFlightInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -492,6 +520,7 @@ export type ScoreUncheckedUpdateManyWithoutFlightInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   formation?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -502,6 +531,7 @@ export type ScoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   flightId?: boolean
   formation?: boolean
   score?: boolean
+  reason?: boolean
   order?: boolean
   flight?: boolean | Prisma.FlightDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["score"]>
@@ -511,6 +541,7 @@ export type ScoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   flightId?: boolean
   formation?: boolean
   score?: boolean
+  reason?: boolean
   order?: boolean
   flight?: boolean | Prisma.FlightDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["score"]>
@@ -520,6 +551,7 @@ export type ScoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   flightId?: boolean
   formation?: boolean
   score?: boolean
+  reason?: boolean
   order?: boolean
   flight?: boolean | Prisma.FlightDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["score"]>
@@ -529,10 +561,11 @@ export type ScoreSelectScalar = {
   flightId?: boolean
   formation?: boolean
   score?: boolean
+  reason?: boolean
   order?: boolean
 }
 
-export type ScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "flightId" | "formation" | "score" | "order", ExtArgs["result"]["score"]>
+export type ScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "flightId" | "formation" | "score" | "reason" | "order", ExtArgs["result"]["score"]>
 export type ScoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   flight?: boolean | Prisma.FlightDefaultArgs<ExtArgs>
 }
@@ -553,6 +586,7 @@ export type $ScorePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     flightId: string
     formation: string
     score: number
+    reason: string | null
     order: number
   }, ExtArgs["result"]["score"]>
   composites: {}
@@ -982,6 +1016,7 @@ export interface ScoreFieldRefs {
   readonly flightId: Prisma.FieldRef<"Score", 'String'>
   readonly formation: Prisma.FieldRef<"Score", 'String'>
   readonly score: Prisma.FieldRef<"Score", 'Int'>
+  readonly reason: Prisma.FieldRef<"Score", 'String'>
   readonly order: Prisma.FieldRef<"Score", 'Int'>
 }
     

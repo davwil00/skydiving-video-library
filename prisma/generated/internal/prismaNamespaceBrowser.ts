@@ -102,6 +102,7 @@ export const ScoreScalarFieldEnum = {
   flightId: 'flightId',
   formation: 'formation',
   score: 'score',
+  reason: 'reason',
   order: 'order'
 } as const
 

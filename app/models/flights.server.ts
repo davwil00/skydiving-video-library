@@ -1,6 +1,7 @@
 import type { Prisma } from 'prisma/generated/client';
 import { prisma } from '~/db.server';
 import type { SiteType } from '~/utils/site-utils';
+import type { ScoreCreateManyFlightInput } from '../../prisma/generated/models/Score';
 
 export function getByFormationId(formationId: string, siteType: SiteType) {
     return prisma.flight.findMany({
@@ -47,11 +48,6 @@ export function createFlight(flight: FlightCreateInput) {
     });
 }
 
-export type Score = {
-    formation: string;
-    score: number;
-    order: number;
-};
 export async function updateFlight(
     flightId: string,
     formationIds: string[],
@@ -91,7 +87,10 @@ export async function updateFlight(
     });
 }
 
-export async function updateFlightScores(flightId: string, scores: Score[]) {
+export async function updateFlightScores(
+    flightId: string,
+    scores: ScoreCreateManyFlightInput[],
+) {
     await prisma.flight.update({
         where: {
             id: flightId,
@@ -102,11 +101,7 @@ export async function updateFlightScores(flightId: string, scores: Score[]) {
                     flightId: flightId,
                 },
                 createMany: {
-                    data: scores.map((score) => ({
-                        formation: score.formation,
-                        score: score.score,
-                        order: score.order,
-                    })),
+                    data: scores,
                 },
             },
         },
