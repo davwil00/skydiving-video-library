@@ -1,7 +1,7 @@
 import { data } from 'react-router';
 import { VIDEO_DATA_PATH } from '~/pages/sync-db';
 import type { FileToTag } from '~/state/tag-reducer';
-import { determineViewFromFilename, writeTag } from '~/utils/tagUtils';
+import { writeTag } from '~/utils/tagUtils';
 import type { Route } from './+types/async-tag';
 
 export type TagProgressEvent =
@@ -33,17 +33,19 @@ export const action = async ({ request }: Route.ActionArgs) => {
     const formData: { filesToTag: FileToTag[] } = await request.json();
 
     const writes = formData.filesToTag.flatMap((fileToTag) => {
-        const tasks: Array<{ fileName: string; data: FileToTag }> = [];
+        const tasks: Array<{ fileName: string; view: 'TOP' | 'SIDE', data: FileToTag }> = [];
         if (fileToTag.sideVideoFileName) {
             tasks.push({
                 fileName: fileToTag.sideVideoFileName,
                 data: fileToTag,
+                view: 'SIDE'
             });
         }
         if (fileToTag.topVideoFileName) {
             tasks.push({
                 fileName: fileToTag.topVideoFileName,
                 data: fileToTag,
+                view: 'TOP'
             });
         }
         return tasks;
@@ -70,7 +72,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
                         title: writeTask.data.formations || '',
                         artist: writeTask.data.flyers || '',
                         date: writeTask.data.date || '',
-                        comment: determineViewFromFilename(writeTask.fileName),
+                        comment: writeTask.view,
                     });
                     completed.push(writeTask.fileName);
                     send({
